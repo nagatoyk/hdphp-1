@@ -1,0 +1,49 @@
+<?php namespace Hdphp\Cache;
+
+use Hdphp\Cache\InCache;
+use Exception;
+use DirectoryIterator;
+class Memcache implements InterfaceCache
+{
+
+	protected $obj;
+
+	public function __construct() 
+	{
+		$this->connect();
+	}
+
+    //连接
+	public function connect()
+	{
+		$conf = Config::get('cache.memcache');
+		if($this->obj = new Memcache()){
+			$this->obj->addServer($conf['host'],$conf['port']);
+		}
+		else
+		{
+			throw new Exception("Memcache 连接失败");
+		}
+	}
+
+    //设置
+	public function set($name, $value, $expire = 3600) {
+		return $this->obj->set($name, $value, 0, $expire);
+	}
+
+    //获得
+	public function get($name) {
+		return $this->obj->get($name);
+	}
+
+    //删除
+	public function del($name) {
+		return $this->obj->delete($name);
+	}
+
+    //删除缓存池
+	public function flush() {
+		return $this->obj->flush();
+	}
+
+}

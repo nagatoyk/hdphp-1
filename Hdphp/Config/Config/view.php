@@ -7,7 +7,7 @@ return array(
 	'prefix'			=> '.php',
 
     //标签	
-	'tags'              => array('Common\Tag\Common'),
+	'tags'              => array(),
 
     //错误模板
 	'error'             => 'public/error.php',

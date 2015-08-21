@@ -214,8 +214,8 @@ class Compile extends Setting
 		$c = isset($_GET[$var_controller])?$_GET[$var_controller]:C('http.default_controller');
 		$a = isset($_GET[$var_action])?$_GET[$var_action]:C('http.default_action');
 
-		define('MODULE',$m);
-		define('CONTROLLER',$c);
+		define('MODULE',ucfirst($m));
+		define('CONTROLLER',ucfirst($c));
 		define('ACTION',$a);
 		$this->found = true;
 	}

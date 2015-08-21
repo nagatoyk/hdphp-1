@@ -94,7 +94,7 @@ class Boot
 
 
         $dirs = array(
-            APP_PATH . '/Common/Service', APP_PATH . '/Common/Provider', APP_PATH . '/Common/Common', APP_PATH . '/Common/Lang', APP_PATH . '/Common/Tag', APP_PATH . '/Common/Hook', APP_PATH . '/Home/Controller', APP_PATH . '/Home/Model', APP_PATH . '/Home/Api', APP_PATH . '/Home/View/Index', 'config', 'public'
+            'System/Service', 'System/Provider', 'System/Lang', 'System/Tag', 'System/Hook', APP_PATH . '/Home/Controller', APP_PATH . '/Home/Model', APP_PATH . '/Home/Api', APP_PATH . '/Home/View/Index', 'Config', 'Public'
         );
 
         foreach ($dirs as $dir)
@@ -116,7 +116,7 @@ class Boot
         }
 
         $files = array(
-            HDPHP_PATH . '/View/index.php' => APP_PATH . '/Home/View/Index/index.php', HDPHP_PATH . '/View/success.php' => 'public/success.php', HDPHP_PATH . '/View/error.php' => 'public/error.php', HDPHP_PATH . '/View/tag.php' => APP_PATH . '/Common/Tag/Common.php', HDPHP_PATH . '/Controller/IndexController.php' => APP_PATH . '/Home/Controller/IndexController.php', HDPHP_PATH . '/Lang/zh.php' => APP_PATH . '/Common/Lang/zh.php', HDPHP_PATH . '/Route/routes.php' => APP_PATH . '/routes.php',
+            HDPHP_PATH . '/View/index.php' => APP_PATH . '/Home/View/Index/index.php', HDPHP_PATH . '/View/success.php' => 'Public/success.php', HDPHP_PATH . '/View/error.php' => 'Public/error.php', HDPHP_PATH . '/View/tag.php' => 'System/Tag/Common.php', HDPHP_PATH . '/Controller/IndexController.php' => APP_PATH . '/Home/Controller/IndexController.php', HDPHP_PATH . '/Lang/zh.php' =>'System/Lang/zh.php', HDPHP_PATH . '/Route/routes.php' => APP_PATH . '/routes.php',
         );
 
         foreach ($files as $key => $value)
@@ -130,9 +130,9 @@ class Boot
         //复制配置文件
         foreach (glob(HDPHP_PATH . '/Config/Config/*') as $file)
         {
-            if ( ! is_file('config/' . basename($file)))
+            if ( ! is_file('Config/' . basename($file)))
             {
-                copy($file, 'config/' . basename($file));
+                copy($file, 'Config/' . basename($file));
             }
         }
     }
@@ -145,7 +145,7 @@ class Boot
     private static function createRuntimeFile()
     {
         //调试模式下不生成编译文件
-        if (DEBUG == true || is_file('storage/~runtime.php'))
+        if (DEBUG == true || is_file('Storage/~runtime.php'))
         {
             return;
         }
@@ -156,7 +156,7 @@ class Boot
         );
 
         //服务与facade文件列表
-        $config = require 'config/service.php';
+        $config = require 'Config/service.php';
 
         $files = array_merge($core, $config['provider'], $config['facade']);
 
@@ -167,12 +167,12 @@ class Boot
             $file = str_replace('\\', DS, $file);
             $compile .= substr(rtrim(file_get_contents($file . '.php')), 5) . "\n";
         }
-        if(!is_dir('storage'))
+        if(!is_dir('Storage'))
         {
-            mkdir('storage',0755,true);
+            mkdir('Storage',0755,true);
         }
         //保存文件
-        file_put_contents('storage/~runtime.php', '<?php ' . $compile);
+        file_put_contents('Storage/~runtime.php', '<?php ' . $compile);
     }
 
 }

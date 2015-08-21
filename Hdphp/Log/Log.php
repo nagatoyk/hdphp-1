@@ -16,7 +16,7 @@ class Log
 
     public function __construct()
     {
-        $this->dir = 'storage/log/'.date('Y_m');
+        $this->dir = 'Storage/log/'.date('Y_m');
         is_dir($this->dir) or mkdir($this->dir,0755,true);
     }
     /**

@@ -5,15 +5,15 @@ class File implements AbSession
     public function __construct()
     {
         //创建目录
-        if ( ! is_dir('storage/session'))
+        if ( ! is_dir('Storage/session'))
         {
-            mkdir('storage/session',0755,true);
+            mkdir('Storage/session',0755,true);
         }
     }
 
     //执行SESSION控制
     public function make()
     {
-        session_save_path('storage/session');
+        session_save_path('Storage/session');
     }
 }

@@ -1,6 +1,5 @@
 <?php namespace Hdphp\Kernel;
 
-
 use Closure;
 use ReflectionClass;
 use ReflectionMethod;
@@ -38,7 +37,7 @@ class Application extends Container
         spl_autoload_register(array($this, 'autoloadModel'));
 
         //引入服务配置
-        $config = require 'config/service.php';
+        $config = require 'Config/service.php';
 
         //服务提供者
         $this->services = $config['provider'];

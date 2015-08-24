@@ -35,10 +35,10 @@ class View
         $this->tpl = $this->getTemplateFile($tpl);
 
         //编译文件
-        $this->compile = 'storage/view/compile/' . md5($this->tpl) . '.php';
+        $this->compile = 'Storage/view/compile/' . md5($this->tpl) . '.php';
 
         //缓存有效
-        if ($expire > 0 && $content = Cache::dir('storage/view/cache')->get($_SERVER['REQUEST_URI']))
+        if ($expire > 0 && $content = Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']))
         {
             if ($show)
             {
@@ -73,7 +73,7 @@ class View
         if ($expire > 0)
         {
             //缓存
-            if ( ! Cache::dir('storage/view/cache')->set($_SERVER['REQUEST_URI'], $content, $expire))
+            if ( ! Cache::dir('Storage/view/cache')->set($_SERVER['REQUEST_URI'], $content, $expire))
             {
                 throw new Exception("创建缓存失效");
             }
@@ -135,7 +135,7 @@ class View
     //验证缓存文件
     public function isCache()
     {
-        return Cache::dir('storage/view/cache')->get($_SERVER['REQUEST_URI']);
+        return Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']);
     }
 
     /**

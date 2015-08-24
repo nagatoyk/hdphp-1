@@ -145,7 +145,6 @@ class Rbac
         $sql = "SELECT n.id,n.name,n.pid,n.level,n.title,n.show FROM " . $this->user_role_table . " ur" . " JOIN " . $this->role_table . " r ON ur.role_id = r.id " . " JOIN " . $this->access_table . " a ON a.role_id=r.id " . " JOIN " . $this->node_table . " n ON n.id = a.node_id" . " WHERE ur.user_id=" . $id . " AND n.status=1 AND r.status=1" . " GROUP BY a.node_id" . " ORDER BY n.sort ASC";
 
         $data = Db::select($sql);
-
         if ( ! $data)
         {
             return array();
@@ -222,6 +221,10 @@ class Rbac
      */
     public function isSuperUser()
     {
+        if ( ! $this->isLogin())
+        {
+            return false;
+        }
         if (isset($_SESSION['__SUPER_USER__']))
         {
             return true;

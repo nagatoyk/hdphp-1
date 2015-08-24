@@ -50,7 +50,7 @@ class Weixin extends Error
             return false;
         }
 
-        $echoStr = $_GET["echostr"];
+        $echoStr   = $_GET["echostr"];
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce     = $_GET["nonce"];
@@ -103,9 +103,9 @@ class Weixin extends Error
      * 每天可获取2000次
      * 服务器返回的 access_token 过期时间，一般2小时
      */
-    public function getAccessToken()
+    public function getAccessToken($cacheKey = '')
     {
-        $cacheKey = 'access_token';
+        $cacheKey = $cacheKey ?: 'access_token';
 
         if ($token = Cache::dir('storage/weixin')->get($cacheKey))
         {

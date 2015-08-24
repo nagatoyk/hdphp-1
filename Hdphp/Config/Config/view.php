@@ -10,14 +10,14 @@ return array(
 	'tags'              => array(),
 
     //错误模板
-	'error'             => 'public/error.php',
+	'error'             => 'Public/error.php',
 
     //正确模板	
-	'success'           => 'public/success.php',
+	'success'           => 'Public/success.php',
 
     //左标签		
-	'tag_left'          => '<',
+	'tag_left'          => '{{',
 
     //右标签           
-	'tag_right'         => '>',       
+	'tag_right'         => '}}',
 );

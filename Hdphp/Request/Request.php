@@ -8,10 +8,19 @@ class Request
     {
         $params[0] = $method . '.' . $params[0];
 
-        return call_user_func_array(array($this, 'getVar'), $params);
+        return call_user_func_array(array($this, 'query'), $params);
     }
 
-    public function getVar($var, $default = null, $filter = array())
+    /**
+     * 获取变量
+     *
+     * @param       $var     变量名
+     * @param null  $default 变量不存在时设置的值
+     * @param array $filter  过滤函数
+     *
+     * @return array|null
+     */
+    public function query($var, $default = null, $filter = array())
     {
         //支持get.id 或 id
         $var = explode(".", $var);
@@ -50,11 +59,12 @@ class Request
             default :
                 return;
         }
-        //没有执行参数如q("post.")时返回所有数据
+        //q("post.")返回所有
         if (empty($var[1]))
         {
             return $data;
         }
+
         else if (isset($data[$var[1]]))
         {
             $value = $data[$var[1]];

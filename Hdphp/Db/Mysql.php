@@ -215,7 +215,6 @@ class Mysql
                 self::$queryLog[] = $sql;
             }
 
-            //返回受影响行数
             return true;
 
         }

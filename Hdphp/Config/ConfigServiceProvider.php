@@ -11,7 +11,7 @@ class ConfigServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        foreach (glob('config/*') as $file)
+        foreach (glob('Config/*') as $file)
         {
             $info = pathinfo($file);
             \Config::set($info['filename'], require $file);

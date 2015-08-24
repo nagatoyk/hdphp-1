@@ -20,7 +20,11 @@ function u($path, $args = array())
     $action['c'] = array_pop($info) ?: CONTROLLER;
     $action['m'] = array_pop($info) ?: MODULE;
     $action      = array_reverse($action);
-
+    //应用组
+    if ($g = Q('get.g'))
+    {
+        $action['g'] = $g;
+    }
     $url = C('http.rewrite') ? __ROOT__ : __ROOT__ . '/' . basename($_SERVER['SCRIPT_FILENAME']);
 
     return $url . '?' . http_build_query(array_merge($action, $args));
@@ -33,7 +37,7 @@ function api()
 {
     static $cache = array();
     $params = func_get_args();
-    $info = explode('/', array_shift($params));
+    $info   = explode('/', array_shift($params));
     //动作
     $action = array_pop($info);
     $class  = implode('\\', $info);
@@ -50,7 +54,7 @@ function api()
  *
  * @param [type] $model [description]
  */
-function M($class)
+function m($class)
 {
     static $instances = array();
 
@@ -68,7 +72,7 @@ function M($class)
  * @param string $name  [description]
  * @param string $value [description]
  */
-function C($name = '', $value = '')
+function c($name = '', $value = '')
 {
     if ($name === '')
     {
@@ -90,9 +94,9 @@ function C($name = '', $value = '')
  * @param string $value [默认值]
  * @param [type] $functions [回调函数]
  */
-function Q($var, $default = null, $filter = '')
+function q($var, $default = null, $filter = '')
 {
-    return Request::getVar($var, $default, $filter);
+    return Request::query($var, $default, $filter);
 }
 
 /**
@@ -146,6 +150,32 @@ function go($url, $time = 0, $msg = '')
         }
         exit;
     }
+}
+
+/**
+ * Session管理
+ *
+ * @param        $name
+ * @param string $value
+ */
+function session($name, $value = '[get]')
+{
+    $action = $value[0] == '[' ? trim($value, '[]') : 'set';
+
+    return Session::$action($name, $value);
+}
+
+/**
+ * Cookie管理
+ *
+ * @param        $name
+ * @param string $value
+ */
+function cookie($name, $value = '[get]')
+{
+    $action = $value[0] == '[' ? trim($value, '[]') : 'set';
+
+    return Cookie::$action($name, $value);
 }
 
 /**
@@ -290,3 +320,4 @@ function trace($value = '[hdphp]', $label = '', $level = 'DEBUG', $record = fals
 {
     return Error::trace($value, $label, $level, $record);
 }
+

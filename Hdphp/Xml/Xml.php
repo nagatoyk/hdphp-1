@@ -7,10 +7,6 @@ class Xml
 
     private $dom;
 
-    public function __construct()
-    {
-    }
-
     //生成xml字符串
     public function createXmlString($data)
     {

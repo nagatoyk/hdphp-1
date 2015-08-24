@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>操作失败</title>
-    <link rel="stylesheet" type="text/css" href="{{__ROOT__}}/hdphp/view/css.css"/>
+    <link rel="stylesheet" type="text/css" href="{{__ROOT__}}/Hdphp/View/css.css"/>
 </head>
 <body>
 <div class="wrap">

@@ -60,20 +60,33 @@ class Kernel
             throw new Exception(MODULE . '模块禁止使用');
         }
         define('__WEB__', C('http.rewrite') ? __ROOT__ : __ROOT__ . '/' . basename($_SERVER['SCRIPT_FILENAME']));
-
-        define('MODULE_PATH', APP_PATH . '/' . MODULE);
+        if ($g = Q('get.g'))
+        {
+            define('MODULE_PATH', ucfirst($g) . '/' . MODULE);
+        }
+        else
+        {
+            define('MODULE_PATH', APP_PATH . '/' . MODULE);
+        }
         //模板目录常量
         defined('VIEW_PATH') or define(
         'VIEW_PATH', strstr(C('view.path'), '/') ? C('view.path') : MODULE_PATH . '/View'
         );
-        defined("__PUBLIC__") or define('__PUBLIC__', __ROOT__ . '/public');
+        defined("__PUBLIC__") or define('__PUBLIC__', __ROOT__ . '/Public');
         defined("__VIEW__") or define('__VIEW__', __ROOT__ . '/' . rtrim(VIEW_PATH, '/'));
     }
 
     //执行动作
     private function ExecuteAction()
     {
-        $class = ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+        if ($g = Q('get.g'))
+        {
+            $class = ucfirst($g) . '\\' . ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+        }
+        else
+        {
+            $class = ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+        }
         //控制器不存在
         if ( ! class_exists($class))
         {

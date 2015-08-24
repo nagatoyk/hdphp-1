@@ -7,5 +7,5 @@ return array(
     'size'             		=> 2097152,   
 
     //上传路径
-    'path'              	=> 'upload', 
+    'path'              	=> 'Upload',
 );

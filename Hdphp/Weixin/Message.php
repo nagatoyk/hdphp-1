@@ -70,13 +70,13 @@ class Message extends Weixin
     //关注
     public function isSubscribeEvent()
     {
-        return $this->message->Event = self::EVENT_TYPE_SUBSCRIBE && $this->message->EventKey=='';
+        return $this->message->Event == self::EVENT_TYPE_SUBSCRIBE;
     }
 
     //取消关注
     public function isUnSubscribeEvent()
     {
-        return $this->message->Event = self::EVENT_TYPE_UNSUBSCRIBE;
+        return $this->message->Event == self::EVENT_TYPE_UNSUBSCRIBE;
     }
 
     //未关注用户扫描二维码
@@ -88,25 +88,25 @@ class Message extends Weixin
     //关注用户二维码事件
     public function isScanEvent()
     {
-        return $this->message->Event = self::EVENT_TYPE_SUBSCRIBE_SCAN;
+        return $this->message->Event == self::EVENT_TYPE_SUBSCRIBE_SCAN;
     }
 
     //上报地理位置事件
     public function isLocationEvent()
     {
-        return $this->message->Event = self::EVENT_TYPE_LOCATION;
+        return $this->message->Event == self::EVENT_TYPE_LOCATION;
     }
 
     //点击菜单拉取消息时的事件推送
     public function isClickEvent()
     {
-        return $this->message->Event = self::EVENT_TYPE_CLICK;
+        return $this->message->Event == self::EVENT_TYPE_CLICK;
     }
 
     //点击菜单跳转链接时的事件推送
     public function isViewEvent()
     {
-        return $this->message->Event = self::EVENT_TYPE_VIEW;
+        return $this->message->Event == self::EVENT_TYPE_VIEW;
     }
     //文本消息
     public function isTextMsg()

@@ -1,5 +1,12 @@
 <?php namespace Hdphp\Backup;
 
+/**
+ * 数据库备份类
+ * Class Backup
+ *
+ * @package Hdphp\Backup
+ * @author  向军 <2300071698@qq.com>
+ */
 class Backup
 {
     //错误信息

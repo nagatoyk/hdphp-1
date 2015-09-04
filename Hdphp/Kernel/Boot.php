@@ -5,8 +5,19 @@ class Boot
 
     private static $binded = false;
 
+    //应用目录
+    private static $appPath;
+
     public static function bootstrap()
     {
+        if (defined('APP_GROUP_PATH'))
+        {
+            self::$appPath = APP_GROUP_PATH . '/Home';
+        }
+        else
+        {
+            self::$appPath = APP_PATH;
+        }
         //设置系统常量
         self::setConsts();
 
@@ -36,10 +47,6 @@ class Boot
         define(
         'IS_AJAX', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
         );
-
-        define('__ROOT__', rtrim('http://' . $_SERVER['HTTP_HOST'] . preg_replace('@\w+\.php$@i', '', $_SERVER['SCRIPT_NAME']), '/'));
-        define("__HISTORY__", isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null);
-        define('__URL__', 'http://' . $_SERVER['HTTP_HOST'].'/'.trim($_SERVER['REQUEST_URI'],'/'));
 
         define('NOW', $_SERVER['REQUEST_TIME']);
         define('NOW_MICROTIME', microtime(true));
@@ -85,7 +92,7 @@ class Boot
      */
     public static function mkDirs()
     {
-        if (is_dir(APP_PATH))
+        if (is_dir(self::$appPath))
         {
             self::$binded = true;
 
@@ -94,7 +101,7 @@ class Boot
 
 
         $dirs = array(
-            'System/Service', 'System/Provider', 'System/Lang', 'System/Tag', 'System/Hook', APP_PATH . '/Home/Controller', APP_PATH . '/Home/Model', APP_PATH . '/Home/Api', APP_PATH . '/Home/View/Index', 'Config', 'Public'
+            'System/Service', 'System/Provider', 'System/Lang', 'System/Tag', 'System/Hook', self::$appPath . '/Home/Controller', self::$appPath . '/Home/Model', self::$appPath . '/Home/Api', self::$appPath . '/Home/View/Index', 'Config', 'Public'
         );
 
         foreach ($dirs as $dir)
@@ -116,7 +123,7 @@ class Boot
         }
 
         $files = array(
-            HDPHP_PATH . '/View/index.php' => APP_PATH . '/Home/View/Index/index.php', HDPHP_PATH . '/View/success.php' => 'Public/success.php', HDPHP_PATH . '/View/error.php' => 'Public/error.php', HDPHP_PATH . '/View/tag.php' => 'System/Tag/Common.php', HDPHP_PATH . '/Controller/IndexController.php' => APP_PATH . '/Home/Controller/IndexController.php', HDPHP_PATH . '/Lang/zh.php' =>'System/Lang/zh.php', HDPHP_PATH . '/Route/routes.php' => APP_PATH . '/routes.php',
+            HDPHP_PATH . '/View/index.php' => self::$appPath . '/Home/View/Index/index.php', HDPHP_PATH . '/View/success.php' => 'Public/success.php', HDPHP_PATH . '/View/error.php' => 'Public/error.php', HDPHP_PATH . '/View/tag.php' => 'System/Tag/Common.php', HDPHP_PATH . '/Controller/IndexController.php' => self::$appPath . '/Home/Controller/IndexController.php', HDPHP_PATH . '/Lang/zh.php' => 'System/Lang/zh.php', HDPHP_PATH . '/Route/routes.php' => 'System/routes.php',
         );
 
         foreach ($files as $key => $value)
@@ -167,9 +174,9 @@ class Boot
             $file = str_replace('\\', DS, $file);
             $compile .= substr(rtrim(file_get_contents($file . '.php')), 5) . "\n";
         }
-        if(!is_dir('Storage'))
+        if ( ! is_dir('Storage'))
         {
-            mkdir('Storage',0755,true);
+            mkdir('Storage', 0755, true);
         }
         //保存文件
         file_put_contents('Storage/~runtime.php', '<?php ' . $compile);

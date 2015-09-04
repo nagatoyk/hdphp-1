@@ -18,18 +18,19 @@ class Kernel
         $this->ParseRoute();
 
         //导入钓子
-        Hook::import(Config::get('hook'));
+        \Hdphp\Hook\Hook::import(Config::get('hook'));
+
+        //应用开始钓子
+        \Hdphp\Hook\Hook::listen("app_begin");
 
         //定义常量
         $this->DefineConsts();
 
-        //应用开始钓子
-        Hook::listen("app_begin");
-
+        //执行控制器方法
         $this->ExecuteAction();
 
         //应用结束钩子
-        Hook::listen("app_end");
+        \Hdphp\Hook\Hook::listen("app_end");
 
         //保存日志
         Log::save();
@@ -43,7 +44,7 @@ class Kernel
     private function parseRoute()
     {
         //导入路由
-        require APP_PATH . '/routes.php';
+        require 'System/routes.php';
 
         //分析处理
         return Route::dispatch();
@@ -54,24 +55,21 @@ class Kernel
      */
     private function DefineConsts()
     {
-        //禁止使用模块检测
-        if (in_array(MODULE, C('http.deny_module')))
-        {
-            throw new Exception(MODULE . '模块禁止使用');
-        }
+        define('__ROOT__', rtrim('http://' . $_SERVER['HTTP_HOST'] . preg_replace('@\w+\.php$@i', '', $_SERVER['SCRIPT_NAME']), '/'));
         define('__WEB__', C('http.rewrite') ? __ROOT__ : __ROOT__ . '/' . basename($_SERVER['SCRIPT_FILENAME']));
-        if ($g = Q('get.g'))
+        define('__URL__', 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim($_SERVER['REQUEST_URI'], '/'));
+        define("__HISTORY__", isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null);
+
+        if (defined('APP_GROUP_PATH'))
         {
-            define('MODULE_PATH', ucfirst($g) . '/' . MODULE);
+            defined('APP_PATH') or define('APP_PATH', APP_GROUP_PATH . '/' . APP);
         }
-        else
-        {
-            define('MODULE_PATH', APP_PATH . '/' . MODULE);
-        }
-        //模板目录常量
-        defined('VIEW_PATH') or define(
-        'VIEW_PATH', strstr(C('view.path'), '/') ? C('view.path') : MODULE_PATH . '/View'
-        );
+        
+        //模块目录
+        defined('MODULE_PATH') or define('MODULE_PATH', APP_PATH . '/' . MODULE);
+        //模板目录
+        defined('VIEW_PATH') or define('VIEW_PATH', defined('MODULE_PATH') ? MODULE_PATH . '/View' : C('view.path'));
+        //公共目录
         defined("__PUBLIC__") or define('__PUBLIC__', __ROOT__ . '/Public');
         defined("__VIEW__") or define('__VIEW__', __ROOT__ . '/' . rtrim(VIEW_PATH, '/'));
     }
@@ -79,14 +77,15 @@ class Kernel
     //执行动作
     private function ExecuteAction()
     {
-        if ($g = Q('get.g'))
+
+        //禁止使用模块检测
+        if (in_array(MODULE, C('http.deny_module')))
         {
-            $class = ucfirst($g) . '\\' . ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+            throw new Exception(MODULE . '模块禁止使用');
         }
-        else
-        {
-            $class = ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
-        }
+
+        $class = ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+
         //控制器不存在
         if ( ! class_exists($class))
         {

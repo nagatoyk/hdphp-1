@@ -244,7 +244,7 @@ class Application extends Container
             //项目文件
             require_once MODULE_PATH . DS . $file;
         }
-        else if (is_file(APP_PATH . DS . $file))
+        else if (defined('APP_PATH') && is_file(APP_PATH . DS . $file))
         {
             //项目文件
             require_once APP_PATH . DS . $file;

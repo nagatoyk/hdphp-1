@@ -1,15 +1,22 @@
 <?php namespace Hdphp\Cache;
 
-use Hdphp\Cache\InCache;
 use Exception;
-use DirectoryIterator;
-class File implements InterfaceCache{
 
-	//缓存目录
-	private $dir = 'storage/cache';
+/**
+ * 文件缓存处理
+ * Class File
+ *
+ * @package Hdphp\Cache
+ * @author  向军 <2300071698@qq.com>
+ */
+class File implements InterfaceCache
+{
 
-	//队列长度
-	private $length=0;
+    //缓存目录
+    private $dir = 'Storage/cache';
+
+    //队列长度
+    private $length = 0;
 
     public function __construct()
     {
@@ -19,7 +26,7 @@ class File implements InterfaceCache{
     //连接
     public function connect()
     {
-        if(!is_dir($this->dir) && !mkdir($this->dir,0755,true))
+        if ( ! is_dir($this->dir) && ! mkdir($this->dir, 0755, true))
         {
             throw new Exception("缓存目录创建失败");
         }
@@ -28,13 +35,14 @@ class File implements InterfaceCache{
     //设置缓存目录
     public function dir($dir)
     {
-        if(is_dir($dir) || mkdir($dir,0755,true))
+        if (is_dir($dir) || mkdir($dir, 0755, true))
         {
             $this->dir = $dir;
+
             return $this;
         }
     }
-    
+
     //缓存文件
     private function getFile($name)
     {
@@ -58,17 +66,17 @@ class File implements InterfaceCache{
     public function get($name)
     {
         $file = $this->getFile($name);
-        
+
         //缓存文件不存在
-        if (!is_file($file)) 
+        if ( ! is_file($file))
         {
             return null;
         }
 
         $content = file_get_contents($file);
-        
+
         $expire = intval(substr($content, 8, 10));
-        
+
         //修改时间
         $mtime = filemtime($file);
 
@@ -85,6 +93,7 @@ class File implements InterfaceCache{
     public function del($name)
     {
         $file = $this->getFile($name);
+
         return is_file($file) && unlink($file);
     }
 

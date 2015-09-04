@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>操作失败</title>
+    <title>温馨提示</title>
     <link rel="stylesheet" type="text/css" href="{{__ROOT__}}/Hdphp/View/css.css"/>
+    {{bootstrap}}
 </head>
 <body>
 <div class="wrap">
     <div class="title">
-        操作成功
+        温馨提示
     </div>
     <div class="content">
         <div class="icon"></div>
@@ -16,7 +17,7 @@
             <p>
                 {{$message}}
             </p>
-            <a href="javascript:{{$url}}" class="hd-cancel">
+            <a href="javascript:{{$url}}" class="btn btn-default btn-sm">
                 返回
             </a>
         </div>

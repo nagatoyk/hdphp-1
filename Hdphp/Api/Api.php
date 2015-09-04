@@ -1,5 +1,10 @@
 <?php namespace Hdphp\Api;
 
+/**
+ * Class Api
+ *
+ * @package Hdphp\Api
+ */
 class Api{
 
 	//错误

@@ -229,7 +229,7 @@ class Rbac
         {
             return true;
         }
-        $username = Db::table('user')->where($this->auth_key, $_SESSION[$this->auth_key])->pluck('username');
+        $username = Db::table(C('rbac.user_table'))->where($this->auth_key, $_SESSION[$this->auth_key])->pluck('username');
         if ($username == C('rbac.super_user'))
         {
             $_SESSION['__SUPER_USER__'] = true;

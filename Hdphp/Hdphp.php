@@ -1,11 +1,14 @@
 <?php
 
-define('HDPHP_VERSION', '2015-7-1');
+define('HDPHP_VERSION', '2015-7-1');//版本号
 defined("DEBUG") or define("DEBUG", false);//调试模式
-defined("DEBUG_TOOL") or define("DEBUG_TOOL", false);//Trace调试面板
-defined('APP_PATH') or define('APP_PATH', 'App');//应用目录
-defined('APP') or define('APP', basename(APP_PATH));//应用
 defined('HDPHP_PATH') or define('HDPHP_PATH', __DIR__);//框架目录
+
+if (defined('APP_GROUP_APP') && defined('APP_PATH'))
+{
+    //入口文件不能同时定义应用组与应用
+    die('Entry file defines error');
+}
 
 //命令行模式
 if ($_SERVER['SCRIPT_NAME'] == 'hd')

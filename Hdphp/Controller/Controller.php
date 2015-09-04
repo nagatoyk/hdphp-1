@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Hdphp\Controller;
 
 class Controller
@@ -8,44 +8,50 @@ class Controller
 
     public function __construct()
     {
-     Hook::listen('controller_begin', $this->options);
+        \Hdphp\Hook\Hook::listen('controller_begin', $this->options);
 
-     if(method_exists($this, '__init'))
-     {
-        $this->__init();
-     }
+        if (method_exists($this, '__init'))
+        {
+            $this->__init();
+        }
     }
 
     /**
      * 分配变量
+     *
      * @param  [type] $name  [description]
      * @param  [type] $value [description]
+     *
      * @return [type]        [description]
      */
-    protected function assign($name,$value)
+    protected function assign($name, $value)
     {
-        View::with($name,$value);
+        View::with($name, $value);
+
         return $this;
     }
 
     /**
      * 显示模板
+     *
      * @param  [type] $tpl [description]
+     *
      * @return [type]      [description]
      */
-    protected function display($tpl='')
+    protected function display($tpl = '')
     {
         View::make($tpl);
     }
 
     /**
      * 通过魔术方法设置变量
+     *
      * @param [type] $name  [description]
      * @param [type] $value [description]
      */
-    public function __set($name,$value)
+    public function __set($name, $value)
     {
-        $this->assign($name,$value);
+        $this->assign($name, $value);
     }
 
     protected function success($message = '操作成功', $url = null, $time = 1)
@@ -60,21 +66,22 @@ class Controller
 
     /**
      * Ajax输出
-     * @param $data 数据
+     *
+     * @param        $data 数据
      * @param string $type 数据类型 text html xml json
      */
     protected function ajax($data, $type = "JSON")
     {
-        View::ajax($data,$type);
+        View::ajax($data, $type);
     }
 
     public function __destruct()
     {
-        Hook::listen('controller_end', $this->options);
+        \Hdphp\Hook\Hook::listen('controller_end', $this->options);
     }
 
-    public function __call($method,$params)
+    public function __call($method, $params)
     {
-        
+
     }
 }

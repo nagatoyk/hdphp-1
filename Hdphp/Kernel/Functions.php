@@ -6,7 +6,7 @@
  * @param [type] $path [控制器地址]
  * @param array $args [参数]
  */
-function u($path, $args = array())
+function U($path, $args = array())
 {
     if (empty($path) || preg_match('@^http@i', $path))
     {
@@ -19,7 +19,13 @@ function u($path, $args = array())
     $action['a'] = array_pop($info);
     $action['c'] = array_pop($info) ?: CONTROLLER;
     $action['m'] = array_pop($info) ?: MODULE;
-    $action      = array_reverse($action);
+
+    //设置应用名
+    if ($app = Q('get.app'))
+    {
+        $action['app'] = $app;
+    }
+    $action = array_reverse($action);
     //应用组
     if ($g = Q('get.g'))
     {
@@ -33,7 +39,7 @@ function u($path, $args = array())
 /**
  * 调用 Api Server
  */
-function api()
+function Api()
 {
     static $cache = array();
     $params = func_get_args();
@@ -54,7 +60,7 @@ function api()
  *
  * @param [type] $model [description]
  */
-function m($class)
+function M($class)
 {
     static $instances = array();
 
@@ -72,7 +78,7 @@ function m($class)
  * @param string $name  [description]
  * @param string $value [description]
  */
-function c($name = '', $value = '')
+function C($name = '', $value = '')
 {
     if ($name === '')
     {
@@ -94,7 +100,7 @@ function c($name = '', $value = '')
  * @param string $value [默认值]
  * @param [type] $functions [回调函数]
  */
-function q($var, $default = null, $filter = '')
+function Q($var, $default = null, $filter = '')
 {
     return Request::query($var, $default, $filter);
 }
@@ -187,7 +193,7 @@ function cookie($name, $value = '[get]')
  *
  * @return bool
  */
-function F($name, $value = '[get]', $path = 'storage/cache')
+function F($name, $value = '[get]', $path = 'Storage/cache')
 {
     static $cache = array();
 
@@ -223,7 +229,7 @@ function F($name, $value = '[get]', $path = 'storage/cache')
         }
     }
 
-    $data = "<?php if(!defined('APP_PATH'))exit;\nreturn " . var_export($value, true) . ";\n?>";
+    $data = "<?php if(!defined('HDPHP_PATH'))exit;\nreturn " . var_export($value, true) . ";\n?>";
 
     if ( ! is_dir($path))
     {
@@ -247,7 +253,7 @@ function F($name, $value = '[get]', $path = 'storage/cache')
  * @param mixed  $data   缓存数据
  * @param int    $expire 过期时间 0　为持久缓存
  */
-function s($name, $data = '', $expire = null)
+function S($name, $data = '', $expire = null)
 {
     if (empty($data))
     {

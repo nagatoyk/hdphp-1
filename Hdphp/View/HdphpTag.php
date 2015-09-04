@@ -26,19 +26,19 @@ class HdphpTag extends TagBase
         );
 
     //jquery前端库
-    public function _jquery($attr,$content,&$view)
+    public function _jquery($attr, $content, &$view)
     {
         return '<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>';
     }
 
     //angular.js前端库
-    public function _angular($attr,$content,&$view)
+    public function _angular($attr, $content, &$view)
     {
         return '<script src="http://cdn.bootcss.com/angular.js/1.4.0-rc.2/angular.min.js"></script>';
     }
 
     //bootstrap前端库
-    public function _bootstrap($attr,$content,&$view)
+    public function _bootstrap($attr, $content, &$view)
     {
         return '
             <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
@@ -62,13 +62,14 @@ class HdphpTag extends TagBase
     //list标签
     public function _list($attr, $content, &$view)
     {
-        $from = $attr['from']; //变量
-        $name = substr($attr['name'],1);//name名
+        $from  = $attr['from']; //变量
+        $name  = substr($attr['name'], 1);//name名
         $empty = isset($attr['empty']) ? $attr['empty'] : '';//默认值
-        $row = isset($attr['row']) ? $attr['row'] : 500;//显示条数
-        $step = isset($attr['step']) ? $attr['step'] : 1;//间隔
+        $row   = isset($attr['row']) ? $attr['row'] : 500;//显示条数
+        $step  = isset($attr['step']) ? $attr['step'] : 1;//间隔
         $start = isset($attr['start']) ? $attr['start'] : 0;//开始数
-        $php=<<<php
+        $php
+               = <<<php
         <?php
         if (empty($from)) 
         {
@@ -112,7 +113,8 @@ class HdphpTag extends TagBase
             ?>
 php;
         $php .= $content;
-        $php .= "<?php }
+        $php
+            .= "<?php }
             //总数
             \$total=\$index;
         }?>";
@@ -123,9 +125,17 @@ php;
     //标签处理
     public function _foreach($attr, $content)
     {
-        $php  = "<?php foreach ({$attr['from']} as {$attr['key']}=>{$attr['value']}){?>";
+        if (isset($attr['key']))
+        {
+            $php = "<?php foreach ({$attr['from']} as {$attr['key']}=>{$attr['value']}){?>";
+        }
+        else
+        {
+            $php = "<?php foreach ({$attr['from']} as {$attr['value']}){?>";
+        }
         $php .= $content;
         $php .= '<?php }?>';
+
         return $php;
     }
 
@@ -133,15 +143,18 @@ php;
     public function _include($attr, $content, &$view)
     {
         $view = new View();
-        return $view->make($this->replaceConst($attr['file']),0,false);
+
+        return $view->make($this->replaceConst($attr['file']), 0, false);
     }
 
     //if标签
     public function _if($attr, $content, &$hd)
     {
-        $php ="<?php if({$attr['value']}){?>
+        $php
+            = "<?php if({$attr['value']}){?>
                 $content
                <?php }?>";
+
         return $php;
     }
 

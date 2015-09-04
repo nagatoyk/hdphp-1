@@ -130,9 +130,9 @@ class Mysql
         }
         $name = Config::get('database.database') . '.' . $table;
         //字段缓存
-        if ( ! DEBUG && F($name, '[get]', 'storage/cache/field'))
+        if ( ! DEBUG && F($name, '[get]', 'Storage/cache/field'))
         {
-            $data = F($name, '[get]', 'storage/cache/field');
+            $data = F($name, '[get]', 'Storage/cache/field');
         }
         else
         {
@@ -153,7 +153,7 @@ class Mysql
                 $f ['extra']           = $res ['Extra'];
                 $data [$res ['Field']] = $f;
             }
-            DEBUG || F($name, $data, 'storage/cache/field');
+            DEBUG || F($name, $data, 'Storage/cache/field');
         }
 
         return $data;

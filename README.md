@@ -20,6 +20,7 @@
 * HDPHP官网： [http://www.hdphp.com ](http://www.hdphp.com "HDPHP官网")
 * 在线手册： [http://houdunwang.github.io/doc](http://houdunwang.github.io/doc/)
 
+![后盾网  人人做后盾](http://houdunwangxj.github.io/doc/houdunwang.jpg)  
 ----
 # 全面的WEB开发特性支持
 * HDPHP是否完全免费的，你不用担心任何版权问题

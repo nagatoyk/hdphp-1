@@ -1,6 +1,6 @@
 <?php
 
-define('HDPHP_VERSION', '2015-7-1');//版本号
+define('HDPHP_VERSION', '2015-11-08');//版本号
 defined("DEBUG") or define("DEBUG", false);//调试模式
 defined('HDPHP_PATH') or define('HDPHP_PATH', __DIR__);//框架目录
 

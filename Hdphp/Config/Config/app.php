@@ -21,10 +21,7 @@ return array(
     //令牌验证的表单隐藏字段名称
 	'token_name'    		=>'__TOKEN__',
 
-	//令牌哈希验证规则
-	'token_type'    		=>'md5',
-
-	//令牌验证出错后是否重置令牌 默认为true			
+	//令牌验证出错后是否重置令牌 默认为true
 	'token_reset'   		=>true,
 
 	//注册命名空间

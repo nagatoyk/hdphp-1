@@ -10,8 +10,7 @@
  */
 function U($path, $args = array())
 {
-    if (empty($path) || preg_match('@^http@i', $path))
-    {
+    if (empty($path) || preg_match('@^http@i', $path)) {
         return $path;
     }
 
@@ -22,8 +21,7 @@ function U($path, $args = array())
     $action['c'] = array_pop($info) ?: CONTROLLER;
     $action['m'] = array_pop($info) ?: MODULE;
 
-    if (defined('APP_GROUP_PATH'))
-    {
+    if (defined('APP_GROUP_PATH')) {
         //应用组模式
         $action['app'] = $info ? array_pop($info) : (Q('get.app') ?: APP);
     }
@@ -40,12 +38,11 @@ function Api()
 {
     static $cache = array();
     $params = func_get_args();
-    $info   = explode('/', array_shift($params));
+    $info = explode('/', array_shift($params));
     //动作
     $action = array_pop($info);
-    $class  = implode('\\', $info);
-    if ( ! isset($cache[$class]))
-    {
+    $class = implode('\\', $info);
+    if (!isset($cache[$class])) {
         $cache[$class] = new $class;
     }
 
@@ -57,13 +54,12 @@ function Api()
  *
  * @param [type] $model [description]
  */
-function M($class)
+function M($model)
 {
-    $class = str_replace('/', '\\', $class);
+    $class = MODULE . '\\Model\\' . $model;
     static $instances = array();
 
-    if (isset($instances[$class]))
-    {
+    if (isset($instances[$class])) {
         return $instances[$class];
     }
 
@@ -73,18 +69,16 @@ function M($class)
 /**
  * 操作配置项
  *
- * @param string $name  [description]
+ * @param string $name [description]
  * @param string $value [description]
  */
 function C($name = '', $value = '')
 {
-    if ($name === '')
-    {
+    if ($name === '') {
         return Config::all();
     }
 
-    if ($value === '')
-    {
+    if ($value === '') {
         return Config::get($name);
     }
 
@@ -111,8 +105,7 @@ function Q($var, $default = null, $filter = '')
  */
 function _404($code)
 {
-    if ($code == 404 && is_file('public/404.html'))
-    {
+    if ($code == 404 && is_file('public/404.html')) {
         Response::sendHttpStatus(404);
         View::make('public/404');
     }
@@ -131,23 +124,19 @@ function p($var)
 /**
  * 跳转网址
  *
- * @param string $url  跳转urlg
- * @param int    $time 跳转时间
+ * @param string $url 跳转urlg
+ * @param int $time 跳转时间
  * @param string $msg
  */
 function go($url, $time = 0, $msg = '')
 {
     $url = U($url);
-    if ( ! headers_sent())
-    {
+    if (!headers_sent()) {
         $time == 0 ? header("Location:" . $url) : header("refresh:{$time};url={$url}");
         exit($msg);
-    }
-    else
-    {
+    } else {
         echo "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
-        if ($msg)
-        {
+        if ($msg) {
             echo($msg);
         }
         exit;
@@ -183,9 +172,9 @@ function cookie($name, $value = '[get]')
 /**
  * 快速缓存 以文件形式缓存
  *
- * @param String $name  缓存KEY
- * @param bool   $value 数据
- * @param string $path  缓存目录
+ * @param String $name 缓存KEY
+ * @param bool $value 数据
+ * @param string $path 缓存目录
  *
  * @return bool
  */
@@ -195,13 +184,10 @@ function F($name, $value = '[get]', $path = 'Storage/cache')
 
     $file = $path . '/' . $name . '.php';
 
-    if ($value == '[del]')
-    {
-        if (is_file($file))
-        {
+    if ($value == '[del]') {
+        if (is_file($file)) {
             unlink($file);
-            if (isset($cache[$name]))
-            {
+            if (isset($cache[$name])) {
                 unset($cache[$name]);
             }
         }
@@ -209,31 +195,23 @@ function F($name, $value = '[get]', $path = 'Storage/cache')
         return true;
     }
 
-    if ($value === '[get]')
-    {
-        if (isset($cache[$name]))
-        {
+    if ($value === '[get]') {
+        if (isset($cache[$name])) {
             return $cache[$name];
-        }
-        else if (is_file($file))
-        {
+        } else if (is_file($file)) {
             return $cache[$name] = include $file;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
     $data = "<?php if(!defined('HDPHP_PATH'))exit;\nreturn " . var_export($value, true) . ";\n?>";
 
-    if ( ! is_dir($path))
-    {
+    if (!is_dir($path)) {
         mkdir($path, 0755, true);
     }
 
-    if ( ! file_put_contents($file, $data))
-    {
+    if (!file_put_contents($file, $data)) {
         return false;
     }
 
@@ -245,18 +223,15 @@ function F($name, $value = '[get]', $path = 'Storage/cache')
 /**
  * 驱动缓存
  *
- * @param string $name   变量名
- * @param mixed  $data   缓存数据
- * @param int    $expire 过期时间 0　为持久缓存
+ * @param string $name 变量名
+ * @param mixed $data 缓存数据
+ * @param int $expire 过期时间 0　为持久缓存
  */
 function S($name, $data = '', $expire = null)
 {
-    if (empty($data))
-    {
+    if (empty($data)) {
         return Cache::get($name);
-    }
-    else
-    {
+    } else {
         return Cache::set($name, $data, $expire);
     }
 }
@@ -266,8 +241,7 @@ function S($name, $data = '', $expire = null)
  */
 function get_size($size, $decimals = 2)
 {
-    switch (true)
-    {
+    switch (true) {
         case $size >= pow(1024, 3):
             return round($size / pow(1024, 3), $decimals) . " GB";
         case $size >= pow(1024, 2):
@@ -289,14 +263,11 @@ function get_size($size, $decimals = 2)
 function import($class)
 {
     $file = str_replace(array('@', '.', '#'), array(APP_PATH, '/', '.'), $class);
-    if (is_file($file))
-    {
+    if (is_file($file)) {
         require_once $file;
 
         return true;
-    }
-    else
-    {
+    } else {
         return false;
     }
 }
@@ -311,9 +282,9 @@ function print_const()
 /**
  * trace 信息
  *
- * @param  string  $value  变量
- * @param  string  $label  标签
- * @param  string  $level  日志级别(或者页面Trace的选项卡)
+ * @param  string $value 变量
+ * @param  string $label 标签
+ * @param  string $level 日志级别(或者页面Trace的选项卡)
  * @param  boolean $record 是否记录日志
  *
  * @return void|array

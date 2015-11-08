@@ -48,20 +48,21 @@ class Compile
 
     /**
      * 创建令牌
-     *
-     * @return [type] [description]
      */
     private function createToken()
     {
-        if (preg_match_all('/(<form>.*?)<\/form>/is', $this->content, $matches, PREG_SET_ORDER))
-        {
-            foreach ($matches as $id => $m)
-            {
-                $key           = substr($this->view->compile, 0, 5) . $id;
-                $value         = md5(time() . mt_rand(1, 999));
-                $token         = $key . '_' . $value;
-                $php           = "<input type='hidden' name='" . C('app.token_name') . "' value='" . $token . "'";
-                $this->content = str_replace($m[1], $m[1] . $php, $this->content);
+        if (C('app.token_on')) {
+            //获取令牌
+            if (!isset($_SESSION[C('app.token_name')])) {
+                $_SESSION[C('app.token_name')] = md5(time() . mt_rand(1, 999));
+            }
+            //表单添加令牌
+            if (preg_match_all('/<form.*?>(.*?)<\/form>/is', $this->content, $matches, PREG_SET_ORDER)) {
+
+                foreach ($matches as $id => $m) {
+                    $php = "<input type='hidden' name='" . C('app.token_name') . "' value='" . $_SESSION[C('app.token_name')] . "'";
+                    $this->content = str_replace($m[1], $m[1] . $php, $this->content);
+                }
             }
         }
     }
@@ -74,13 +75,12 @@ class Compile
     private function tags()
     {
         //标签库
-        $tags   = Config::get('view.tags');
+        $tags = Config::get('view.tags');
         $tags[] = 'Hdphp\View\HdphpTag';
 
         //解析标签
-        foreach ($tags as $class)
-        {
-            $obj           = new $class();
+        foreach ($tags as $class) {
+            $obj = new $class();
             $this->content = $obj->parse($this->content, $this->view);
         }
     }

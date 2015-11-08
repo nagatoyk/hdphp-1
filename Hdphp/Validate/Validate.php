@@ -5,6 +5,12 @@ use Closure;
 class Validate extends VaAction
 {
 
+    /**
+     * 表单难
+     * @param $validates 验证规则
+     * @param array $data 数据
+     * @return $this
+     */
     public function make($validates,array $data=array())
     {
         $data = $data?$data:$_POST;
@@ -13,7 +19,7 @@ class Validate extends VaAction
         {
             //字段名
             $field = $validate[0];
-            
+
             //验证规则
             $actions = explode('|',$validate[1]);
 
@@ -79,6 +85,6 @@ class Validate extends VaAction
     {
         return $this->message;
     }
-    
+
 
 }

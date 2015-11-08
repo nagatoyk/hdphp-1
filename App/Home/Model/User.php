@@ -18,7 +18,16 @@ class User extends Model
         //验证条件: 1有字段时验证(默认)	2值不为空时验证  	3必须验证
         //验证时间: 1 插入时验证		2更新时空时验证 	3全部情况验证 (默认)
         //array('字段名','验证方法','提示信息',验证条件,验证时间),
+        array('username', 'checkUser', '用户名长度错误', 3, 3)
     );
+
+    public function checkUser($field, $value, $params, $data)
+    {
+        //返回true，为验证通过
+        if (mb_strlen($value, 'utf-8') > 5) {
+            return true;
+        }
+    }
 
     //自动完成
     protected $auto = array(
@@ -34,18 +43,17 @@ class User extends Model
     protected $timestamps = false;
 
     //禁止插入的字段
-    protected $denyInsertFields = array('age');
+    protected $denyInsertFields = array('');
 
     //禁止更新的字段
-    protected $denyUpdateFields = array('id');
+    protected $denyUpdateFields = array('');
 
     public function store()
     {
-
         if ($this->create()) {
-            $this->add();
+            return $this->add();
         } else {
-            return $this->error;
+            return $this->getError();
         }
     }
 
@@ -58,6 +66,7 @@ class User extends Model
             return $this->error;
         }
     }
+
     //前置方法 比如: _before_add 为添加前执行的方法
     protected function _before_add()
     {

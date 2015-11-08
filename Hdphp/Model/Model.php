@@ -34,7 +34,7 @@ class Model implements ArrayAccess
     protected $full = false;
 
     //验证错误
-    protected $error;
+    protected $error = '未知错误';
 
     //主键
     protected $pk;
@@ -60,7 +60,7 @@ class Model implements ArrayAccess
     //允许更新的字段
     protected $denyUpdateFields = array();
 
-    //驱动
+    //数据库驱动
     protected $db;
 
     public function __construct()
@@ -74,13 +74,15 @@ class Model implements ArrayAccess
         //数据驱动
         $this->db = Db::table($this->table, $this->full);
 
-        //缓存字段
-        $this->getTableInfo();
+        //字段缓存
+        $this->field = array_keys($this->db->getTableField($this->table));
+
+        //主键
+        $this->pk = $this->db->getTablePrimaryKey($this->table);
     }
 
     /**
      * 获取表名
-     *
      * @return string 表名
      */
     final protected function getTableName()
@@ -100,29 +102,8 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 获取表信息
-     */
-    protected function getTableInfo()
-    {
-        $this->field = array_keys($this->db->getTableField($this->table));
-
-        $this->pk = $this->db->getTablePrimaryKey($this->table);
-    }
-
-    /**
-     * 获取主键名称
-     *
-     * @return [type] [description]
-     */
-    public function getPk()
-    {
-        return $this->pk;
-    }
-
-    /**
-     * 获取模型错误
-     *
-     * @return [type] [description]
+     * 获取操作错误信息
+     * @return mixed
      */
     public function getError()
     {
@@ -134,22 +115,20 @@ class Model implements ArrayAccess
      *
      * @param [type] $data [description]
      */
-    public function data($data)
+    final public function data($data)
     {
         $this->data = $data;
     }
 
     /**
      * 根据主键取出一条数据
-     *
-     * @param  [type] $id [description]
-     *
-     * @return [type]     [description]
+     * @param string $id 主键值
+     * @return mixed
      */
-    public function find($id = '')
+    final public function find($id = '')
     {
         if (is_numeric($id)) {
-            $data = $this->db->where($this->getPk(), $id)->first();
+            $data = $this->db->where($this->pk, $id)->first();
             if ($data) {
                 $this->data = $data;
 
@@ -161,23 +140,28 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 查询结果集
+     * 根据主键获取一组数据
      *
-     * @param $ids
+     * @param $ids 主键
      */
-    public function all($ids)
+    final public function all($ids)
     {
         //按主键查找
-        $this->db->whereIn($this->getPk(), explode(',', $ids))->get();
+        $this->db->whereIn($this->pk, explode(',', $ids))->get();
     }
 
-    //自动验证字段值唯一
+    /**
+     * 自动验证字段值唯一(自动验证使用)
+     * @param $field 字段名
+     * @param $value 字段值
+     * @param $param 参数
+     * @param $data 提交数据
+     * @return bool 验证状态
+     */
     private function unique($field, $value, $param, $data)
     {
-        //主键
-        $pk = $this->getPk();
-        if (isset($data[$pk])) {
-            $this->db->where($pk, '<>', $data[$pk]);
+        if (isset($data[$this->pk])) {
+            $this->db->where($this->pk, '<>', $data[$this->pk]);
         }
         if (!$this->db->where($field, $value)->first()) {
             return true;
@@ -186,15 +170,14 @@ class Model implements ArrayAccess
 
     /**
      * 自动验证
-     *
-     * @return [type] [description]
+     * @param $data 数据
+     * @param $type 类型 1添加 2更新
+     * @return bool
      */
-    private function autoValidate($data, $type)
+    final private function autoValidate($data, $type)
     {
         //验证库
         $VaAction = new \Hdphp\Validate\VaAction;
-
-        $data = $data ? $data : $_POST;
 
         if (empty($this->validate)) {
             return true;
@@ -329,7 +312,7 @@ class Model implements ArrayAccess
      *
      * @return array    执行时间  写入|更新
      */
-    public function create($data = array(), $type = '')
+    final public function create($data = array(), $type = '')
     {
         //如果数据不存在时使用$_POST
         if (empty($data)) {
@@ -340,7 +323,7 @@ class Model implements ArrayAccess
         }
 
         //动作类型  1 插入 2 更新
-        $type = $type ?: (empty($data[$this->getPk()]) ? self::MODEL_INSERT : self::MODEL_UPDATE);
+        $type = $type ?: (empty($data[$this->pk]) ? self::MODEL_INSERT : self::MODEL_UPDATE);
 
         //禁止更新字段处理
         $data = $this->denyUpdateFieldDispose($data, $type);
@@ -348,22 +331,22 @@ class Model implements ArrayAccess
         //禁止添加字段处理
         $data = $this->denyInsertFieldDispose($data, $type);
 
-        //自动验证
-        if (!$this->autoValidate($data, $type)) {
-            return false;
-        }
-
         if (empty($data)) {
             $this->error = '操作数据为空';
 
             return false;
         }
 
+        //自动验证
+        if (!$this->autoValidate($data, $type)) {
+            return false;
+        }
+
         //自动完成
         $data = $this->autoOperation($data, $type);
 
-        //验证令牌
-        if ($this->autoCheckToken($data)) {
+        //令牌验证
+        if ($this->checkToken($data)) {
             $this->error = '表单令牌错误';
 
             return false;
@@ -419,33 +402,23 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 自动验证令牌
-     *
-     * @param  [type] $data [description]
-     *
-     * @return [type]       [description]
+     * 验证令牌
+     * @param $data 数据
+     * @return bool
      */
-    private function autoCheckToken($data)
+    private function checkToken($data)
     {
         if (C('app.token_on')) {
             $name = C('app.token_name');
             if (!isset($data[$name]) || !isset($_SESSION[$name])) {
+                //令牌重置
+                if (C('app.token_reset')) {
+                    unset($_SESSION[$name]);
+                }
                 return false;
-            }
-
-            list($key, $value) = explode('_', $data[$name]);
-            if (isset($_SESSION[$name][$key]) && $value && $_SESSION[$name][$key] == $value) {
-                unset($_SESSION[$name][$key]);
-
+            } else {
                 return true;
             }
-
-            //令牌重置
-            if (C('app.token_reset')) {
-                unset($_SESSION[$name][$key]);
-            }
-
-            return false;
         }
 
         return true;
@@ -459,7 +432,7 @@ class Model implements ArrayAccess
      *
      * @return array
      */
-    public function parseFieldsMap($data, $type = 2)
+    final private function parseFieldsMap($data, $type = 2)
     {
         if (!empty($this->map)) {
             foreach ($this->map as $key => $value) {
@@ -482,10 +455,10 @@ class Model implements ArrayAccess
 
     /**
      * 添加数据并返回实例
-     *
-     * @return [type] [description]
+     * @param array $data 添加的数据
+     * @return bool
      */
-    public function add(array $data = array())
+    final public function add(array $data = array())
     {
         //如果数据不存在时使用$_POST
         if (empty($data)) {
@@ -521,11 +494,11 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 添加到数据表
-     *
-     * @return [type] [description]
+     * 更新数据
+     * @param array $data 数据
+     * @return bool
      */
-    public function save(array $data = array())
+    final public function save(array $data = array())
     {
         //如果数据不存在使用使用$this->data > $_POST
         if (empty($data)) {
@@ -546,8 +519,8 @@ class Model implements ArrayAccess
 
         //更新条件检测
         if (empty($this->db->option['where'])) {
-            if (isset($data[$this->getPk()]) && !empty($data[$this->getPk()])) {
-                $this->db->where($this->getPk(), $data[$this->getPk()]);
+            if (isset($data[$this->pk]) && !empty($data[$this->pk])) {
+                $this->db->where($this->pk, $data[$this->pk]);
             } else {
                 $this->error = '更新没有条件';
 
@@ -571,10 +544,10 @@ class Model implements ArrayAccess
 
     /**
      * 移除表中不存在的字段
-     *
-     * @param [type] $data [description]
+     * @param $data
+     * @return array
      */
-    private function FilterIllegalData($data)
+    final private function FilterIllegalData($data)
     {
         $new = array();
         foreach ($data as $name => $value) {
@@ -588,10 +561,9 @@ class Model implements ArrayAccess
 
     /**
      * 更新模型的时间戳
-     *
-     * @return [type] [description]
+     * @return bool
      */
-    public function touch()
+    final public function touch()
     {
         $this->updated_at = time();
 
@@ -599,18 +571,18 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 删除模型
-     *
-     * @return [type] [description]
+     * 删除数据
+     * @param string $id 编号
+     * @return bool
      */
-    public function delete($id = '')
+    final public function delete($id = '')
     {
         if (empty($id)) {
-            if (isset($this->data[$this->getPk()])) {
-                $this->db->where($this->getPk(), $this->data[$this->getPk()]);
+            if (isset($this->data[$this->pk])) {
+                $this->db->where($this->pk, $this->data[$this->pk]);
             }
         } else {
-            $this->db->whereIn($this->getPk(), explode(',', $id));
+            $this->db->whereIn($this->pk, explode(',', $id));
         }
 
         if (empty($this->db->option['where'])) {
@@ -635,13 +607,12 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 以属性找用户，若没有则新增
-     *
-     * @param  [type] $param [description]
-     *
-     * @return [type]        [description]
+     * 记录不存在才新增
+     * @param $param 条件
+     * @param $data 数据
+     * @return bool
      */
-    public function firstOrCreate($param, $data)
+    final public function firstOrCreate($param, $data)
     {
         if (!$this->db->where(key($param), current($param))->first()) {
             if ($this->create($data)) {
@@ -667,7 +638,7 @@ class Model implements ArrayAccess
     }
 
     /**
-     * 设置模型值
+     * 设置模型数据值
      *
      * @param [type] $name  [description]
      * @param [type] $value [description]
@@ -679,11 +650,9 @@ class Model implements ArrayAccess
 
     /**
      * 魔术方法
-     *
-     * @param  [type] $method [description]
-     * @param  [type] $params [description]
-     *
-     * @return [type]         [description]
+     * @param $method 方法
+     * @param $params 参数
+     * @return $this|mixed
      */
     public function __call($method, $params)
     {

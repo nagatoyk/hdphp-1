@@ -105,14 +105,14 @@ Data
                 }
             }
             if ($v['_level'] != 1) {
-                $t = $title ? $v[$title] : "";
+                $t = $title ? $v[$title] : '';
                 if (isset($arr[$k + 1]) && $arr[$k + 1]['_level'] >= $arr[$k]['_level']) {
-                    $arr[$k]['_name'] = $str . "├─ " . $v['_html'] . $t;
+                    $arr[$k]['_'.$title] = $str . "├─ " . $v['_html'] . $t;
                 } else {
-                    $arr[$k]['_name'] = $str . "└─ " . $v['_html'] . $t;
+                    $arr[$k]['_'.$title] = $str . "└─ " . $v['_html'] . $t;
                 }
             } else {
-                $arr[$k]['_name'] = $v[$title];
+                $arr[$k]['_'.$title] = $v[$title];
             }
         }
         //设置主键为$fieldPri

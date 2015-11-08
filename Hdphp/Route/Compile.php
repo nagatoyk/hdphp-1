@@ -106,10 +106,10 @@ class Compile extends Setting
             define('ACTION', array_pop($data));
             define('CONTROLLER', array_pop($data));
             define('MODULE', array_pop($data));
-            if ( ! empty($data))
+            if (defined('APP_GROUP_PATH'))
             {
-                //应用
-                define('APP', array_pop($data));
+                //应用组模式
+                define('APP', $data ? array_pop($data) : C('http.default_app'));
             }
 
             return $this->found = true;
@@ -205,6 +205,10 @@ class Compile extends Setting
             $info = explode('/', $this->route[$key]['callback']);
             define('MODULE', array_shift($info));
             define('CONTROLLER', array_shift($info));
+            if ( ! empty($info))
+            {
+                define('APP', array_shift($info));
+            }
             define('ACTION', $method);
             $this->found = true;
         }
@@ -235,18 +239,26 @@ class Compile extends Setting
      *
      * @return [type] [description]
      */
-    public function RunGetModel($uri)
+    public function RunGetModel()
     {
         $var_app        = C('http.var_app');
         $var_module     = C('http.var_module');
         $var_controller = C('http.var_controller');
         $var_action     = C('http.var_action');
 
-        $app = isset($_GET[$var_app]) ? $_GET[$var_app] : C('http.default_app');
-        $m   = isset($_GET[$var_module]) ? $_GET[$var_module] : C('http.default_module');
-        $c   = isset($_GET[$var_controller]) ? $_GET[$var_controller] : C('http.default_controller');
-        $a   = isset($_GET[$var_action]) ? $_GET[$var_action] : C('http.default_action');
+        $m = isset($_GET[$var_module]) ? $_GET[$var_module] : C('http.default_module');
+        $c = isset($_GET[$var_controller]) ? $_GET[$var_controller] : C('http.default_controller');
+        $a = isset($_GET[$var_action]) ? $_GET[$var_action] : C('http.default_action');
 
+        //应用组模式
+        if (defined('APP_GROUP_PATH'))
+        {
+            $app = isset($_GET[$var_app]) ? $_GET[$var_app] : C('http.default_app');
+        }
+        else
+        {
+            $app = basename(APP_PATH);
+        }
         define('APP', ucfirst($app));
         define('MODULE', ucfirst($m));
         define('CONTROLLER', ucfirst($c));

@@ -37,8 +37,6 @@ class Mysql
 
     /**
      * 重置option属性
-     *
-     * @return [type] [description]
      */
     private function resetOption()
     {
@@ -50,7 +48,7 @@ class Mysql
     /**
      * 获取读链接
      *
-     * @return [type] [description]
+     * @return \Pdo
      */
     private function getReadLink()
     {
@@ -60,8 +58,8 @@ class Mysql
 
             self::$readLink = new Pdo(
                 $dns, Config::get('database.read.user'), Config::get('database.read.password'),
-                array(PDO::MYSQL_ATTR_INIT_COMMAND =>"SET NAMES 'UTF8'")
-        );
+                array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'")
+            );
 
             self::$readLink->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
@@ -72,7 +70,7 @@ class Mysql
     /**
      * 获取写链接
      *
-     * @return [type] [description]
+     * @return \Pdo
      */
     private function getWriteLink()
     {
@@ -82,7 +80,7 @@ class Mysql
 
             self::$writeLink = new Pdo(
                 $dns, Config::get('database.write.user'), Config::get('database.write.password'),
-                array(PDO::MYSQL_ATTR_INIT_COMMAND =>"SET NAMES 'UTF8'")
+                array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'")
             );
             self::$writeLink->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
@@ -92,8 +90,9 @@ class Mysql
 
     /**
      * 数据表
+     *
      * @param            $table 表名
-     * @param bool|false $full 完整表名
+     * @param bool|false $full  完整表名
      *
      * @return $this
      */
@@ -108,6 +107,7 @@ class Mysql
             $this->table = Config::get('database.prefix') . $table;
         }
         $this->option['table'] = $this->table;
+
         return $this;
     }
 
@@ -305,7 +305,7 @@ class Mysql
      *
      * @return [type] [description]
      */
-    private function getSelectSql()
+    public function getSelectSql()
     {
         return "SELECT " . $this->getField() . " FROM " . $this->getTable() . $this->getJoin() . $this->getWhere() . $this->getGroupBy() . $this->getHaving() . $this->getOrderBy() . $this->getLimit() . $this->getUnion();
     }
@@ -579,7 +579,7 @@ class Mysql
                 }
                 else
                 {
-                    foreach ($params[0] as $name => $value)
+                    foreach ((array)$params[0] as $name => $value)
                     {
                         $this->option['where'][]           = " {$name}=? ";
                         $this->option['params']['where'][] = $value;

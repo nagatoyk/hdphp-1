@@ -41,7 +41,7 @@ class Route extends Compile
 	 */
 	public function url()
 	{
-		return __WEB__.'/'.$this->requestUri;
+		return __WEB__.($this->requestUri=='/'?'':'/'.$this->requestUri);
 	}
 
 	/**

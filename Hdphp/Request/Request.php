@@ -71,7 +71,10 @@ class Request
             //参数过滤函数
             if ( ! empty($filter))
             {
-
+                if (is_string($filter))
+                {
+                    $filter = explode(',', $filter);
+                }
                 //过滤处理
                 foreach ((array)$filter as $func)
                 {

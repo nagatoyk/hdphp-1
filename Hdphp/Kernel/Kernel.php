@@ -55,16 +55,22 @@ class Kernel
      */
     private function DefineConsts()
     {
+        /**
+         * URL地址定义
+         */
         define('__ROOT__', rtrim('http://' . $_SERVER['HTTP_HOST'] . preg_replace('@\w+\.php$@i', '', $_SERVER['SCRIPT_NAME']), '/'));
         define('__WEB__', C('http.rewrite') ? __ROOT__ : __ROOT__ . '/' . basename($_SERVER['SCRIPT_FILENAME']));
         define('__URL__', 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim($_SERVER['REQUEST_URI'], '/'));
         define("__HISTORY__", isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null);
 
+        /**
+         * 目录定义
+         */
         if (defined('APP_GROUP_PATH'))
         {
             defined('APP_PATH') or define('APP_PATH', APP_GROUP_PATH . '/' . APP);
         }
-        
+
         //模块目录
         defined('MODULE_PATH') or define('MODULE_PATH', APP_PATH . '/' . MODULE);
         //模板目录
@@ -84,7 +90,14 @@ class Kernel
             throw new Exception(MODULE . '模块禁止使用');
         }
 
-        $class = ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+        if (defined('APP_GROUP_PATH'))
+        {
+            $class = APP . '\\' . ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+        }
+        else
+        {
+            $class = ucfirst(MODULE) . '\\Controller\\' . ucfirst(CONTROLLER) . 'Controller';
+        }
 
         //控制器不存在
         if ( ! class_exists($class))

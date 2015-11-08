@@ -16,9 +16,6 @@ class View
     //编译文件
     public $compile;
 
-    public function __construct()
-    {
-    }
 
     /**
      * 解析模板
@@ -31,12 +28,6 @@ class View
      */
     public function make($tpl = '', $expire = 0, $show = true)
     {
-        //模板文件
-        $this->tpl = $this->getTemplateFile($tpl);
-
-        //编译文件
-        $this->compile = 'Storage/view/compile/' . md5($this->tpl) . '.php';
-
         //缓存有效
         if ($expire > 0 && $content = Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']))
         {
@@ -49,12 +40,14 @@ class View
                 return $content;
             }
         }
-
-        //检测模板文件合法性
-        if ( ! $this->checkFile())
+        //模板文件
+        if (!$this->tpl = $this->getTemplateFile($tpl))
         {
-            throw new Exception($this->tpl . "模板不存在");
+            return false;
         }
+
+        //编译文件
+        $this->compile = 'Storage/view/compile/' . md5($this->tpl) . '.php';
 
         //编译文件
         $this->compileFile();
@@ -126,9 +119,14 @@ class View
         }
         else
         {
-            throw new Exception("模板不存在:$file");
-
-            return false;
+            if (DEBUG)
+            {
+                throw new Exception("模板不存在:$file");
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -138,19 +136,7 @@ class View
         return Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']);
     }
 
-    /**
-     * 检测模板文件合法性
-     */
-    private function checkFile()
-    {
-        return is_file($this->tpl) && is_readable($this->tpl);
-    }
-
-    /**
-     * 验证编译文件
-     *
-     * @return [type] [description]
-     */
+    //验证编译文件
     private function compileFile()
     {
         $status = ! DEBUG && file_exists($this->compile) && (filemtime($this->compile) > filemtime($this->tpl));
@@ -159,7 +145,7 @@ class View
         {
             //创建编译目录
             $dir = dirname($this->compile);
-            if(!is_dir($dir))
+            if ( ! is_dir($dir))
             {
                 mkdir($dir, 0755, true);
             }

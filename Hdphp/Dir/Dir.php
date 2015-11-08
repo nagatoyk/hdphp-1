@@ -44,6 +44,7 @@ class Dir
         {
             return unlink($file);
         }
+        return true;
     }
 
     //删除目录

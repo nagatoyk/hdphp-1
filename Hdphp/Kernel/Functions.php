@@ -3,8 +3,10 @@
 /**
  * 生成url
  *
- * @param [type] $path [控制器地址]
- * @param array $args [参数]
+ * @param       $path 应用/模块/动作/方法 应用组模式需要传四个参数
+ * @param array $args GET参数
+ *
+ * @return string
  */
 function U($path, $args = array())
 {
@@ -20,20 +22,15 @@ function U($path, $args = array())
     $action['c'] = array_pop($info) ?: CONTROLLER;
     $action['m'] = array_pop($info) ?: MODULE;
 
-    //设置应用名
-    if ($app = Q('get.app'))
+    if (defined('APP_GROUP_PATH'))
     {
-        $action['app'] = $app;
+        //应用组模式
+        $action['app'] = $info ? array_pop($info) : (Q('get.app') ?: APP);
     }
-    $action = array_reverse($action);
-    //应用组
-    if ($g = Q('get.g'))
-    {
-        $action['g'] = $g;
-    }
+
     $url = C('http.rewrite') ? __ROOT__ : __ROOT__ . '/' . basename($_SERVER['SCRIPT_FILENAME']);
 
-    return $url . '?' . http_build_query(array_merge($action, $args));
+    return $url . '?' . http_build_query(array_merge(array_reverse($action), $args));
 }
 
 /**
@@ -62,6 +59,7 @@ function Api()
  */
 function M($class)
 {
+    $class = str_replace('/', '\\', $class);
     static $instances = array();
 
     if (isset($instances[$class]))
@@ -127,9 +125,7 @@ function _404($code)
  */
 function p($var)
 {
-    echo "<pre>";
-    var_dump($var);
-    echo "</pre>";
+    echo "<pre>" . print_r($var, true) . "</pre>";
 }
 
 /**

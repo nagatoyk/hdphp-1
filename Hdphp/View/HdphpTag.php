@@ -12,9 +12,9 @@ class HdphpTag extends TagBase
      */
     public $tags
         = array(
-            'foreach'   => array('block' => true, 'level' => 3),
-            'list'      => array('block' => true, 'level' => 3),
-            'if'        => array('block' => true, 'level' => 3),
+            'foreach'   => array('block' => true, 'level' => 5),
+            'list'      => array('block' => true, 'level' => 5),
+            'if'        => array('block' => true, 'level' => 5),
             'elseif'    => array('block' => false),
             'else'      => array('block' => false),
             'jquery'    => array('block' => false),
@@ -63,9 +63,9 @@ class HdphpTag extends TagBase
     public function _list($attr, $content, &$view)
     {
         $from  = $attr['from']; //变量
-        $name  = substr($attr['name'], 1);//name名
+        $name  = substr($attr['name'], 1);//name名去除$
         $empty = isset($attr['empty']) ? $attr['empty'] : '';//默认值
-        $row   = isset($attr['row']) ? $attr['row'] : 500;//显示条数
+        $row   = isset($attr['row']) ? $attr['row'] : 100;//显示条数
         $step  = isset($attr['step']) ? $attr['step'] : 1;//间隔
         $start = isset($attr['start']) ? $attr['start'] : 0;//开始数
         $php
@@ -142,9 +142,7 @@ php;
     //加载模板文件
     public function _include($attr, $content, &$view)
     {
-        $view = new View();
-
-        return $view->make($this->replaceConst($attr['file']), 0, false);
+        return \View::fetch($this->replaceConst($attr['file']), 0, false);
     }
 
     //if标签

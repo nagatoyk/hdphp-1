@@ -32,11 +32,11 @@ class {{MODEL}} extends Model{
 	//时间操作
 	protected $timestamps=false;
 
-	//允许插入的字段
-	protected $insertFields=array();
+	//禁止插入的字段
+	protected $denyInsertFields = array();
 
-	//允许更新的字段
-	protected $updateFields=array();
+	//禁止更新的字段
+	protected $denyUpdateFields = array();
 
 	//前置方法 比如: _before_add 为添加前执行的方法
 	protected function _before_add(){}

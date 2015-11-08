@@ -4,7 +4,7 @@ define('HDPHP_VERSION', '2015-7-1');//版本号
 defined("DEBUG") or define("DEBUG", false);//调试模式
 defined('HDPHP_PATH') or define('HDPHP_PATH', __DIR__);//框架目录
 
-if (defined('APP_GROUP_APP') && defined('APP_PATH'))
+if ( ! defined('APP_GROUP_PATH') && ! defined('APP_PATH'))
 {
     //入口文件不能同时定义应用组与应用
     die('Entry file defines error');

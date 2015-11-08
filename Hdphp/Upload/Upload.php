@@ -10,8 +10,6 @@ class Upload
     protected $path;
     //错误信息
     protected $error;
-    //上传成功文件信息
-    protected $uploadedFile = array();
 
     public function __construct()
     {
@@ -37,6 +35,8 @@ class Upload
             return false;
         }
         $files = $this->format($fieldName);
+
+        $uploadedFile=array();
         //验证文件
         if ( ! empty($files))
         {
@@ -50,15 +50,15 @@ class Upload
                 {
                     continue;
                 }
-                $uploadedFile = $this->save($v);
-                if ($uploadedFile)
+                $upFile = $this->save($v);
+                if ($upFile)
                 {
-                    $this->uploadedFile[] = $uploadedFile;
+                    $uploadedFile[] = $upFile;
                 }
             }
         }
 
-        return $this->uploadedFile;
+        return $uploadedFile;
     }
 
     //设置上传类型
@@ -127,6 +127,7 @@ class Upload
         {
             $files[$fieldName] = $_FILES[$fieldName];
         }
+
         if ( ! isset($files))
         {
             $this->error = '没有任何文件上传';

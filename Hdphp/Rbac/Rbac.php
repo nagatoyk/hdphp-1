@@ -74,6 +74,8 @@ class Rbac
     /**
      * 获取用户所有角色名称
      *
+     * @param $id 会员id
+     *
      * @return array
      */
     public function getRoleName($id)
@@ -94,7 +96,7 @@ class Rbac
     /**
      * 获取所有节点
      *
-     * @return [type] [description]
+     * @return array
      */
     public function getLevelNode()
     {
@@ -119,16 +121,20 @@ class Rbac
     public function authAction($action)
     {
         $info = explode('.', $action);
+//        p($_SESSION);
         //权限检查
-        foreach ($_SESSION['__RBAC__'] as $module => $a)
+        foreach ($_SESSION['__RBAC__'] as $app => $a)
         {
-            if ($module == strtolower($info[0]))
+            if ($app == strtolower($info[0]))
             {
                 if (isset($a['_NODE_'][strtolower($info[1])]))
                 {
                     if (isset($a['_NODE_'][strtolower($info[1])]['_NODE_'][strtolower($info[2])]))
                     {
-                        return true;
+                        if (isset($a['_NODE_'][strtolower($info[1])]['_NODE_'][strtolower($info[2])]['_NODE_'][strtolower($info[3])]))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -171,7 +177,7 @@ class Rbac
         //检查不需要验证的动作
         foreach (C('rbac.no_auth') as $noAuth)
         {
-            if (strtolower($noAuth) == strtolower(MODULE . '.' . CONTROLLER . '.' . ACTION))
+            if (strtolower($noAuth) == strtolower(APP . '.' . MODULE . '.' . CONTROLLER . '.' . ACTION))
             {
                 return true;
             }
@@ -187,6 +193,7 @@ class Rbac
         {
             return true;
         }
+
         //没有权限节点或时时验证时
         //都要从数据库中取权限节点信息
         if ( ! isset($_SESSION['__RBAC__']) || C('rbac.type') == 1)
@@ -195,17 +202,25 @@ class Rbac
             $_SESSION['__RBAC__'] = $node;
         }
 
-
         //权限检查
-        foreach ($_SESSION['__RBAC__'] as $module => $a)
+        foreach ($_SESSION['__RBAC__'] as $app => $a)
         {
-            if ($module == strtolower(MODULE))
+            if (strtolower(APP) == strtolower($app))
             {
-                if (isset($a['_NODE_'][strtolower(CONTROLLER)]))
+                foreach ($_SESSION['__RBAC__'][strtolower(APP)]['_NODE_'] as $module => $a)
                 {
-                    if (isset($a['_NODE_'][strtolower(CONTROLLER)]['_NODE_'][strtolower(ACTION)]))
+                    if (strtolower($module) == strtolower(MODULE))
                     {
-                        return true;
+                        foreach ($a['_NODE_'] as $controller => $m)
+                        {
+                            if (strtolower($controller) == strtolower(CONTROLLER))
+                            {
+                                if (isset($a['_NODE_'][strtolower(CONTROLLER)]['_NODE_'][strtolower(ACTION)]))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -262,7 +277,14 @@ class Rbac
                         {
                             if ($n['pid'] == $m['id'])
                             {
-                                $node[strtolower($d['name'])]['_NODE_'][strtolower($m['name'])]['_NODE_'][$n['name']] = $n;
+                                $node[strtolower($d['name'])]['_NODE_'][strtolower($m['name'])]['_NODE_'][strtolower($n['name'])] = $n;
+                                foreach ($data as $a)
+                                {
+                                    if ($a['pid'] == $n['id'])
+                                    {
+                                        $node[strtolower($d['name'])]['_NODE_'][strtolower($m['name'])]['_NODE_'][strtolower($n['name'])]['_NODE_'][strtolower($a['name'])] = strtolower($a['name']);
+                                    }
+                                }
                             }
                         }
                     }

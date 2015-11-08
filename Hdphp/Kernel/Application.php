@@ -249,6 +249,11 @@ class Application extends Container
             //项目文件
             require_once APP_PATH . DS . $file;
         }
+        else if (defined('APP_GROUP_PATH') && is_file(APP_GROUP_PATH . DS . $file))
+        {
+            //项目文件
+            require_once APP_GROUP_PATH . DS . $file;
+        }
         else if (class_exists('Config', false))
         {
             //自动加载命名空间

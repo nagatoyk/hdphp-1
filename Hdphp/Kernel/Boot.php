@@ -92,7 +92,7 @@ class Boot
      */
     public static function mkDirs()
     {
-        if (is_dir(self::$appPath))
+        if (is_dir('Config'))
         {
             self::$binded = true;
 

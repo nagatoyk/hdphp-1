@@ -16,33 +16,26 @@ class View
     //编译文件
     public $compile;
 
-
     /**
      * 解析模板
-     *
-     * @param  [type]  $tpl  [description]
-     * @param  string  $data [description]
-     * @param  boolean $show [description]
-     *
-     * @return [type]        [description]
+     * @param string $tpl 模板
+     * @param int $expire 过期时间
+     * @param bool|true $show 显示或返回
+     * @return bool|string
+     * @throws Exception
      */
     public function make($tpl = '', $expire = 0, $show = true)
     {
         //缓存有效
-        if ($expire > 0 && $content = Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']))
-        {
-            if ($show)
-            {
+        if ($expire > 0 && $content = Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI'])) {
+            if ($show) {
                 die($content);
-            }
-            else
-            {
+            } else {
                 return $content;
             }
         }
         //模板文件
-        if (!$this->tpl = $this->getTemplateFile($tpl))
-        {
+        if (!$this->tpl = $this->getTemplateFile($tpl)) {
             return false;
         }
 
@@ -53,8 +46,7 @@ class View
         $this->compileFile();
 
         //释放变量到全局
-        if ( ! empty($this->vars))
-        {
+        if (!empty($this->vars)) {
             extract($this->vars);
         }
 
@@ -63,22 +55,17 @@ class View
         require($this->compile);
         $content = ob_get_clean();
 
-        if ($expire > 0)
-        {
+        if ($expire > 0) {
             //缓存
-            if ( ! Cache::dir('Storage/view/cache')->set($_SERVER['REQUEST_URI'], $content, $expire))
-            {
+            if (!Cache::dir('Storage/view/cache')->set($_SERVER['REQUEST_URI'], $content, $expire)) {
                 throw new Exception("创建缓存失效");
             }
         }
 
-        if ($show)
-        {
+        if ($show) {
             echo $content;
             exit;
-        }
-        else
-        {
+        } else {
             return $content;
         }
     }
@@ -91,65 +78,54 @@ class View
 
     /**
      * 获取模板文件
-     *
-     * @param  [type] $tpl [description]
-     *
-     * @return [type]      [description]
+     * @param $file 模板文件
+     * @return bool|string
+     * @throws Exception
      */
     private function getTemplateFile($file)
     {
-        if (is_file($file))
-        {
-        }
-        else if (defined('MODULE'))
-        {
+        if (is_file($file)) {
+        } else if (defined('MODULE')) {
             //模块视图文件夹
             $file = MODULE_PATH . '/View/' . CONTROLLER . '/' . ($file ?: ACTION) . C('view.prefix');
-        }
-        else
-        {
+        } else {
             //路由中使用回调函数执行View::make()时，因为没有MODULE
             $file = C('view.path') . '/' . $file . C('view.prefix');
         }
 
         //判断文件
-        if (is_file($file))
-        {
+        if (is_file($file)) {
             return $file;
-        }
-        else
-        {
-            if (DEBUG)
-            {
+        } else {
+            if (DEBUG) {
                 throw new Exception("模板不存在:$file");
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
     }
 
-    //验证缓存文件
+    /**
+     * 验证缓存文件
+     * @return mixed
+     */
     public function isCache()
     {
         return Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']);
     }
 
-    //验证编译文件
+    /**
+     * 编译文件
+     */
     private function compileFile()
     {
-        $status = ! DEBUG && file_exists($this->compile) && (filemtime($this->compile) > filemtime($this->tpl));
-
-        if ( ! $status)
-        {
+        $status = DEBUG || !file_exists($this->compile) || (filemtime($this->compile) < filemtime($this->tpl));
+        if ($status) {
             //创建编译目录
             $dir = dirname($this->compile);
-            if ( ! is_dir($dir))
-            {
+            if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
-
             //执行文件编译
             $compile = new Compile($this);
             $content = $compile->run();
@@ -159,23 +135,17 @@ class View
 
     /**
      * 分配变量
-     *
-     * @param  [type] $name  [description]
-     * @param  [type] $value [description]
-     *
-     * @return [type]        [description]
+     * @param $name 变量名
+     * @param string $value 值
+     * @return $this
      */
     public function with($name, $value = '')
     {
-        if (is_array($name))
-        {
-            foreach ($name as $k => $v)
-            {
+        if (is_array($name)) {
+            foreach ($name as $k => $v) {
                 $this->vars[$k] = $v;
             }
-        }
-        else
-        {
+        } else {
             $this->vars[$name] = $value;
         }
 
@@ -186,18 +156,15 @@ class View
      * 错误页面
      *
      * @param string $message 提示内容
-     * @param string $url     跳转URL
-     * @param int    $time    跳转时间
-     * @param string $tpl     模板文件
+     * @param string $url 跳转URL
+     * @param int $time 跳转时间
+     * @param string $tpl 模板文件
      */
     public function error($message = '出错了', $url = '', $time = 2)
     {
-        if (IS_AJAX)
-        {
+        if (IS_AJAX) {
             Response::ajax(array('status' => 0, 'message' => $message));
-        }
-        else
-        {
+        } else {
             $url = U($url);
             $url = $url ? "window.location.href='" . $url . "'" : "window.location.href='" . __HISTORY__ . "'";
 
@@ -212,18 +179,15 @@ class View
      * 成功页面
      *
      * @param string $message 提示内容
-     * @param string $url     跳转URL
-     * @param int    $time    跳转时间
-     * @param string $tpl     模板文件
+     * @param string $url 跳转URL
+     * @param int $time 跳转时间
+     * @param string $tpl 模板文件
      */
     public function success($message = '操作成功', $url = '', $time = 2)
     {
-        if (IS_AJAX)
-        {
+        if (IS_AJAX) {
             $this->ajax(array('status' => 1, 'message' => $message));
-        }
-        else
-        {
+        } else {
             $url = U($url);
             $url = $url ? "window.location.href='" . $url . "'" : "window.location.href='" . __HISTORY__ . "'";
 
@@ -239,20 +203,10 @@ class View
      * @param        $data 数据
      * @param string $type 数据类型 text html xml json
      */
-    /**
-     * 异步响应数据
-     *
-     * @param  int    $code    编码
-     * @param  mixed  $message 内容
-     * @param  string $url     跳转地址
-     *
-     * @return void
-     */
     public function ajax($data, $type = "JSON")
     {
         $type = strtoupper($type);
-        switch ($type)
-        {
+        switch ($type) {
             case "HTML" :
             case "TEXT" :
                 $_data = $data;

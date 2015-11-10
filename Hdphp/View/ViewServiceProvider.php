@@ -14,7 +14,7 @@ class ViewServiceProvider extends ServiceProvider{
 
 	public function register()
 	{
-		$this->app->single('View',function($app)
+		$this->app->bind('View',function($app)
 		{
 			return new View($app);
 		},true);

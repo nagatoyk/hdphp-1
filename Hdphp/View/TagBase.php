@@ -6,7 +6,7 @@ abstract class TagBase
 	private $content;
 	private $view;
 	private $left;
-	private $righ;
+	private $right;
 	private $exp=array('/\s+eq\s+/'=>'==','/\s+neq\s+/'=>'!=','/\s+lt\s+/'=>'<','/\s+lte\s+/'=>'<=','/\s+gte\s+/'=>'>=');
 	/**
 	 * 解析标签

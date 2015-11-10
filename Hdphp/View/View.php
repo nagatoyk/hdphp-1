@@ -84,13 +84,14 @@ class View
      */
     private function getTemplateFile($file)
     {
-        if (is_file($file)) {
-        } else if (defined('MODULE')) {
-            //模块视图文件夹
-            $file = MODULE_PATH . '/View/' . CONTROLLER . '/' . ($file ?: ACTION) . C('view.prefix');
-        } else {
-            //路由中使用回调函数执行View::make()时，因为没有MODULE
-            $file = C('view.path') . '/' . $file . C('view.prefix');
+        if (!is_file($file)) {
+            if (defined('MODULE')) {
+                //模块视图文件夹
+                $file = MODULE_PATH . '/View/' . CONTROLLER . '/' . ($file ?: ACTION) . C('view.prefix');
+            } else {
+                //路由中使用回调函数执行View::make()时，因为没有MODULE
+                $file = C('view.path') . '/' . $file . C('view.prefix');
+            }
         }
 
         //判断文件

@@ -109,7 +109,7 @@ class Compile extends Setting
             if (defined('APP_GROUP_PATH'))
             {
                 //应用组模式
-                define('APP', $data ? array_pop($data) : C('http.default_app'));
+                define('APP', $data ? array_pop($data) : DEFAULT_APP);
             }
 
             return $this->found = true;

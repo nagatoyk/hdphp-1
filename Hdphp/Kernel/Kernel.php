@@ -68,7 +68,7 @@ class Kernel
          */
         if (defined('APP_GROUP_PATH'))
         {
-            defined('APP_PATH') or define('APP_PATH', APP_GROUP_PATH . '/' . APP);
+            defined('APP_PATH') or define('APP_PATH', APP_GROUP_PATH . '/' . DEFAULT_APP);
         }
 
         //模块目录

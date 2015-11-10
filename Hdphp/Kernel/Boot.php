@@ -12,7 +12,7 @@ class Boot
     {
         if (defined('APP_GROUP_PATH'))
         {
-            self::$appPath = APP_GROUP_PATH . '/Home';
+            self::$appPath = APP_GROUP_PATH . '/'.DEFAULT_APP;
         }
         else
         {
@@ -87,8 +87,6 @@ class Boot
 
     /**
      * 初次运行框时创建基础目录
-     *
-     * @return [type] [description]
      */
     public static function mkDirs()
     {
@@ -112,8 +110,6 @@ class Boot
 
     /**
      * 创建初始文件
-     *
-     * @return [type] [description]
      */
     public static function createInitFile()
     {
@@ -123,7 +119,7 @@ class Boot
         }
 
         $files = array(
-            HDPHP_PATH . '/View/index.php' => self::$appPath . '/Home/View/Index/index.php', HDPHP_PATH . '/View/success.php' => 'Public/success.php', HDPHP_PATH . '/View/error.php' => 'Public/error.php', HDPHP_PATH . '/View/tag.php' => 'System/Tag/Common.php', HDPHP_PATH . '/Controller/IndexController.php' => self::$appPath . '/Home/Controller/IndexController.php', HDPHP_PATH . '/Lang/zh.php' => 'System/Lang/zh.php', HDPHP_PATH . '/Route/routes.php' => 'System/routes.php',
+            HDPHP_PATH . '/View/index.php' => self::$appPath . '/Home/View/Index/index.php', HDPHP_PATH . '/View/success.php' => 'Public/success.php', HDPHP_PATH . '/View/error.php' => 'Public/error.php', HDPHP_PATH . '/View/tag.php' => 'System/Tag/Common.php',  HDPHP_PATH . '/Lang/zh.php' => 'System/Lang/zh.php', HDPHP_PATH . '/Route/routes.php' => 'System/routes.php',
         );
 
         foreach ($files as $key => $value)
@@ -132,6 +128,13 @@ class Boot
             {
                 copy($key, $value);
             }
+        }
+
+        //根据应用类型创建测试控制器
+        if(defined('APP_GROUP_PATH')){
+            copy(HDPHP_PATH . '/Controller/AppGroupController.php', self::$appPath . '/Home/Controller/IndexController.php');
+        }else{
+            copy(HDPHP_PATH . '/Controller/IndexController.php', self::$appPath . '/Home/Controller/IndexController.php');
         }
 
         //复制配置文件
@@ -146,8 +149,6 @@ class Boot
 
     /**
      * 生成编译文件
-     *
-     * @return [type] [description]
      */
     private static function createRuntimeFile()
     {

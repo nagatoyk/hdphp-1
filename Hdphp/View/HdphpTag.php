@@ -1,7 +1,5 @@
 <?php namespace Hdphp\View;
 
-use Hdphp\View\TagBase;
-
 class HdphpTag extends TagBase
 {
     /**
@@ -142,7 +140,8 @@ php;
     //加载模板文件
     public function _include($attr, $content, &$view)
     {
-        return \View::fetch($this->replaceConst($attr['file']), 0, false);
+        $obj = new View;
+        return $obj->fetch($this->replaceConst($attr['file']), 0, false);
     }
 
     //if标签

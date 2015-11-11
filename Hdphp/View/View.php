@@ -120,7 +120,8 @@ class View
      */
     private function compileFile()
     {
-        $status = DEBUG || !file_exists($this->compile) || (filemtime($this->compile) < filemtime($this->tpl));
+        $status = DEBUG || !file_exists($this->compile) ||
+            !is_file($this->compile) || (filemtime($this->tpl) > filemtime($this->compile));
         if ($status) {
             //创建编译目录
             $dir = dirname($this->compile);

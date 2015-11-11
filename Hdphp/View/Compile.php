@@ -8,12 +8,17 @@ class Compile
     //模板编译内容
     private $content;
 
+    //构造函数
     function __construct(&$view)
     {
         $this->view = $view;
+
     }
 
-    //运行编译
+    /**
+     * 运行编译
+     * @return string
+     */
     public function run()
     {
         //模板内容
@@ -34,8 +39,6 @@ class Compile
 
     /**
      * 解析全局变量与常量
-     *
-     * @return [type] [description]
      */
     private function globalParse()
     {
@@ -69,8 +72,6 @@ class Compile
 
     /**
      * 解析标签
-     *
-     * @return [type] [description]
      */
     private function tags()
     {

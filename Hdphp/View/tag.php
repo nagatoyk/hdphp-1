@@ -20,6 +20,6 @@ class Common extends TagBase
      */
     public function _test($attr, $content, &$hd)
     {
-        return '33';
+        return 'houdunwang.com';
     }
 }

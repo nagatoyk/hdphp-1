@@ -4,13 +4,10 @@ class Response
 {
 
     /**
-     * HTTP 状态码
-     *
-     * @param  [type] $code [description]
-     *
-     * @return [type]       [description]
+     * 发送HTTP 状态码
+     * @param $code
      */
-    static function sendHttpStatus($code)
+    public function sendHttpStatus($code)
     {
         static $_status
         = array(
@@ -66,10 +63,37 @@ class Response
             509 => 'Bandwidth Limit Exceeded'
         );
 
-        if (isset($state[$code]))
-        {
+        if (isset($state[$code])) {
             header('HTTP/1.1 ' . $code . ' ' . $state[$code]);
             header('Status:' . $code . ' ' . $state[$code]);
         }
+    }
+
+    /**
+     * Ajax输出
+     *
+     * @param        $data 数据
+     * @param string $type 数据类型 text html xml json
+     */
+    public function ajax($data, $type = "JSON")
+    {
+        $type = strtoupper($type);
+        switch ($type) {
+            case "HTML" :
+            case "TEXT" :
+                $_data = $data;
+                break;
+            case "XML" :
+                //XML处理
+                header('Content-Type: application/xml');
+                $_data = Xml::create($data);
+                break;
+            default :
+                //JSON处理
+                header('Content-Type: application/json');
+                $_data = json_encode($data);
+        }
+        echo $_data;
+        exit;
     }
 }

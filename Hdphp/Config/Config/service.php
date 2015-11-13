@@ -35,6 +35,7 @@ return array(
 				'Hdphp\Zip\ZipServiceProvider',
 				'Hdphp\Curl\CurlServiceProvider',
 				'Hdphp\Qq\QqServiceProvider',
+				'Hdphp\Alipay\AlipayServiceProvider',
 		),
 
 	//外观
@@ -73,5 +74,6 @@ return array(
 				'Zip'      => 'Hdphp\Facade\ZipFacade',
 				'Curl'     => 'Hdphp\Facade\CurlFacade',
 				'Qq'       => 'Hdphp\Facade\QqFacade',
+				'Alipay'   => 'Hdphp\Facade\AlipayFacade',
 		)
 );

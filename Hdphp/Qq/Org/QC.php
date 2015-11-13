@@ -14,6 +14,14 @@ class QC extends Oauth
 {
     private $kesArr, $APIMap;
 
+    public function token($access_token,$openid)
+    {
+        $this->keysArr = array(
+            "oauth_consumer_key" => (int)$this->recorder->readInc("appid"),
+            "access_token" => $access_token,
+            "openid" => $openid
+        );
+    }
     /**
      * _construct
      *

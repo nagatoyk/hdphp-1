@@ -15,10 +15,6 @@ class Recorder{
         $this->error = new ErrorCase();
 
         //-------读取配置文件
-//        $incFileContents = file(ROOT."comm/inc.php");
-//        $incFileContents = $incFileContents[1];
-//        $this->inc = json_decode($incFileContents);
-//        p(Config::get('qq'));exit;
         $this->inc = C('qq');
         if(empty($this->inc)){
             $this->error->showError("20001");

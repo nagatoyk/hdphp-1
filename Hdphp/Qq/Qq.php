@@ -16,8 +16,6 @@ class Qq
 
     public function __call($method, $args)
     {
-        if (method_exists($this->Qc, $method)) {
-            return call_user_func_array(array($this->Qc, $method), $args);
-        }
+        return call_user_func_array(array($this->Qc, $method), $args);
     }
 }

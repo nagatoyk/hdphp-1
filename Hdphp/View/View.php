@@ -8,7 +8,7 @@ class View
 {
 
     //模板变量集合
-    protected $vars = array();
+    protected static $vars = array();
 
     //模版文件
     public $tpl;
@@ -34,6 +34,7 @@ class View
                 return $content;
             }
         }
+
         //模板文件
         if (!$this->tpl = $this->getTemplateFile($tpl)) {
             return false;
@@ -46,8 +47,8 @@ class View
         $this->compileFile();
 
         //释放变量到全局
-        if (!empty($this->vars)) {
-            extract($this->vars);
+        if (!empty(self::$vars)) {
+            extract(self::$vars);
         }
 
         //获取解析结果
@@ -145,10 +146,10 @@ class View
     {
         if (is_array($name)) {
             foreach ($name as $k => $v) {
-                $this->vars[$k] = $v;
+                self::$vars[$k] = $v;
             }
         } else {
-            $this->vars[$name] = $value;
+            self::$vars[$name] = $value;
         }
 
         return $this;

@@ -16,8 +16,8 @@ return array(
 	'success'           => 'Public/success.php',
 
     //左标签		
-	'tag_left'          => '{{',
+	'tag_left'          => '<',
 
     //右标签           
-	'tag_right'         => '}}',
+	'tag_right'         => '>',
 );

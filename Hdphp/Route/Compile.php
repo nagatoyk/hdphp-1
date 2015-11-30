@@ -118,10 +118,8 @@ class Compile extends Setting
 
     /**
      * GET事件处理
-     *
-     * @param  [type] $route [description]
-     *
-     * @return [type]        [description]
+     * @param $key
+     * @return bool
      */
     protected function _get($key)
     {
@@ -236,8 +234,6 @@ class Compile extends Setting
 
     /**
      * 没有路由匹配时解析GET模式
-     *
-     * @return [type] [description]
      */
     public function RunGetModel()
     {
@@ -253,7 +249,7 @@ class Compile extends Setting
         //应用组模式
         if (defined('APP_GROUP_PATH'))
         {
-            $app = isset($_GET[$var_app]) ? $_GET[$var_app] : C('http.default_app');
+            $app = isset($_GET[$var_app]) ? $_GET[$var_app] : DEFAULT_APP;
         }
         else
         {

@@ -6,6 +6,9 @@ return array(
     //url重写模式
     'rewrite'               => false,
 
+    //模块URL变量
+    'var_app'               => 'app',
+
     //模块URL变量     
     'var_module'            => 'm',
 
@@ -19,7 +22,7 @@ return array(
     'deny_module'           => array('Common','Addons'),
 
     //默认模块
-    'default_app'           => 'App',
+    'default_app'           => 'Home',
 
     //默认模块
     'default_module'        => 'Home',

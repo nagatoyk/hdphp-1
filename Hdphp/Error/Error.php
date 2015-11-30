@@ -44,6 +44,9 @@ class Error
                 Log::write($msg, 'ERROR');
                 DEBUG && require HDPHP_PATH . '/Error/View/notice.php';
                 break;
+            case E_DEPRECATED:
+                //忽略过期函数错误
+                break;
             default:
                 $msg = $error . $file . " ($line).";
                 Log::write($msg, 'NOTICE');

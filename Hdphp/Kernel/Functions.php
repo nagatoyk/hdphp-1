@@ -293,4 +293,3 @@ function trace($value = '[hdphp]', $label = '', $level = 'DEBUG', $record = fals
 {
     return Error::trace($value, $label, $level, $record);
 }
-

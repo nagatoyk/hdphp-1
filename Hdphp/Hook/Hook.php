@@ -14,17 +14,13 @@ class Hook
      */
     public static function add($hook, $action)
     {
-        if ( ! isset(self::$hook[$hook]))
-        {
+        if (!isset(self::$hook[$hook])) {
             self::$hook[$hook] = array();
         }
 
-        if (is_array($action))
-        {
+        if (is_array($action)) {
             self::$hook[$hook] = array_merge(self::$hook[$hook], $action);
-        }
-        else
-        {
+        } else {
             self::$hook[$hook][] = $action;
         }
     }
@@ -38,12 +34,9 @@ class Hook
      */
     public static function get($hook = '')
     {
-        if (empty($hook))
-        {
+        if (empty($hook)) {
             return self::$hook;
-        }
-        else
-        {
+        } else {
             return self::$hook[$hook];
         }
     }
@@ -56,26 +49,18 @@ class Hook
      */
     public static function import($data, $recursive = true)
     {
-        if ($recursive === false)
-        {
+        if ($recursive === false) {
             self::$hook = array_merge(self::$hook, $data);
-        }
-        else
-        {
-            foreach ($data as $hook => $value)
-            {
-                if ( ! isset(self::$hook[$hook]))
-                {
+        } else {
+            foreach ($data as $hook => $value) {
+                if (!isset(self::$hook[$hook])) {
                     self::$hook[$hook] = array();
                 }
 
-                if (isset($value['_overflow']))
-                {
+                if (isset($value['_overflow'])) {
                     unset($value['_overflow']);
                     self::$hook[$hook] = $value;
-                }
-                else
-                {
+                } else {
                     self::$hook[$hook] = array_merge(self::$hook[$hook], $value);
                 }
             }
@@ -92,59 +77,50 @@ class Hook
      */
     public static function listen($hook, &$param = null)
     {
-        if ( ! isset(self::$hook[$hook]))
-        {
+        if (!isset(self::$hook[$hook])) {
             return false;
         }
 
-        foreach (self::$hook[$hook] as $name)
-        {
-            if (false ===self::exe($name, $hook, $param))
-            {
+        foreach (self::$hook[$hook] as $name) {
+            if (false === self::exe($name, $hook, $param)) {
                 return false;
             }
         }
-        return $param?:true;
+        return $param ?: true;
     }
 
     /**
      * 执行钓子
-     *
-     * @param      $name   钓子名
-     * @param      $action 钓子方法
-     * @param null $param  参数
-     *
-     * @return boolean
+     * @param $name 钓子名
+     * @param string $action 钓子方法
+     * @param null $param 参数
+     * @return bool|null
      */
     public static function exe($name, $action = 'run', &$param = null)
     {
-        if (substr($name, -4) == 'Hook')
-        {
+        if (substr($name, -4) == 'Hook') {
             //钓子
             $action = 'run';
-        }
-        else
-        {
+        } else {
             //插件
             $file = 'Addons/' . $name . '/' . $name . 'Addon.php';
-            if ( ! is_file($file))
-            {
+            if (!is_file($file)) {
                 return false;
             }
             require_once($file);
             $name = "\\Addons\\{$name}\\" . $name . 'Addon';
 
-            if ( ! class_exists($name, false))
-            {
+            if (!class_exists($name, false)) {
                 return false;
             }
         }
-        $obj = new $name;
-        if (method_exists($obj, $action))
-        {
-            $obj->$action($param);
-        }
 
+        if (class_exists($name)) {
+            $obj = new $name;
+            if (method_exists($obj, $action)) {
+                $obj->$action($param);
+            }
+        }
         return $param;
     }
 }

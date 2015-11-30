@@ -17,33 +17,6 @@ class Controller
     }
 
     /**
-     * 分配变量
-     *
-     * @param  [type] $name  [description]
-     * @param  [type] $value [description]
-     *
-     * @return [type]        [description]
-     */
-    protected function assign($name, $value)
-    {
-        View::with($name, $value);
-
-        return $this;
-    }
-
-    /**
-     * 显示模板
-     *
-     * @param  [type] $tpl [description]
-     *
-     * @return [type]      [description]
-     */
-    protected function display($tpl = '')
-    {
-        View::make($tpl);
-    }
-
-    /**
      * 通过魔术方法设置变量
      *
      * @param [type] $name  [description]
@@ -62,17 +35,6 @@ class Controller
     protected function error($message = '操作失败', $url = null, $time = 1)
     {
         View::error($message, $url, $time);
-    }
-
-    /**
-     * Ajax输出
-     *
-     * @param        $data 数据
-     * @param string $type 数据类型 text html xml json
-     */
-    protected function ajax($data, $type = "JSON")
-    {
-        View::ajax($data, $type);
     }
 
     public function __destruct()

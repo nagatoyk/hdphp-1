@@ -33,8 +33,36 @@ class Compile
         //创建令牌代码
         $this->createToken();
 
+        //模板继承替换
+        $this->blade();
         //保存编译文件
         return $this->content;
+    }
+
+    /**
+     * 解析blade标签
+     */
+    private function blade()
+    {
+        //检测是否包含extend
+        if (!preg_match('/<!--block_/', $this->content)) {
+            return;
+        }
+        //将blade模板的blockshow替换到显示模板的{{parent}}区域
+        preg_match_all('/<!--blockshow_(.*?)-->(.*?)<!--endblockshow_\1-->/isU', $this->content, $blockshow);
+        foreach ((array)$blockshow[1] as $k => $v) {
+            $this->content = str_replace('<!--parent_'.$v.'-->',$blockshow[2][$k],$this->content);
+            //删除 显示模板的parent 区域
+            $this->content = str_replace($blockshow[0][$k],'',$this->content);
+        }
+
+        //找到所有block块替换blade模板中的blade区域
+        preg_match_all('/<!--block_(.*?)-->(.*?)<!--endblock_\1-->/isU', $this->content, $blocks);
+        foreach ((array)$blocks[1] as $k => $v) {
+            $this->content = str_replace('<!--blade_'.$v.'-->',$blocks[2][$k],$this->content);
+            //删除 block 区域
+            $this->content = str_replace($blocks[0][$k],'',$this->content);
+        }
     }
 
     /**

@@ -1,10 +1,10 @@
 <?php namespace Hdphp\Kernel;
 
-use Closure;
+//use Closure;
 use ReflectionClass;
-use ReflectionMethod;
-use ReflectionFunction;
-use ReflectionParameter;
+//use ReflectionMethod;
+//use ReflectionFunction;
+//use ReflectionParameter;
 use Hdphp\Kernel\ServiceProviders;
 
 class Application extends Container
@@ -61,8 +61,6 @@ class Application extends Container
 
     /**
      * 添加初始实例
-     *
-     * @return [type] [description]
      */
     protected function setInstance()
     {
@@ -91,8 +89,6 @@ class Application extends Container
 
     /**
      * 服务加载处理
-     *
-     * @return [type] [description]
      */
     public function bindServiceProvider()
     {
@@ -120,10 +116,9 @@ class Application extends Container
 
     /**
      * 获取服务对象
-     *
-     * @param  [type] $name [description]
-     *
-     * @return [type]       [description]
+     * @param $name
+     * @param bool|false $force
+     * @return Object
      */
     public function make($name, $force = false)
     {
@@ -221,10 +216,7 @@ class Application extends Container
 
     /**
      * 类自动加载
-     *
-     * @param  [type] $class [description]
-     *
-     * @return [type]        [description]
+     * @param $class
      */
     public function autoload($class)
     {
@@ -271,10 +263,8 @@ class Application extends Container
 
     /**
      * 自动加载facade类
-     *
-     * @param  [type] $class [description]
-     *
-     * @return [type]        [description]
+     * @param $class
+     * @return bool
      */
     public function autoloadFacade($class)
     {
@@ -289,10 +279,8 @@ class Application extends Container
 
     /**
      * 自动加载模型
-     *
-     * @param  [type] $class [description]
-     *
-     * @return [type]        [description]
+     * @param $class
+     * @return bool
      */
     public function autoloadModel($class)
     {

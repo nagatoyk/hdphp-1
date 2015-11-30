@@ -10,17 +10,22 @@ class HdphpTag extends TagBase
      */
     public $tags
         = array(
-            'foreach'   => array('block' => true, 'level' => 5),
-            'list'      => array('block' => true, 'level' => 5),
-            'if'        => array('block' => true, 'level' => 5),
-            'elseif'    => array('block' => false),
-            'else'      => array('block' => false),
-            'jquery'    => array('block' => false),
-            'angular'   => array('block' => false),
+            'foreach' => array('block' => true, 'level' => 5),
+            'list' => array('block' => true, 'level' => 5),
+            'if' => array('block' => true, 'level' => 5),
+            'elseif' => array('block' => false),
+            'else' => array('block' => false),
+            'jquery' => array('block' => false),
+            'angular' => array('block' => false),
             'bootstrap' => array('block' => false),
-            'js'        => array('block' => false),
-            'css'       => array('block' => false),
-            'include'   => array('block' => false),
+            'js' => array('block' => false),
+            'css' => array('block' => false),
+            'include' => array('block' => false),
+            'extend' => array('block' => false),
+            'blade' => array('block' => false),
+            'parent' => array('block' => false),
+            'block' => array('block' => true, 'level' => 5),
+            'blockshow' => array('block' => true, 'level' => 5),
         );
 
     //jquery前端库
@@ -60,14 +65,14 @@ class HdphpTag extends TagBase
     //list标签
     public function _list($attr, $content, &$view)
     {
-        $from  = $attr['from']; //变量
-        $name  = substr($attr['name'], 1);//name名去除$
+        $from = $attr['from']; //变量
+        $name = substr($attr['name'], 1);//name名去除$
         $empty = isset($attr['empty']) ? $attr['empty'] : '';//默认值
-        $row   = isset($attr['row']) ? $attr['row'] : 100;//显示条数
-        $step  = isset($attr['step']) ? $attr['step'] : 1;//间隔
+        $row = isset($attr['row']) ? $attr['row'] : 100;//显示条数
+        $step = isset($attr['step']) ? $attr['step'] : 1;//间隔
         $start = isset($attr['start']) ? $attr['start'] : 0;//开始数
         $php
-               = <<<php
+            = <<<php
         <?php
         if (empty($from)) 
         {
@@ -123,12 +128,9 @@ php;
     //标签处理
     public function _foreach($attr, $content)
     {
-        if (isset($attr['key']))
-        {
+        if (isset($attr['key'])) {
             $php = "<?php foreach ({$attr['from']} as {$attr['key']}=>{$attr['value']}){?>";
-        }
-        else
-        {
+        } else {
             $php = "<?php foreach ({$attr['from']} as {$attr['value']}){?>";
         }
         $php .= $content;
@@ -167,4 +169,36 @@ php;
         return "<?php }else{?>";
     }
 
+    //块布局时引入布局页的bladeshow块
+    public function _extend($attr, $content, &$view)
+    {
+        if (strchr($attr['file'],'.blade')) {
+            $obj = new View;
+            return $obj->fetch($attr['file']);
+        }
+    }
+
+    //布局模板定义的块
+    public function _blade($attr, $content, &$view)
+    {
+        return "<!--blade_{$attr['name']}-->";
+    }
+
+    //视图模板引用布局模板
+    public function _parent($attr, $content, &$view)
+    {
+        return "<!--parent_{$attr['name']}-->";
+    }
+
+    //视图模板定义的内容
+    public function _block($attr, $content, &$view)
+    {
+        return "<!--block_{$attr['name']}-->{$content}<!--endblock_{$attr['name']}-->";
+    }
+
+    //布局模板定义用于显示在视图模板的内容
+    public function _blockshow($attr, $content, &$view)
+    {
+        return "<!--blockshow_{$attr['name']}-->{$content}<!--endblockshow_{$attr['name']}-->";
+    }
 }

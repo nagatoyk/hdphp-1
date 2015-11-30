@@ -83,27 +83,32 @@ class View
      * @return bool|string
      * @throws Exception
      */
-    private function getTemplateFile($file)
+    public function getTemplateFile($file)
     {
         if (!is_file($file)) {
             if (defined('MODULE')) {
                 //模块视图文件夹
-                $file = MODULE_PATH . '/View/' . CONTROLLER . '/' . ($file ?: ACTION) . C('view.prefix');
+                $f = MODULE_PATH . '/View/' . CONTROLLER . '/' . ($file ?: ACTION) . C('view.prefix');
+                if (is_file($f)) {
+                    return $f;
+                }
+
+                $f = MODULE_PATH . '/View/' . $file . C('view.prefix');
+                if (is_file($f)) {
+                    return $f;
+                }
             } else {
                 //路由中使用回调函数执行View::make()时，因为没有MODULE
-                $file = C('view.path') . '/' . $file . C('view.prefix');
+                $f = C('view.path') . '/' . $file . C('view.prefix');
+                if (is_file($f)) {
+                    return $f;
+                }
             }
         }
-
-        //判断文件
-        if (is_file($file)) {
-            return $file;
+        if (DEBUG) {
+            throw new Exception("模板不存在:$f");
         } else {
-            if (DEBUG) {
-                throw new Exception("模板不存在:$file");
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 

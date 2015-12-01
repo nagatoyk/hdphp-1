@@ -8,13 +8,13 @@
  *
  * @return string
  */
-function U($path, $args = array())
+function u($path, $args = array())
 {
     if (empty($path) || preg_match('@^http@i', $path)) {
         return $path;
     }
 
-    $info = explode('/', $path);
+    $info = explode('/', str_replace('.','/',$path));
 
     //获取模块、控制器、动作
     $action['a'] = array_pop($info);
@@ -34,7 +34,7 @@ function U($path, $args = array())
 /**
  * 调用 Api Server
  */
-function Api()
+function api()
 {
     static $cache = array();
     $params = func_get_args();
@@ -54,7 +54,7 @@ function Api()
  *
  * @param [type] $model [description]
  */
-function M($model)
+function m($model)
 {
     $class = MODULE . '\\Model\\' . $model;
     static $instances = array();
@@ -72,7 +72,7 @@ function M($model)
  * @param string $name [description]
  * @param string $value [description]
  */
-function C($name = '', $value = '')
+function c($name = '', $value = '')
 {
     if ($name === '') {
         return Config::all();
@@ -87,21 +87,19 @@ function C($name = '', $value = '')
 
 /**
  * 请求参数
- *
- * @param [type] $name      [变量名]
- * @param string $value [默认值]
- * @param [type] $functions [回调函数]
+ * @param $var 变量名
+ * @param null $default 默认值
+ * @param string $filter 数据处理函数
+ * @return mixed
  */
-function Q($var, $default = null, $filter = '')
+function q($var, $default = null, $filter = '')
 {
     return Request::query($var, $default, $filter);
 }
 
 /**
  * 404
- * @param  [type] $code [description]
- *
- * @return [type]       [description]
+ * @param $code
  */
 function _404($code)
 {
@@ -130,7 +128,7 @@ function p($var)
  */
 function go($url, $time = 0, $msg = '')
 {
-    $url = U($url);
+    $url = u($url);
     if (!headers_sent()) {
         $time == 0 ? header("Location:" . $url) : header("refresh:{$time};url={$url}");
         exit($msg);
@@ -178,7 +176,7 @@ function cookie($name, $value = '[get]')
  *
  * @return bool
  */
-function F($name, $value = '[get]', $path = 'Storage/cache')
+function f($name, $value = '[get]', $path = 'Storage/cache')
 {
     static $cache = array();
 
@@ -227,7 +225,7 @@ function F($name, $value = '[get]', $path = 'Storage/cache')
  * @param mixed $data 缓存数据
  * @param int $expire 过期时间 0　为持久缓存
  */
-function S($name, $data = '', $expire = null)
+function s($name, $data = '', $expire = null)
 {
     if (empty($data)) {
         return Cache::get($name);
@@ -292,4 +290,36 @@ function print_const()
 function trace($value = '[hdphp]', $label = '', $level = 'DEBUG', $record = false)
 {
     return Error::trace($value, $label, $level, $record);
+}
+
+/**
+ * 全局变量
+ * @param $name 变量名
+ * @param string $value 变量值
+ * @return mixed 返回值
+ */
+function v($name, $value = '[null]')
+{
+    static $vars = array();
+    $tmp = &$vars;
+    //取变量
+    if ($value == '[null]') {
+        foreach (explode('.', $name) as $d) {
+            if (isset($tmp[$d])) {
+                $tmp = $tmp[$d];
+            } else {
+                return false;
+            }
+        }
+        return $tmp;
+    }
+    //设置
+    foreach (explode('.', $name) as $d) {
+        if (!isset($tmp[$d])) {
+            $tmp[$d] = array();
+        }
+        $tmp = &$tmp[$d];
+    }
+
+    return $tmp = $name;
 }

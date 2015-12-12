@@ -1,0 +1,23 @@
+{
+    "name": "houdunwang/hdphp",
+    "description": "The hdphp Framework",
+     "type": "project",
+    "keywords": ["framework","hdphp","ORM","houdunwang"],
+    "homepage": "http://hdphp.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "向军",
+            "email": "2300071698@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "think\\": "thinkphp/library/think/"
+        }
+    }
+}

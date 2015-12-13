@@ -207,8 +207,7 @@ class Compile extends Setting
 
     /**
      * 获取请求方法
-     *
-     * @return [type] [description]
+     * @return string
      */
     public function getRequestAction ()
     {
@@ -232,25 +231,20 @@ class Compile extends Setting
     {
         //URL结构处理
         $param = array();
-        p($_SERVER);
-
-        if(isset($_SERVER['PATH_INFO']))
+        if (isset($_GET[c('http.url_var')]))
         {
-
-        }
-        if (isset($_GET[C ('http.url_var')]))
-        {
-            $param = explode ('/', trim ($_GET[C ('http.url_var')], '/'));
+            $param = explode ('/', $_GET[c('http.url_var')]);
+            unset($_GET[c('http.url_var')]);
         }
         switch (count ($param))
         {
             case 3:
-                define ('MODULE', ucfirst (array_shift ($param)));
-                define ('CONTROLLER', ucfirst (array_shift ($param)));
+                define ('MODULE', array_shift ($param));
+                define ('CONTROLLER', array_shift ($param));
                 define ('ACTION', array_shift ($param));
                 break;
             case 2:
-                define ('CONTROLLER', ucfirst (array_shift ($param)));
+                define ('CONTROLLER', array_shift ($param));
                 define ('ACTION', array_shift ($param));
                 break;
             case 1:

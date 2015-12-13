@@ -1,6 +1,6 @@
 <?php
 //版本号
-define ('HDPHP_VERSION', '2015-12-18');
+define ('HDPHP_VERSION', '2.0.0');
 
 //框架目录
 define ('HDPHP_PATH', __DIR__);

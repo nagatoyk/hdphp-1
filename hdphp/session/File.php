@@ -3,17 +3,17 @@
 class File implements AbSession
 {
     //执行SESSION控制
-    public function make()
+    public function make ()
     {
         //创建目录
-        if ( ! is_dir('Storage/session'))
+        if ( ! is_dir (ROOT_PATH.'/storage/session'))
         {
-            mkdir('Storage/session', 0755, true);
+            mkdir (ROOT_PATH.'/storage/session', 0755, true);
         }
 
         //设置session保存目录
-        session_save_path('Storage/session');
+        session_save_path (ROOT_PATH.'/storage/session');
         //开启session
-        session_start();
+        session_start ();
     }
 }

@@ -36,7 +36,7 @@ class Route extends Compile
 
     /**
      * 取得请求url
-     * @return [type] [description]
+     * @return string
      */
     public function url ()
     {
@@ -45,7 +45,7 @@ class Route extends Compile
 
     /**
      * 请求地址
-     * @return [type] [description]
+     * @return mixed|string
      */
     protected function getRequestUri ()
     {
@@ -72,10 +72,8 @@ class Route extends Compile
 
     /**
      * 使用正则表达式限制参数
-     *
-     * @param  [array] $args [参数]
-     *
-     * @return [type]       [description]
+     * @param $name
+     * @param null $regexp
      */
     public function where ($name, $regexp = null)
     {
@@ -95,7 +93,7 @@ class Route extends Compile
 
     /**
      * 解析标签
-     * @return [type] [description]
+     * @return bool
      */
     public function dispatch ()
     {
@@ -106,7 +104,6 @@ class Route extends Compile
 
             return true;
         }
-
 
         $this->parseRoute ();
 
@@ -129,10 +126,6 @@ class Route extends Compile
 
     /**
      * 解析路由
-     *
-     * @param  [type] $key [description]
-     *
-     * @return [type]      [description]
      */
     protected function parseRoute ()
     {

@@ -57,9 +57,10 @@ class Setting
 
 	/**
 	 * 设置资源路由
-	 * @param  [type] $route [description]
-	 * @param  [type] $param [description]
-	 * @return [type]        [description]
+	 * @param $route
+	 * @param $controller
+	 *
+	 * @return $this
 	 */
 	public function resource($route,$controller)
 	{

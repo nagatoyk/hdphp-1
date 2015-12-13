@@ -1,4 +1,4 @@
-<?php namespace hdphp\facade;
+<?php namespace hdphp\view;
 
 use hdphp\kernel\ServiceFacade;
 

@@ -38,7 +38,7 @@ class App extends Container
         $this->bindServiceProvider ();
 
         //添加初始实例
-        $this->setInstance ();
+        $this->instance ('App', $this);
 
         //设置外观基类APP属性
         \hdphp\kernel\ServiceFacade::setFacadeApplication ($this);
@@ -48,14 +48,6 @@ class App extends Container
 
         //启动
         $this->boot ();
-    }
-
-    /**
-     * 添加初始实例
-     */
-    protected function setInstance ()
-    {
-        $this->instance ('App', $this);
     }
 
     /**
@@ -215,17 +207,16 @@ class App extends Container
      */
     public function autoload ($class)
     {
-        $file = ROOT_PATH.DS.str_replace ('\\', DS, $class).'.php';
-
+        $file = str_replace ('\\', DS, $class).'.php';
         if (isset($this->alias[$class]))
         {
             //检测类库映射
             require_once str_replace ('\\', DS, $this->alias[$class]);
         }
-        else if (is_file ($file))
+        else if (is_file (ROOT_PATH.DS.$file))
         {
             //直接加载文件
-            require_once $file;
+            require_once ROOT_PATH.DS.$file;
         }
         else if (defined ('MODULE_PATH') && is_file (MODULE_PATH.DS.$file))
         {

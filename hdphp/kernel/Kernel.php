@@ -7,8 +7,12 @@ require ROOT_PATH.'/system/routes.php';
 
 class Kernel
 {
+    protected $app;
+
     public function __construct ($app)
     {
+        $this->app = $app;
+
         //设置字符集
         header ("Content-type:text/html;charset=".Config::get ('app.charset'));
 
@@ -21,17 +25,11 @@ class Kernel
         //导入钓子
         $app['Hook']->import (Config::get ('hook'));
 
-        //应用开始钓子
-        $app['Hook']->listen ("app_begin");
-
         //定义常量
         $this->DefineConsts ();
 
         //执行控制器方法
         $this->ExecuteAction ();
-
-        //应用结束钩子
-        $app['Hook']->listen ("app_end");
 
         //保存日志
         Log::save ();
@@ -60,7 +58,7 @@ class Kernel
         {
             throw new Exception(MODULE.'模块禁止使用');
         }
-        $class = ucfirst (MODULE).'\\Controller\\'.ucfirst (CONTROLLER).'Controller';
+        $class = MODULE.'\\controller\\'.CONTROLLER;
 
         //控制器不存在
         if ( ! class_exists ($class))
@@ -77,7 +75,19 @@ class Kernel
 
             if ($action->isPublic ())
             {
-                call_user_func_array (array($controller, ACTION), Route::getArg ());
+                //控制器前置钩子
+                $this->app->make ('Hook')->listen ('controller_begin');
+
+                //执行动作
+                $result = call_user_func_array (array($controller, ACTION), Route::getArg ());
+                if (IS_AJAX)
+                {
+                    Response::ajax ($result);
+                }
+                else
+                {
+                    die($result);
+                }
             }
             else
             {

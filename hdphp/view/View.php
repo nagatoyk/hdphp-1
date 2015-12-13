@@ -17,96 +17,121 @@ class View
 
     /**
      * 解析模板
+     *
      * @param string $tpl 模板
      * @param int $expire 过期时间
      * @param bool|true $show 显示或返回
+     *
      * @return bool|string
      * @throws Exception
      */
-    public function make($tpl = '', $expire = 0, $show = true)
+    public function make ($tpl = '', $expire = 0, $show = true)
     {
         //缓存有效
-        if ($expire > 0 && $content = Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI'])) {
-            if ($show) {
+        if ($expire > 0 && $content = Cache::dir (ROOT_PATH.'/storage/view/cache')->get ($_SERVER['REQUEST_URI']))
+        {
+            if ($show)
+            {
                 die($content);
-            } else {
+            }
+            else
+            {
                 return $content;
             }
         }
 
         //模板文件
-        if (!$this->tpl = $this->getTemplateFile($tpl)) {
+        if ( ! $this->tpl = $this->getTemplateFile ($tpl))
+        {
             return false;
         }
 
         //编译文件
-        $this->compile = 'Storage/view/compile/' . md5($this->tpl) . '.php';
+        $this->compile = ROOT_PATH.'/storage/view/compile/'.md5 ($this->tpl).'.php';
 
         //编译文件
-        $this->compileFile();
+        $this->compileFile ();
 
         //释放变量到全局
-        if (!empty(self::$vars)) {
-            extract(self::$vars);
+        if ( ! empty(self::$vars))
+        {
+            extract (self::$vars);
         }
 
         //获取解析结果
-        ob_start();
-        require($this->compile);
-        $content = ob_get_clean();
+        ob_start ();
+        require ($this->compile);
+        $content = ob_get_clean ();
 
-        if ($expire > 0) {
+        if ($expire > 0)
+        {
             //缓存
-            if (!Cache::dir('Storage/view/cache')->set($_SERVER['REQUEST_URI'], $content, $expire)) {
+            if ( ! Cache::dir (ROOT_PATH.'/storage/view/cache')->set ($_SERVER['REQUEST_URI'], $content, $expire))
+            {
                 throw new Exception("创建缓存失效");
             }
         }
 
-        if ($show) {
+        if ($show)
+        {
             echo $content;
             exit;
-        } else {
+        }
+        else
+        {
             return $content;
         }
     }
 
     //获取显示内容
-    public function fetch($tpl = '')
+    public function fetch ($tpl = '')
     {
-        return $this->make($tpl, 0, false);
+        return $this->make ($tpl, 0, false);
     }
 
     /**
      * 获取模板文件
+     *
      * @param $file 模板文件
+     *
      * @return bool|string
      * @throws Exception
      */
-    public function getTemplateFile($file)
+    public function getTemplateFile ($file)
     {
-        if (!is_file($file)) {
-            if (defined('MODULE')) {
+        if ( ! is_file ($file))
+        {
+            if (defined ('MODULE'))
+            {
                 //模块视图文件夹
-                $f = MODULE_PATH . '/View/' . CONTROLLER . '/' . ($file ?: ACTION) . C('view.prefix');
-                if (is_file($f)) {
+                $f = MODULE_PATH.'/view/'.CONTROLLER.'/'.($file ?: ACTION).C ('view.prefix');
+                if (is_file ($f))
+                {
                     return $f;
                 }
 
-                $f = MODULE_PATH . '/View/' . $file . C('view.prefix');
-                if (is_file($f)) {
+                $f = MODULE_PATH.'/view/'.$file.C ('view.prefix');
+                if (is_file ($f))
+                {
                     return $f;
                 }
-            } else {
+            }
+            else
+            {
                 //路由中使用回调函数执行View::make()时，因为没有MODULE
-                $f = C('view.path') . '/' . $file . C('view.prefix');
-                if (is_file($f)) {
+                $f = C ('view.path').'/'.$file.C ('view.prefix');
+                if (is_file ($f))
+                {
                     return $f;
                 }
             }
         }
-        if (DEBUG) {
+        if (DEBUG)
+        {
             throw new Exception("模板不存在:$f");
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
@@ -115,44 +140,52 @@ class View
      * 验证缓存文件
      * @return mixed
      */
-    public function isCache()
+    public function isCache ()
     {
-        return Cache::dir('Storage/view/cache')->get($_SERVER['REQUEST_URI']);
+        return Cache::dir (ROOT_PATH.'/storage/view/cache')->get ($_SERVER['REQUEST_URI']);
     }
 
     /**
      * 编译文件
      */
-    private function compileFile()
+    private function compileFile ()
     {
-        $status = DEBUG || !file_exists($this->compile) ||
-            !is_file($this->compile) || (filemtime($this->tpl) > filemtime($this->compile));
-        if ($status) {
+        $status = DEBUG || ! file_exists ($this->compile) ||
+                  ! is_file ($this->compile) || (filemtime ($this->tpl) > filemtime ($this->compile));
+        if ($status)
+        {
             //创建编译目录
-            $dir = dirname($this->compile);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
+            $dir = dirname ($this->compile);
+            if ( ! is_dir ($dir))
+            {
+                mkdir ($dir, 0755, true);
             }
             //执行文件编译
             $compile = new Compile($this);
-            $content = $compile->run();
-            file_put_contents($this->compile, $content);
+            $content = $compile->run ();
+            file_put_contents ($this->compile, $content);
         }
     }
 
     /**
      * 分配变量
+     *
      * @param $name 变量名
      * @param string $value 值
+     *
      * @return $this
      */
-    public function with($name, $value = '')
+    public function with ($name, $value = '')
     {
-        if (is_array($name)) {
-            foreach ($name as $k => $v) {
+        if (is_array ($name))
+        {
+            foreach ($name as $k => $v)
+            {
                 self::$vars[$k] = $v;
             }
-        } else {
+        }
+        else
+        {
             self::$vars[$name] = $value;
         }
 
@@ -167,16 +200,19 @@ class View
      * @param int $time 跳转时间
      * @param string $tpl 模板文件
      */
-    public function error($message = '出错了', $url = '', $time = 2)
+    public function error ($message = '出错了', $url = '', $time = 2)
     {
-        if (IS_AJAX) {
-            Response::ajax(array('status' => 0, 'message' => $message));
-        } else {
-            $url = U($url);
-            $url = $url ? "window.location.href='" . $url . "'" : "window.location.href='" . __HISTORY__ . "'";
+        if (IS_AJAX)
+        {
+            Response::ajax (array('status' => 0, 'message' => $message));
+        }
+        else
+        {
+            $url = U ($url);
+            $url = $url ? "window.location.href='".$url."'" : "window.location.href='".__HISTORY__."'";
 
-            $this->with(array('message' => $message, 'url' => $url, 'time' => $time));
-            $this->make(Config::get('view.error'));
+            $this->with (array('message' => $message, 'url' => $url, 'time' => $time));
+            $this->make (Config::get ('view.error'));
         }
 
         exit;
@@ -190,16 +226,19 @@ class View
      * @param int $time 跳转时间
      * @param string $tpl 模板文件
      */
-    public function success($message = '操作成功', $url = '', $time = 2)
+    public function success ($message = '操作成功', $url = '', $time = 2)
     {
-        if (IS_AJAX) {
-            $this->ajax(array('status' => 1, 'message' => $message));
-        } else {
-            $url = U($url);
-            $url = $url ? "window.location.href='" . $url . "'" : "window.location.href='" . __HISTORY__ . "'";
+        if (IS_AJAX)
+        {
+            $this->ajax (array('status' => 1, 'message' => $message));
+        }
+        else
+        {
+            $url = U ($url);
+            $url = $url ? "window.location.href='".$url."'" : "window.location.href='".__HISTORY__."'";
 
-            $this->with(array('message' => $message, 'url' => $url, 'time' => $time));
-            $this->make(Config::get('view.success'));
+            $this->with (array('message' => $message, 'url' => $url, 'time' => $time));
+            $this->make (Config::get ('view.success'));
         }
         exit;
     }
@@ -210,25 +249,8 @@ class View
      * @param        $data 数据
      * @param string $type 数据类型 text html xml json
      */
-    public function ajax($data, $type = "JSON")
+    public function ajax ($data, $type = "JSON")
     {
-        $type = strtoupper($type);
-        switch ($type) {
-            case "HTML" :
-            case "TEXT" :
-                $_data = $data;
-                break;
-            case "XML" :
-                //XML处理
-                header('Content-Type: application/xml');
-                $_data = Xml::create($data);
-                break;
-            default :
-                //JSON处理
-                header('Content-Type: application/json');
-                $_data = json_encode($data);
-        }
-        echo $_data;
-        exit;
+        Response::ajax ($data, $type);
     }
 }

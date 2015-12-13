@@ -2,15 +2,15 @@
 
 class Response
 {
-
     /**
      * 发送HTTP 状态码
+     *
      * @param $code
      */
-    public function sendHttpStatus($code)
+    public function sendHttpStatus ($code)
     {
-        static $_status
-        = array(
+        $status
+            = array(
             // Informational 1xx
             100 => 'Continue',
             101 => 'Switching Protocols',
@@ -60,12 +60,13 @@ class Response
             503 => 'Service Unavailable',
             504 => 'Gateway Timeout',
             505 => 'HTTP Version Not Supported',
-            509 => 'Bandwidth Limit Exceeded'
+            509 => 'Bandwidth Limit Exceeded',
         );
 
-        if (isset($state[$code])) {
-            header('HTTP/1.1 ' . $code . ' ' . $state[$code]);
-            header('Status:' . $code . ' ' . $state[$code]);
+        if (isset($status[$code]))
+        {
+            header ('HTTP/1.1 '.$code.' '.$status[$code]);
+            header ('Status:'.$code.' '.$status[$code]);
         }
     }
 
@@ -75,23 +76,24 @@ class Response
      * @param        $data 数据
      * @param string $type 数据类型 text html xml json
      */
-    public function ajax($data, $type = "JSON")
+    public function ajax ($data, $type = "JSON")
     {
-        $type = strtoupper($type);
-        switch ($type) {
+        $type = strtoupper ($type);
+        switch ($type)
+        {
             case "HTML" :
             case "TEXT" :
                 $_data = $data;
                 break;
             case "XML" :
                 //XML处理
-                header('Content-Type: application/xml');
-                $_data = Xml::create($data);
+                header ('Content-Type: application/xml');
+                $_data = Xml::create ($data);
                 break;
             default :
                 //JSON处理
-                header('Content-Type: application/json');
-                $_data = json_encode($data);
+                header ('Content-Type: application/json');
+                $_data = json_encode ($data);
         }
         echo $_data;
         exit;

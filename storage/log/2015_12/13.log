@@ -136,3 +136,18 @@
 [ 2015-12-13T21:25:58+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/hdphp/kernel/App.php (54).
 [ 2015-12-13T21:26:30+08:00 ]NOTICE: Class 'hdphp\kernel\AppFacade' not found/www/hdphp/hdphp/kernel/App.php (70).
 [ 2015-12-13T21:27:04+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T23:52:37+08:00 ]EXCEPTION: 路由无匹配项 404 Not Found
+[ 2015-12-13T23:52:38+08:00 ]EXCEPTION: 路由无匹配项 404 Not Found
+[ 2015-12-13T23:53:56+08:00 ]NOTICE: include(a): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:53:56+08:00 ]NOTICE: include(): Failed opening 'a' for inclusion (include_path='.:/Applications/MAMP/bin/php/php5.5.26/lib/php')/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:05+08:00 ]NOTICE: require(a): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:09+08:00 ]NOTICE: require(a): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:14+08:00 ]NOTICE: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:14+08:00 ]NOTICE: include(): Failed opening 'aa' for inclusion (include_path='.:/Applications/MAMP/bin/php/php5.5.26/lib/php')/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:22+08:00 ]EXCEPTION: 
+[ 2015-12-13T23:54:32+08:00 ]EXCEPTION: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:43+08:00 ]EXCEPTION: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:44+08:00 ]EXCEPTION: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:46+08:00 ]EXCEPTION: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:47+08:00 ]EXCEPTION: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).
+[ 2015-12-13T23:54:56+08:00 ]EXCEPTION: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (11).

@@ -34,7 +34,7 @@ class DbProvider extends ServiceProvider
         $this->app->bind (
             'Db',
             function ($app)
-            {echo 111;
+            {
                 return new Db($app);
             },
             true

@@ -1,15 +1,11 @@
 <?php
 //中间件配置
 return array(
-    'read'     =>
-        array(),
-    'write'    =>
-        array(),
-    'host'     => '',
-    'driver'   => '',
-    'charset'  => '',
-    'user'     => '',
-    'password' => '',
-    'database' => '',
-    'prefix'   => '',
+    //全局中间件
+    'global'     => array(),
+
+    //路由中间件
+    'middleware' => array(
+        'auth' => 'system\middleware\Auth',
+    ),
 );

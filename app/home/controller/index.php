@@ -1,22 +1,16 @@
 <?php namespace home\controller;
 
-use hdphp\kernel\Controller;
-
-class b{
-    function a(){
-        echo 33;
-    }
-}
 //初始控制器
-class Index extends Controller
+class Index
 {
     public function __construct ()
     {
-        App::bind('bb',new b);
+        //中间件
+        Middleware::set ('auth', array('only' => array('index')));
     }
 
     public function index ()
     {
-        App::make('bb')->a();
+        View::make ();
     }
 }

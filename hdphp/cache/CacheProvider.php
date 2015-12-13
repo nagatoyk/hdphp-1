@@ -13,7 +13,7 @@ class CacheProvider extends ServiceProvider
 {
 
     //延迟加载
-    public $defer = true;
+    public $defer = false;
 
     public function boot()
     {

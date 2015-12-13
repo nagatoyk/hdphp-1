@@ -5,7 +5,6 @@ use Hdphp\Kernel\ServiceProviders;
 
 class App extends Container
 {
-
     //应用已启动
     protected $booted = false;
 
@@ -21,40 +20,58 @@ class App extends Container
     //已加载服务提供者
     protected $serviceProviders = array();
 
-    //类库映射
-    protected $alias = array();
-
-    //构造函数
-    public function __construct ()
+    // 构造函数
+    public function run ()
     {
-        //注册自动载入函数
-        spl_autoload_register (array($this, 'autoload'));
-        spl_autoload_register (array($this, 'autoloadFacade'));
-
         //引入服务配置
         $this->config = require ROOT_PATH.'/config/service.php';
-
+        //自动加载
+        Loader::register (array($this, 'autoload'));
         //绑定核心服务提供者
         $this->bindServiceProvider ();
-
         //添加初始实例
         $this->instance ('App', $this);
-
         //设置外观基类APP属性
         \hdphp\kernel\ServiceFacade::setFacadeApplication ($this);
-
         //导入类库别名
-        $this->addMap (Config::get ('app.alias'));
-
-        //启动
+        Loader::addMap (Config::get ('app.alias'));
+        //启动服务
         $this->boot ();
+        //执行请求
+        $this->exe ();
     }
 
-    /**
-     * 系统启动
-     *
-     * @return void
-     */
+    // 执行请求
+    public function exe ()
+    {
+        //命令模式
+        if ($_SERVER['SCRIPT_NAME'] == 'hd')
+        {
+            require_once HDPHP_PATH.'/cli/Cli.php';
+            \hdphp\cli\Cli::run ();
+            exit;
+        }
+        header ("Content-type:text/html;charset=".Config::get ('app.charset'));
+        date_default_timezone_set (Config::get ('app.timezone'));
+        Route::dispatch ();
+        //导入钓子
+        \hdphp\hook\Hook::import (Config::get ('hook'));
+        Log::save ();
+    }
+
+    // 自动加载外观
+    public function autoload ($class)
+    {
+        $file   = str_replace ('\\', '/', $class);
+        $facade = basename ($file);
+        if (isset($this->config['facades'][$facade]))
+        {
+            //加载facade类
+            return class_alias ($this->config['facades'][$facade], $class);
+        }
+    }
+
+    // 系统启动
     public function boot ()
     {
         if ($this->booted)
@@ -69,9 +86,7 @@ class App extends Container
         $this->booted = true;
     }
 
-    /**
-     * 服务加载处理
-     */
+    // 服务加载处理
     public function bindServiceProvider ()
     {
         foreach ($this->config['providers'] as $provider)
@@ -99,8 +114,8 @@ class App extends Container
     /**
      * 获取服务对象
      *
-     * @param $name
-     * @param bool|false $force
+     * @param $name 服务名
+     * @param bool|false $force 是否单例
      *
      * @return Object
      */
@@ -117,10 +132,9 @@ class App extends Container
 
     /**
      * 注册服务
+     * @param $provider 服务名
      *
-     * @param  [type] $provider [description]
-     *
-     * @return [type]           [description]
+     * @return object
      */
     public function register ($provider)
     {
@@ -149,7 +163,7 @@ class App extends Container
     /**
      * 运行服务提供者的boot方法
      *
-     * @param [type] $provider [description]
+     * @param object $provider
      */
     protected function bootProvider ($provider)
     {
@@ -162,9 +176,9 @@ class App extends Container
     /**
      * 获取已经注册的服务
      *
-     * @param  [type] $provider [description]
+     * @param  string $provider 服务名
      *
-     * @return [type]           [description]
+     * @return object
      */
     protected function getProvider ($provider)
     {
@@ -178,86 +192,4 @@ class App extends Container
             }
         }
     }
-
-    /**
-     * 类库映射
-     *
-     * @param array|string $alias 别名
-     * @param string $namespace 命名空间
-     */
-    protected function addMap ($alias, $namespace = '')
-    {
-        if (is_array ($alias))
-        {
-            foreach ($alias as $key => $value)
-            {
-                $this->alias[$key] = $value;
-            }
-        }
-        else
-        {
-            $this->alias[$alias] = $namespace;
-        }
-    }
-
-    /**
-     * 类自动加载
-     *
-     * @param $class
-     */
-    public function autoload ($class)
-    {
-        $file = str_replace ('\\', DS, $class).'.php';
-        if (isset($this->alias[$class]))
-        {
-            //检测类库映射
-            require_once str_replace ('\\', DS, $this->alias[$class]);
-        }
-        else if (is_file (ROOT_PATH.DS.$file))
-        {
-            //直接加载文件
-            require_once ROOT_PATH.DS.$file;
-        }
-        else if (defined ('MODULE_PATH') && is_file (MODULE_PATH.DS.$file))
-        {
-            //项目文件
-            require_once MODULE_PATH.DS.$file;
-        }
-        else if (defined ('APP_PATH') && is_file (APP_PATH.DS.$file))
-        {
-            //项目文件
-            require_once APP_PATH.DS.$file;
-        }
-        else if (class_exists ('Config', false))
-        {
-            //自动加载命名空间
-            foreach ((array)Config::get ('app.autoload_namespace') as $key => $value)
-            {
-                if (strpos ($class, $key) !== false)
-                {
-                    $file = str_replace ($key, $value, $class).'.php';
-                    require_once (str_replace ('\\', DS, $file));
-                }
-            }
-        }
-    }
-
-    /**
-     * 自动加载facade类
-     *
-     * @param $class
-     *
-     * @return bool
-     */
-    public function autoloadFacade ($class)
-    {
-        $file   = str_replace ('\\', '/', $class);
-        $facade = basename ($file);
-        if (isset($this->config['facades'][$facade]))
-        {
-            //加载facade类
-            return class_alias ($this->config['facades'][$facade], $class);
-        }
-    }
-
 }

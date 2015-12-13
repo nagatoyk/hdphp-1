@@ -327,3 +327,24 @@ function v($name, $value = '[null]')
 
     return $tmp = $name;
 }
+
+/**
+ * 反转义
+ * @param $data
+ * @return mixed
+ */
+function unaddslashes (&$data)
+{
+    foreach ((array)$data as $k => $v)
+    {
+        if (is_numeric ($v))
+        {
+            $data[$k] = $v;
+        }
+        else
+        {
+            $data[$k] = is_array ($v) ? unaddslashes($v) : stripslashes ($v);
+        }
+    }
+    return $data;
+}

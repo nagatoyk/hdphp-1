@@ -3,11 +3,7 @@
 class Hook
 {
     //钓子
-    private $hook = array();
-
-    public function __construct ()
-    {
-    }
+    private static $hook = array();
 
     /**
      * 添加钓子事件
@@ -15,20 +11,16 @@ class Hook
      * @param $hook   钓子名称
      * @param $action 钓子事件
      */
-    public function add ($hook, $action)
+    public static function add($hook, $action)
     {
-        if ( ! isset($this->hook[$hook]))
-        {
-            $this->hook[$hook] = array();
+        if (!isset(self::$hook[$hook])) {
+            self::$hook[$hook] = array();
         }
 
-        if (is_array ($action))
-        {
-            $this->hook[$hook] = array_merge ($this->hook[$hook], $action);
-        }
-        else
-        {
-            $this->hook[$hook][] = $action;
+        if (is_array($action)) {
+            self::$hook[$hook] = array_merge(self::$hook[$hook], $action);
+        } else {
+            self::$hook[$hook][] = $action;
         }
     }
 
@@ -39,15 +31,12 @@ class Hook
      *
      * @return array
      */
-    public function get ($hook = '')
+    public static function get($hook = '')
     {
-        if (empty($hook))
-        {
-            return $this->hook;
-        }
-        else
-        {
-            return $this->hook[$hook];
+        if (empty($hook)) {
+            return self::$hook;
+        } else {
+            return self::$hook[$hook];
         }
     }
 
@@ -57,29 +46,21 @@ class Hook
      * @param      $data      钓子数据
      * @param bool $recursive 是否递归合并
      */
-    public function import ($data, $recursive = true)
+    public static function import($data, $recursive = true)
     {
-        if ($recursive === false)
-        {
-            $this->hook = array_merge ($this->hook, $data);
-        }
-        else
-        {
-            foreach ($data as $hook => $value)
-            {
-                if ( ! isset($this->hook[$hook]))
-                {
-                    $this->hook[$hook] = array();
+        if ($recursive === false) {
+            self::$hook = array_merge(self::$hook, $data);
+        } else {
+            foreach ($data as $hook => $value) {
+                if (!isset(self::$hook[$hook])) {
+                    self::$hook[$hook] = array();
                 }
 
-                if (isset($value['_overflow']))
-                {
+                if (isset($value['_overflow'])) {
                     unset($value['_overflow']);
-                    $this->hook[$hook] = $value;
-                }
-                else
-                {
-                    $this->hook[$hook] = array_merge ($this->hook[$hook], $value);
+                    self::$hook[$hook] = $value;
+                } else {
+                    self::$hook[$hook] = array_merge(self::$hook[$hook], $value);
                 }
             }
         }
@@ -93,68 +74,52 @@ class Hook
      *
      * @return bool
      */
-    public function listen ($hook, &$param = null)
+    public static function listen($hook, &$param = null)
     {
-        if ( ! isset($this->hook[$hook]))
-        {
+        if (!isset(self::$hook[$hook])) {
             return false;
         }
 
-        foreach ($this->hook[$hook] as $name)
-        {
-            if (false === self::exe ($name, $hook, $param))
-            {
+        foreach (self::$hook[$hook] as $name) {
+            if (false === self::exe($name, $hook, $param)) {
                 return false;
             }
         }
-
         return $param ?: true;
     }
 
     /**
      * 执行钓子
-     *
      * @param $name 钓子名
      * @param string $action 钓子方法
      * @param null $param 参数
-     *
      * @return bool|null
      */
-    public static function exe ($name, $action = 'run', &$param = null)
+    public static function exe($name, $action = 'run', &$param = null)
     {
-        if (substr ($name, -4) == 'Hook')
-        {
+        if (substr($name, -4) == 'Hook') {
             //钓子
             $action = 'run';
-        }
-        else
-        {
+        } else {
             //插件
-            $file = 'addons/'.$name.'/'.$name.'php';
-            if ( ! is_file ($file))
-            {
+            $file = 'Addons/' . $name . '/' . $name . 'Addon.php';
+            if (!is_file($file)) {
                 return false;
             }
+            require_once($file);
+            $name = "\\Addons\\{$name}\\" . $name . 'Addon';
 
-            require_once ($file);
-
-            $name = "\\addons\\{$name}\\".$name.'Addon';
-
-            if ( ! class_exists ($name, false))
-            {
+            if (!class_exists($name, false)) {
                 return false;
             }
         }
 
-        if (class_exists ($name))
-        {
+        if (class_exists($name)) {
             $obj = new $name;
-            if (method_exists ($obj, $action))
-            {
+            if (method_exists($obj, $action)) {
                 $obj->$action($param);
             }
         }
-
         return $param;
     }
 }

@@ -17,7 +17,6 @@ return array(
         'hdphp\db\DbProvider',
         'hdphp\dir\DirProvider',
         'hdphp\error\ErrorProvider',
-        'hdphp\hook\HookProvider',
         'hdphp\html\HtmlProvider',
         'hdphp\image\ImageProvider',
         'hdphp\lang\LangProvider',
@@ -41,6 +40,7 @@ return array(
     ),
     //服务外观
     'facades'   => array(
+        'App'      => 'hdphp\kernel\AppFacade',
         'Alipay'   => 'hdphp\alipay\ZipFacade',
         'Arr'      => 'hdphp\arr\Arr\'Facade',
         'Backup'   => 'hdphp\backup\BackupFacade',
@@ -55,7 +55,6 @@ return array(
         'Db'       => 'hdphp\db\DbFacade',
         'Dir'      => 'hdphp\dir\DirFacade',
         'Error'    => 'hdphp\error\ErrorFacade',
-        'Hook'     => 'hdphp\hook\HookFacade',
         'Html'     => 'hdphp\html\HtmlFacade',
         'Image'    => 'hdphp\image\ImageFacade',
         'Lang'     => 'hdphp\lang\LangFacade',

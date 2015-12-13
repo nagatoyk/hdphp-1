@@ -2,7 +2,6 @@
 
 use Pdo;
 use Exception;
-use Closure;
 
 class Mysql
 {

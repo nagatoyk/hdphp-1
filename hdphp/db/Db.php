@@ -5,7 +5,7 @@ class Db{
 	
 	protected $link=array();
 	
-	public function __construct()
+	public function __construct($app)
 	{
 	}
 

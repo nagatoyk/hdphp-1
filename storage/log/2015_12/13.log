@@ -24,3 +24,115 @@
 [ 2015-12-13T07:48:42+08:00 ]NOTICE: include(): Failed opening 'aa' for inclusion (include_path='.:/Applications/MAMP/bin/php/php5.5.26/lib/php')/www/hdphp/app/Home/controller/Index.php (10).
 [ 2015-12-13T07:48:44+08:00 ]NOTICE: include(aa): failed to open stream: No such file or directory/www/hdphp/app/Home/controller/Index.php (10).
 [ 2015-12-13T07:48:44+08:00 ]NOTICE: include(): Failed opening 'aa' for inclusion (include_path='.:/Applications/MAMP/bin/php/php5.5.26/lib/php')/www/hdphp/app/Home/controller/Index.php (10).
+[ 2015-12-13T20:31:58+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically/www/hdphp/hdphp/route/Controller.php (90).
+[ 2015-12-13T20:35:53+08:00 ]NOTICE: Non-static method hdphp\hook\Hook::listen() should not be called statically/www/hdphp/hdphp/route/Controller.php (90).
+[ 2015-12-13T20:35:53+08:00 ]NOTICE: Non-static method hdphp\hook\Hook::listen() should not be called statically/www/hdphp/hdphp/route/Controller.php (90).
+[ 2015-12-13T20:37:44+08:00 ]NOTICE: Class 'hdphp\hook\HookFacade' not found/www/hdphp/hdphp/kernel/App.php (77).
+[ 2015-12-13T20:38:37+08:00 ]NOTICE: Class 'hdphp\hook\HookFacade' not found/www/hdphp/hdphp/kernel/App.php (77).
+[ 2015-12-13T20:38:38+08:00 ]NOTICE: Class 'hdphp\hook\HookFacade' not found/www/hdphp/hdphp/kernel/App.php (77).
+[ 2015-12-13T20:39:35+08:00 ]NOTICE: Non-static method hdphp\route\Compile::getArg() should not be called statically/www/hdphp/hdphp/route/Controller.php (93).
+[ 2015-12-13T20:43:38+08:00 ]NOTICE: call_user_func_array() expects exactly 2 parameters, 1 given/www/hdphp/hdphp/route/Controller.php (93).
+[ 2015-12-13T20:46:22+08:00 ]NOTICE: Illegal offset type in isset or empty/www/hdphp/hdphp/kernel/App.php (131).
+[ 2015-12-13T20:46:22+08:00 ]NOTICE: Illegal offset type in isset or empty/www/hdphp/hdphp/kernel/Container.php (72).
+[ 2015-12-13T20:46:22+08:00 ]NOTICE: Illegal offset type in isset or empty/www/hdphp/hdphp/kernel/Container.php (100).
+[ 2015-12-13T20:46:22+08:00 ]NOTICE: Illegal offset type/www/hdphp/hdphp/kernel/Container.php (83).
+[ 2015-12-13T20:46:22+08:00 ]NOTICE: Illegal offset type/www/hdphp/hdphp/kernel/Container.php (85).
+[ 2015-12-13T20:46:22+08:00 ]NOTICE: Non-static method hdphp\route\Compile::getArg() should not be called statically/www/hdphp/hdphp/route/Controller.php (93).
+[ 2015-12-13T20:46:47+08:00 ]NOTICE: Non-static method hdphp\route\Compile::getArg() should not be called statically/www/hdphp/hdphp/route/Controller.php (93).
+[ 2015-12-13T20:47:27+08:00 ]EXCEPTION: Class Hook does not exist
+[ 2015-12-13T20:48:10+08:00 ]EXCEPTION: Class Hook does not exist
+[ 2015-12-13T20:50:42+08:00 ]EXCEPTION: 参数无默认值，无法实例化
+[ 2015-12-13T20:50:48+08:00 ]EXCEPTION: Class home\controller\App does not exist
+[ 2015-12-13T20:56:12+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T20:56:51+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T20:57:09+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T20:59:00+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:00+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:00+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T20:59:01+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:01+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:01+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T20:59:18+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:18+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:18+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T20:59:19+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:19+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T20:59:19+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/db/DbProvider.php:33)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:00:33+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T21:05:41+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T21:05:52+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory
+[ 2015-12-13T21:06:17+08:00 ]NOTICE: Argument 1 passed to home\controller\Index::index() must be an instance of home\controller\Db, none given/www/hdphp/app/Home/controller/Index.php (12).
+[ 2015-12-13T21:06:17+08:00 ]NOTICE: Undefined variable: app/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:07:11+08:00 ]NOTICE: Argument 1 passed to home\controller\Index::index() must be an instance of home\controller\Db, none given/www/hdphp/app/Home/controller/Index.php (12).
+[ 2015-12-13T21:08:06+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:08:06+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:08:48+08:00 ]NOTICE: Use of undefined constant App - assumed 'App'/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:08:48+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (15).
+[ 2015-12-13T21:08:48+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:09:19+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:09:19+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:09:20+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:09:20+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:09:20+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:09:20+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:16:51+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:75)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:16:51+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/App.php:75)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:16:51+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:75)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:16:51+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:16:51+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:17:05+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:17:05+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:17:05+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:17:05+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:17:05+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:19:17+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:17+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:17+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:19:17+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:19:17+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (61).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:19:18+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:21:55+08:00 ]NOTICE: Non-static method hdphp\kernel\App::make() should not be called statically, assuming $this from incompatible context/www/hdphp/app/Home/controller/Index.php (14).
+[ 2015-12-13T21:21:55+08:00 ]NOTICE: Missing argument 1 for hdphp\kernel\App::make(), called in /www/hdphp/app/Home/controller/Index.php on line 14 and defined/www/hdphp/hdphp/kernel/App.php (129).
+[ 2015-12-13T21:21:55+08:00 ]NOTICE: Undefined variable: name/www/hdphp/hdphp/kernel/App.php (131).
+[ 2015-12-13T21:21:55+08:00 ]NOTICE: Non-static method hdphp\kernel\Container::make() should not be called statically, assuming $this from incompatible context/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:21:55+08:00 ]NOTICE: Undefined variable: name/www/hdphp/hdphp/kernel/App.php (137).
+[ 2015-12-13T21:23:49+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:23:49+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:23:49+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:24:16+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:41)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:24:16+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:41)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:24:16+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:41)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:24:21+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:24:21+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:24:21+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:34)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:24:34+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:56)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:24:34+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/Loader.php:56)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:24:34+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/Loader.php:56)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:25:30+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:65)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:30+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/App.php:65)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:30+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:65)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:25:46+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:46+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:46+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:25:47+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:47+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:47+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:25:58+08:00 ]NOTICE: session_start(): Cannot send session cookie - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:58+08:00 ]NOTICE: session_start(): Cannot send session cache limiter - headers already sent (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/Hdphp/Session/File.php (17).
+[ 2015-12-13T21:25:58+08:00 ]NOTICE: Cannot modify header information - headers already sent by (output started at /www/hdphp/hdphp/kernel/App.php:68)/www/hdphp/hdphp/kernel/App.php (54).
+[ 2015-12-13T21:26:30+08:00 ]NOTICE: Class 'hdphp\kernel\AppFacade' not found/www/hdphp/hdphp/kernel/App.php (70).
+[ 2015-12-13T21:27:04+08:00 ]EXCEPTION: SQLSTATE[HY000] [2002] No such file or directory

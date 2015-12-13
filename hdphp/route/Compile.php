@@ -34,10 +34,9 @@ class Compile extends Setting
 
     /**
      * 获取请求参数
+     * @param $key
      *
-     * @param  [type] $key [description]
-     *
-     * @return [type]      [description]
+     * @return array
      */
     protected function getArgs ($key)
     {
@@ -227,45 +226,7 @@ class Compile extends Setting
     /**
      * 没有路由匹配时解析GET模式
      */
-    public function RunGetModel ()
-    {
-        //URL结构处理
-        $param = array();
-        if (isset($_GET[c('http.url_var')]))
-        {
-            $param = explode ('/', $_GET[c('http.url_var')]);
-            unset($_GET[c('http.url_var')]);
-        }
-        switch (count ($param))
-        {
-            case 3:
-                define ('MODULE', array_shift ($param));
-                define ('CONTROLLER', array_shift ($param));
-                define ('ACTION', array_shift ($param));
-                break;
-            case 2:
-                define ('CONTROLLER', array_shift ($param));
-                define ('ACTION', array_shift ($param));
-                break;
-            case 1:
-                define ('ACTION', array_shift ($param));
-                break;
-        }
 
-        if ( ! defined ('MODULE'))
-        {
-            define ('MODULE', defined ('BIND_MODULE') ? BIND_MODULE : C ('http.default_module'));
-        }
-        if ( ! defined ('CONTROLLER'))
-        {
-            define ('CONTROLLER', C ('http.default_controller'));
-        }
-        if ( ! defined ('ACTION'))
-        {
-            define ('ACTION', C ('http.default_action'));
-        }
-        $this->found = true;
-    }
 
     /**
      * 获取解析后的参数

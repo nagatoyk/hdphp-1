@@ -4,7 +4,6 @@ use hdphp\kernel\ServiceProvider;
 
 class DbProvider extends ServiceProvider
 {
-
     //延迟加载
     public $defer = false;
 
@@ -35,7 +34,7 @@ class DbProvider extends ServiceProvider
         $this->app->bind (
             'Db',
             function ($app)
-            {
+            {echo 111;
                 return new Db($app);
             },
             true

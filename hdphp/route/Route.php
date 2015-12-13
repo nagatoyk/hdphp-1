@@ -1,12 +1,9 @@
 <?php namespace hdphp\route;
 
-use Closure;
-
-/**
- * 路由处理类
- */
+//路由处理类
 class Route extends Compile
 {
+    public static $app;
     //路由定义
     public $route = array();
 
@@ -28,25 +25,20 @@ class Route extends Compile
         ':all' => '.*',
     );
 
-    //构造函数
-    public function __construct ()
+    // 构造函数
+    public function __construct ($app)
     {
+        self::$app        = $app;
         $this->requestUri = $this->getRequestUri ();
     }
 
-    /**
-     * 取得请求url
-     * @return string
-     */
+    // 取得请求url
     public function url ()
     {
         return __WEB__.($this->requestUri == '/' ? '' : '/'.$this->requestUri);
     }
 
-    /**
-     * 请求地址
-     * @return mixed|string
-     */
+    // 请求地址
     protected function getRequestUri ()
     {
         if (isset($_SERVER['PATH_INFO']))
@@ -72,6 +64,7 @@ class Route extends Compile
 
     /**
      * 使用正则表达式限制参数
+     *
      * @param $name
      * @param null $regexp
      */
@@ -91,12 +84,12 @@ class Route extends Compile
 
     }
 
-    /**
-     * 解析标签
-     * @return bool
-     */
+    // 解析标签
     public function dispatch ()
     {
+        //加载路由定义
+        require ROOT_PATH.'/system/routes.php';
+
         //设置路由缓存
         if (C ('http.route_cache') && ($route = S ('route')))
         {
@@ -120,13 +113,11 @@ class Route extends Compile
             }
         }
 
-        //普通GET模式
-        $this->RunGetModel ($this->requestUri);
+        //GET模式处理
+        Controller::run ();
     }
 
-    /**
-     * 解析路由
-     */
+    // 解析路由
     protected function parseRoute ()
     {
         /**
@@ -167,7 +158,6 @@ class Route extends Compile
                 {
                     $regexp = str_replace ($ato[0], '([^/]+?)'.$has, $regexp);
                 }
-
             }
 
             $this->route[$key]['regexp'] = '#^'.$regexp.'$#';

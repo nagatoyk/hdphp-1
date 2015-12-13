@@ -4,7 +4,7 @@
     'write'    =>
         array(),
     'host'     => '',
-    'driver'   => '',
+    'driver'   => 'mysql',
     'charset'  => '',
     'user'     => '',
     'password' => '',

@@ -36,7 +36,7 @@
         <div class="hdphp">
             为开发效率而生
             <br/>
-            <span>版本: {{HDPHP_VERSION}}</span>
+            <span>版本: {{HDPHP_VERSION}} Dev</span>
         </div>
     </div>
 </body>

@@ -14,10 +14,11 @@
 * 你可以用在任意网站（包括商业网站）你不需要支付任何费用
 
 ----
-# 交流
+# 交流&帮助
 * 后盾网论坛： [http://bbs.houdunwang.com](http://bbs.houdunwang.com/forum-105-1.html "后盾网论坛")
 
 * HDPHP官网： [http://www.hdphp.com ](http://www.hdphp.com "HDPHP官网")
+* 在线手册： [http://houdunwang.github.io/doc/ ](http://doc.hdphp.com)
 
 ![后盾网  人人做后盾](http://bbs.houdunwang.com/data/attachment/forum/201309/20/231654vljezph2e7lrezf9.jpg)  
 

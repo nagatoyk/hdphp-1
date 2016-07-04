@@ -1,52 +1,27 @@
-<?php namespace hdphp\config;
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
+namespace hdphp\config;
 
 use hdphp\kernel\ServiceProvider;
 
-class ConfigProvider extends ServiceProvider
-{
+class ConfigProvider extends ServiceProvider {
 
-    //延迟加载
-    public $defer = false;
+	//延迟加载
+	public $defer = FALSE;
 
-    public function boot ()
-    {
-        foreach (glob (ROOT_PATH.DS.'config/*') as $file)
-        {
-            $info = pathinfo ($file);
-            \Config::set ($info['filename'], require $file);
-        }
-        //加载.env配置
-        if (is_file ('.env'))
-        {
-            $config = array();
-            foreach (file ('.env') as $file)
-            {
-                $data                    = explode ('=', $file);
-                $config[trim ($data[0])] = trim ($data[1]);
-            }
+	public function boot() {
+	}
 
-            \Config::set ('database.read.host', $config['DB_HOST']);
-            \Config::set ('database.read.user', $config['DB_USERNAME']);
-            \Config::set ('database.read.password', $config['DB_PASSWORD']);
-            \Config::set ('database.read.database', $config['DB_DATABASE']);
-            \Config::set ('database.read.prefix', $config['DB_PREFIX']);
-            \Config::set ('database.write.host', $config['DB_HOST']);
-            \Config::set ('database.write.user', $config['DB_USERNAME']);
-            \Config::set ('database.write.password', $config['DB_PASSWORD']);
-            \Config::set ('database.write.database', $config['DB_DATABASE']);
-            \Config::set ('database.write.prefix', $config['DB_PREFIX']);
-        }
-    }
-
-    public function register ()
-    {
-        $this->app->single (
-            'Config',
-            function ($app)
-            {
-                return new Config($app);
-            },
-            true
-        );
-    }
+	public function register() {
+		$this->app->single( 'Config', function ( $app ) {
+			return new Config( $app );
+		}, TRUE );
+	}
 }

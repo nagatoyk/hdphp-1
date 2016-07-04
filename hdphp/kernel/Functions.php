@@ -1,350 +1,441 @@
 <?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
 
+//表名加前缀
+if ( ! function_exists( 'tablename' ) ) {
+	function tablename( $table ) {
+		return c( 'database.prefix' ) . $table;
+	}
+}
 /**
  * 生成url
  *
- * @param       $path 模块/动作/方法
+ * @param string $path 模块/动作/方法
  * @param array $args GET参数
  *
- * @return string
+ * @return mixed|string
  */
-function u($path, $args = array())
-{
-    if (empty($path) || preg_match('@^http@i', $path)) {
-        return $path;
-    }
-    switch (count(explode('/', $path))) {
-        case 2:
-            if (!defined('BIND_MODULE')) {
-                $path = MODULE . '/' . $path;
-            }
-            break;
-        case 1:
-            if (defined('BIND_MODULE')) {
-                $path = CONTROLLER . '/' . $path;
-            } else {
-                $path = MODULE . '/' . CONTROLLER . '/' . $path;
-            }
-            break;
-    }
-    $url = C('http.rewrite') ? __ROOT__ : __ROOT__ . '/' . basename($_SERVER['SCRIPT_FILENAME']);
-    $url .= '?' . c('http.url_var') . '=' . $path;
-    //添加参数
-    if (!empty($args)) {
-        $url .= '&' . http_build_query($args);
-    }
-    return $url;
-}
+if ( ! function_exists( 'u' ) ) {
+	function u( $path, $args = [ ] ) {
+		if ( empty( $path ) || preg_match( '@^http@i', $path ) ) {
+			return $path;
+		}
+		//URL请求参数
+		$urlParam = explode( '/', $_GET[ c( 'http.url_var' ) ] );
+		$path     = str_replace( '.', '/', $path );
+		switch ( count( explode( '/', $path ) ) ) {
+			case 2:
+				$path = $urlParam[0] . '/' . $path;
+				break;
+			case 1:
+				$path = $urlParam[0] . '/' . $urlParam[1] . '/' . $path;
+				break;
+		}
+		$url = C( 'http.rewrite' ) ? __ROOT__ : __ROOT__ . '/' . basename( $_SERVER['SCRIPT_FILENAME'] );
+		$url .= '?' . c( 'http.url_var' ) . '=' . $path;
+		//添加参数
+		if ( ! empty( $args ) ) {
+			$url .= '&' . http_build_query( $args );
+		}
 
-/**
- * 调用 Api Server
- */
-function api()
-{
-    static $cache = array();
-    $params = func_get_args();
-    $info = explode('/', array_shift($params));
-    //动作
-    $action = array_pop($info);
-    $class = implode('\\', $info);
-    if (!isset($cache[$class])) {
-        $cache[$class] = new $class;
-    }
-
-    return call_user_func_array(array($cache[$class], $action), $params);
-}
-
-/**
- * 实例模型
- * @param $class 类名
- * @return mixed
- */
-function m($class)
-{
-    static $instances = array();
-
-    if (isset($instances[$class])) {
-        return $instances[$class];
-    }
-
-    return $instances[$class] = new $class;
+		return $url;
+	}
 }
 
 /**
  * 操作配置项
  *
- * @param string $name [description]
- * @param string $value [description]
+ * @param string $name
+ * @param string $value
+ *
+ * @return mixed
  */
-function c($name = '', $value = '')
-{
-    if ($name === '') {
-        return Config::all();
-    }
+if ( ! function_exists( 'c' ) ) {
+	function c( $name = '', $value = '' ) {
+		if ( $name === '' ) {
+			return Config::all();
+		}
 
-    if ($value === '') {
-        return Config::get($name);
-    }
+		if ( $value === '' ) {
+			return Config::get( $name );
+		}
 
-    return Config::set($name, $value);
+		return Config::set( $name, $value );
+	}
 }
-
 /**
  * 请求参数
+ *
  * @param $var 变量名
  * @param null $default 默认值
  * @param string $filter 数据处理函数
+ *
  * @return mixed
  */
-function q($var, $default = null, $filter = '')
-{
-    return Request::query($var, $default, $filter);
+if ( ! function_exists( 'q' ) ) {
+	function q( $var, $default = NULL, $filter = '' ) {
+		return Request::query( $var, $default, $filter );
+	}
 }
-
 /**
- * 404
- * @param $code
+ * 输出404页面
  */
-function _404($code)
-{
-    if ($code == 404 && is_file('public/404.html')) {
-        Response::sendHttpStatus(404);
-        View::make('public/404');
-    }
+if ( ! function_exists( '_404' ) ) {
+	function _404() {
+		Response::sendHttpStatus( 404 );
+		if ( is_file( c( 'view.404' ) ) ) {
+			require( c( 'view.404' ) );
+		}
+		exit;
+	}
+}
+if ( ! function_exists( 'm' ) ) {
+	function m( $model ) {
+		static $instance = [ ];
+		$class = strpos( $model, '\\' ) === FALSE ? '\system\model\\' . ucfirst($model) : $model;
+		if ( isset( $instance[ $class ] ) ) {
+			return $instance[ $class ];
+		}
+
+		return $instance[ $class ] = new $class;
+	}
 }
 
 /**
- * 打印输出数据|show的别名
+ * 打印输出数据
  *
- * @param void $var
+ * @param $var
  */
-function p($var)
-{
-    echo "<pre>" . print_r($var, true) . "</pre>";
+if ( ! function_exists( 'p' ) ) {
+	function p( $var ) {
+		echo "<pre>" . print_r( $var, TRUE ) . "</pre>";
+	}
 }
 
+/**
+ * 获取客户端ip
+ */
+if ( ! function_exists( 'clientIp' ) ) {
+	function clientIp() {
+		return \Request::ip();
+	}
+}
 /**
  * 跳转网址
  *
- * @param string $url 跳转urlg
- * @param int $time 跳转时间
+ * @param $url
+ * @param int $time
  * @param string $msg
  */
-function go($url, $time = 0, $msg = '')
-{
-    $url = u($url);
-    if (!headers_sent()) {
-        $time == 0 ? header("Location:" . $url) : header("refresh:{$time};url={$url}");
-        exit($msg);
-    } else {
-        echo "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
-        if ($msg) {
-            echo($msg);
-        }
-        exit;
-    }
+if ( ! function_exists( 'go' ) ) {
+	function go( $url, $time = 0, $msg = '' ) {
+		$url = u( $url );
+		if ( ! headers_sent() ) {
+			$time == 0 ? header( "Location:" . $url ) : header( "refresh:{$time};url={$url}" );
+			exit( $msg );
+		} else {
+			echo "<meta http-equiv='Refresh' content='{$time};URL={$url}'>";
+			if ( $msg ) {
+				echo( $msg );
+			}
+			exit;
+		}
+	}
 }
-
 /**
- * Session管理
+ * 文件缓存
  *
- * @param        $name
+ * @param $name
  * @param string $value
- */
-function session($name = '', $value = '[get]')
-{
-    $action = $value[0] == '[' ? trim($value, '[]') : 'set';
-
-    return Session::$action($name, $value);
-}
-
-/**
- * Cookie管理
- *
- * @param        $name
- * @param string $value
- */
-function cookie($name, $value = '[get]')
-{
-    $action = $value[0] == '[' ? trim($value, '[]') : 'set';
-
-    return Cookie::$action($name, $value);
-}
-
-/**
- * 快速缓存 以文件形式缓存
- *
- * @param String $name 缓存KEY
- * @param bool $value 数据
- * @param string $path 缓存目录
+ * @param string $path
  *
  * @return bool
  */
-function f($name, $value = '[get]', $path = 'Storage/cache')
-{
-    static $cache = array();
+if ( ! function_exists( 'f' ) ) {
+	function f( $name, $value = '[get]', $path = 'storage/cache' ) {
+		static $cache = [ ];
 
-    $file = $path . '/' . $name . '.php';
+		$file = $path . '/' . $name . '.php';
 
-    if ($value == '[del]') {
-        if (is_file($file)) {
-            unlink($file);
-            if (isset($cache[$name])) {
-                unset($cache[$name]);
-            }
-        }
+		if ( $value == '[del]' ) {
+			if ( is_file( $file ) ) {
+				unlink( $file );
+				if ( isset( $cache[ $name ] ) ) {
+					unset( $cache[ $name ] );
+				}
+			}
 
-        return true;
-    }
+			return TRUE;
+		}
 
-    if ($value === '[get]') {
-        if (isset($cache[$name])) {
-            return $cache[$name];
-        } else if (is_file($file)) {
-            return $cache[$name] = include $file;
-        } else {
-            return false;
-        }
-    }
+		if ( $value === '[get]' ) {
+			if ( isset( $cache[ $name ] ) ) {
+				return $cache[ $name ];
+			} else if ( is_file( $file ) ) {
+				return $cache[ $name ] = include $file;
+			} else {
+				return FALSE;
+			}
+		}
 
-    $data = "<?php if(!defined('HDPHP_PATH'))exit;\nreturn " . var_export($value, true) . ";\n?>";
+		$data = "<?php if(!defined('HDPHP_PATH'))exit;\nreturn " . var_export( $value, TRUE ) . ";\n?>";
 
-    if (!is_dir($path)) {
-        mkdir($path, 0755, true);
-    }
+		if ( ! is_dir( $path ) ) {
+			mkdir( $path, 0755, TRUE );
+		}
 
-    if (!file_put_contents($file, $data)) {
-        return false;
-    }
+		if ( ! file_put_contents( $file, $data ) ) {
+			return FALSE;
+		}
 
-    $cache[$name] = $value;
+		$cache[ $name ] = $value;
 
-    return true;
+		return TRUE;
+	}
 }
-
 /**
- * 驱动缓存
+ * 快速数据库缓存
  *
- * @param string $name 变量名
- * @param mixed $data 缓存数据
- * @param int $expire 过期时间 0　为持久缓存
+ * @param $key
+ * @param null $value
+ *
+ * @return mixed
  */
-function s($name, $data = '', $expire = null)
-{
-    if (empty($data)) {
-        return Cache::get($name);
-    } else {
-        return Cache::set($name, $data, $expire);
-    }
-}
+if ( ! function_exists( 'd' ) ) {
+	function d( $key, $value = '[get]' ) {
+		$db = Db::table( c( 'cache.mysql.table' ) );
+		switch ( $value ) {
+			case '[get]':
+				//获取
+				$cache = $db->where( '`key`', '=', $key )->pluck( 'value' );
+				if ( $cache ) {
+					return unserialize( $cache );
+				}
+				break;
+			case '[del]':
+				//删除
+				return $db->where( '`key`', '=', $key )->delete();
+			case '[truncate]':
+				//删除所有缓存
+				return $db->truncate();
+			default:
+				$data = [ 'key' => $key, 'value' => serialize( $value ) ];
 
+				return $db->replace( $data );
+		}
+	}
+}
 /**
  * 根据大小返回标准单位 KB  MB GB等
+ *
+ * @param $size 数字
+ * @param int $decimals 小数位
+ *
+ * @return string
  */
-function get_size($size, $decimals = 2)
-{
-    switch (true) {
-        case $size >= pow(1024, 3):
-            return round($size / pow(1024, 3), $decimals) . " GB";
-        case $size >= pow(1024, 2):
-            return round($size / pow(1024, 2), $decimals) . " MB";
-        case $size >= pow(1024, 1):
-            return round($size / pow(1024, 1), $decimals) . " KB";
-        default:
-            return $size . 'B';
-    }
+if ( ! function_exists( 'get_size' ) ) {
+	function get_size( $size, $decimals = 2 ) {
+		switch ( TRUE ) {
+			case $size >= pow( 1024, 3 ):
+				return round( $size / pow( 1024, 3 ), $decimals ) . " GB";
+			case $size >= pow( 1024, 2 ):
+				return round( $size / pow( 1024, 2 ), $decimals ) . " MB";
+			case $size >= pow( 1024, 1 ):
+				return round( $size / pow( 1024, 1 ), $decimals ) . " KB";
+			default:
+				return $size . 'B';
+		}
+	}
 }
-
 /**
  * 导入类库
  *
- * @param  string $class 路径
+ * @param string $class
  *
  * @return bool
  */
-function import($class)
-{
-    $file = str_replace(array('@', '.', '#'), array(APP_PATH, '/', '.'), $class);
-    if (is_file($file)) {
-        require_once $file;
-
-        return true;
-    } else {
-        return false;
-    }
+if ( ! function_exists( 'import' ) ) {
+	function import( $class ) {
+		$file = str_replace( [ '@', '.', '#' ], [ APP_PATH, '/', '.' ], $class );
+		if ( is_file( $file ) ) {
+			require_once $file;
+		} else {
+			return FALSE;
+		}
+	}
 }
-
 //打印用户常量
-function print_const()
-{
-    $d = get_defined_constants(true);
-    p($d['user']);
+if ( ! function_exists( 'print_const' ) ) {
+	function print_const() {
+		$d = get_defined_constants( TRUE );
+		p( $d['user'] );
+	}
 }
 
 /**
- * trace 信息
+ * trace
  *
- * @param  string $value 变量
- * @param  string $label 标签
- * @param  string $level 日志级别(或者页面Trace的选项卡)
- * @param  boolean $record 是否记录日志
+ * @param string $value 变量
+ * @param string $label 标签
+ * @param string $level 日志级别(或者页面Trace的选项卡)
+ * @param bool|false $record 是否记录日志
  *
- * @return void|array
- */
-function trace($value = '[hdphp]', $label = '', $level = 'DEBUG', $record = false)
-{
-    return Error::trace($value, $label, $level, $record);
-}
-
-/**
- * 全局变量
- * @param $name 变量名
- * @param string $value 变量值
- * @return mixed 返回值
- */
-function v($name, $value = '[null]')
-{
-    static $vars = array();
-    $tmp = &$vars;
-    //取变量
-    if ($value == '[null]') {
-        foreach (explode('.', $name) as $d) {
-            if (isset($tmp[$d])) {
-                $tmp = $tmp[$d];
-            } else {
-                return false;
-            }
-        }
-        return $tmp;
-    }
-    //设置
-    foreach (explode('.', $name) as $d) {
-        if (!isset($tmp[$d])) {
-            $tmp[$d] = array();
-        }
-        $tmp = &$tmp[$d];
-    }
-
-    return $tmp = $name;
-}
-
-/**
- * 反转义
- * @param $data
  * @return mixed
  */
-function unaddslashes (&$data)
-{
-    foreach ((array)$data as $k => $v)
-    {
-        if (is_numeric ($v))
-        {
-            $data[$k] = $v;
-        }
-        else
-        {
-            $data[$k] = is_array ($v) ? unaddslashes($v) : stripslashes ($v);
-        }
-    }
-    return $data;
+if ( ! function_exists( 'trace' ) ) {
+	function trace( $value = '[hdphp]', $label = '', $level = 'DEBUG', $record = FALSE ) {
+		return Error::trace( $value, $label, $level, $record );
+	}
+}
+/**
+ * 全局变量
+ *
+ * @param $name 变量名
+ * @param string $value 变量值
+ *
+ * @return mixed 返回值
+ */
+if ( ! function_exists( 'v' ) ) {
+	function v( $name = NULL, $value = '[null]' ) {
+		static $vars = [ ];
+		if ( is_null( $name ) ) {
+			return $vars;
+		} else if ( $value == '[null]' ) {
+			//取变量
+			$tmp = $vars;
+			foreach ( explode( '.', $name ) as $d ) {
+				if ( isset( $tmp[ $d ] ) ) {
+					$tmp = $tmp[ $d ];
+				} else {
+					return NULL;
+				}
+			}
+
+			return $tmp;
+		} else {
+			//设置
+			$tmp = &$vars;
+			foreach ( explode( '.', $name ) as $d ) {
+				if ( ! isset( $tmp[ $d ] ) ) {
+					$tmp[ $d ] = [ ];
+				}
+				$tmp = &$tmp[ $d ];
+			}
+
+			return $tmp = $value;
+		}
+	}
+}
+/**
+ * 反转义
+ *
+ * @param array $data
+ *
+ * @return mixed
+ */
+if ( ! function_exists( 'unaddslashes' ) ) {
+	function unaddslashes( &$data ) {
+		foreach ( (array) $data as $k => $v ) {
+			if ( is_numeric( $v ) ) {
+				$data[ $k ] = $v;
+			} else {
+				$data[ $k ] = is_array( $v ) ? unaddslashes( $v ) : stripslashes( $v );
+			}
+		}
+
+		return $data;
+	}
+}
+
+if ( ! function_exists( 'confirm' ) ) {
+	/**
+	 * 有确定提示的提示页面
+	 *
+	 * @param string $message 提示文字
+	 * @param string $sUrl 确定按钮跳转的url
+	 * @param string $eUrl 取消按钮跳转的url
+	 */
+	function confirm( $message, $sUrl, $eUrl ) {
+		View::with( [ 'message' => $message, 'sUrl' => $sUrl, 'eUrl' => $eUrl ] );
+		View::make( Config::get( 'view.confirm' ) );
+		exit;
+	}
+}
+
+if ( ! function_exists( 'ajax' ) ) {
+	/**
+	 * Ajax输出
+	 *
+	 * @param  mixed $data 数据
+	 * @param string $type 数据类型 text html xml json
+	 */
+	function ajax( $data, $type = "JSON" ) {
+		Response::ajax( $data, $type );
+	}
+}
+
+
+if ( ! function_exists( 'message' ) ) {
+	/**
+	 * 消息提示
+	 *
+	 * @param string $content 消息内容
+	 * @param string $redirect 跳转地址有三种方式 1:back(返回上一页)  2:refresh(刷新当前页)  3:具体Url
+	 * @param string $type 信息类型  success(成功），error(失败），warning(警告），info(提示）
+	 */
+	function message( $content, $redirect = 'back', $type = 'success', $timeout = 2 ) {
+
+		if ( IS_AJAX ) {
+			Response::ajax( [ 'valid' => $type == 'success' ? 1 : 0, 'message' => $content ] );
+		} else {
+			switch ( $redirect ) {
+				case 'back':
+					//有回调地址时回调,没有时返回主页
+					$url = 'window.history.go(-1)';
+					break;
+				case 'refresh':
+					$url = "location.replace('" . __URL__ . "')";
+					break;
+				default:
+					if ( empty( $redirect ) ) {
+						$url = 'window.history.go(-1)';
+					} else {
+						$url = "location.replace('" . u( $redirect ) . "')";
+					}
+					break;
+			}
+			//图标
+			switch ( $type ) {
+				case 'success':
+					$ico = 'fa-check-circle';
+					break;
+				case 'error':
+					$ico = 'fa-times-circle';
+					break;
+				case 'info':
+					$ico = 'fa-info-circle';
+					break;
+				case 'warning':
+					$ico = 'fa-warning';
+					break;
+			}
+			View::with( [
+				'content'  => $content,
+				'redirect' => $redirect,
+				'type'     => $type,
+				'url'      => $url,
+				'ico'      => $ico,
+				'timeout'  => $timeout * 1000
+			] );
+			View::make( Config::get( 'view.message' ) );
+		}
+		exit;
+	}
 }

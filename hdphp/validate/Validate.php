@@ -1,90 +1,133 @@
-<?php namespace hdphp\validate;
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
+namespace hdphp\validate;
 
 use Closure;
 
-class Validate extends VaAction
-{
+/**
+ * 表单验证
+ * Class Validate
+ * @package hdphp\validate
+ * @author 向军
+ */
+class Validate extends VaAction {
+	//有字段时验证
+	const EXISTS_VALIDATE = 1;
 
-    /**
-     * 表单难
-     * @param $validates 验证规则
-     * @param array $data 数据
-     * @return $this
-     */
-    public function make($validates,array $data=array())
-    {
-        $data = $data?$data:$_POST;
+	//值不为空时验证
+	const VALUE_VALIDATE = 2;
 
-        foreach($validates as $validate)
-        {
-            //字段名
-            $field = $validate[0];
+	//必须验证
+	const MUST_VALIDATE = 3;
 
-            //验证规则
-            $actions = explode('|',$validate[1]);
+	//值是空时处理
+	const VALUE_NULL = 4;
 
-            //错误信息
-            $message = $validate[2];
+	//不存在字段时处理
+	const NO_EXISTS_VALIDATE = 5;
 
-            //表单值
-            $value = isset($data[$field])?$data[$field]:'';
+	//扩展验证规则
+	private $validate = [ ];
 
-            foreach($actions as $action)
-            {
-                $info = explode(':', $action);
-                $method= $info[0];
-                $params = isset($info[1])?$info[1]:'';
+	//错误信息
+	protected $error;
 
-                if(method_exists($this, $method))
-                {
-                    //类方法验证
-                    if($this->$method($field,$value,$params)!==true)
-                    {
-                        $_SESSION['_validate']= $this->message = $message;
-                        return $this;
-                    }
-                }
-                else if(isset(self::$validate[$method]))
-                {
-                    $callback = self::$validate[$method];
-                    if($callback instanceof Closure)
-                    {
-                        //闭包函数
-                        if($callback($field,$value,$params)!==true)
-                        {
-                            $_SESSION['_validate']=$this->message = $message;
+	/**
+	 * 表单难
+	 *
+	 * @param $validates 验证规则
+	 * @param array $data 数据
+	 *
+	 * @return $this
+	 */
+	public function make( $validates, array $data = [ ] ) {
+		$_SESSION['_validate'] = $this->error = '';
+		$data                  = $data ? $data : $_POST;
 
-                            return $this;
-                        }
-                    }
-                }
-            }
-        }
+		foreach ( $validates as $validate ) {
+			//验证条件
+			$validate[3] = isset( $validate[3] ) ? $validate[3] : self::MUST_VALIDATE;
 
-        $_SESSION['_validate']=$this->message = '';
-        return $this;
-    }
+			if ( $validate[3] == self::EXISTS_VALIDATE && ! isset( $data[ $validate[0] ] ) ) {
+				continue;
+			} else if ( $validate[3] == self::VALUE_VALIDATE && empty( $data[ $validate[0] ] ) ) {
+				//不为空时处理
+				continue;
+			} else if ( $validate[3] == self::VALUE_NULL && ! empty( $data[ $validate[0] ] ) ) {
+				//值为空时处理
+				continue;
+			} else if ( $validate[3] == self::NO_EXISTS_VALIDATE && isset( $data[ $validate[0] ] ) ) {
+				//值为空时处理
+				continue;
+			} else if ( $validate[3] == self::MUST_VALIDATE ) {
+				//必须处理
+			}
+			//表单值
+			$value = isset( $data[ $validate[0] ] ) ? $data[ $validate[0] ] : '';
 
-    //添加验证闭包
-    public function extend($name,$callback)
-    {
-        if($callback instanceof Closure)
-        {
-            self::$validate[$name]=$callback;
-        }
-    }
+			//验证规则
+			if ( $validate[1] instanceof Closure ) {
+				$method = $validate[1];
+				//闭包函数
+				if ( $method( $value ) !== TRUE ) {
+					$_SESSION['_validate'] = $this->error = $validate[2];
 
-    //验证失败检测
-    public function fail()
-    {
-        return !empty($this->message);
-    }
+					return $this;
+				}
+			} else {
+				$actions = explode( '|', $validate[1] );
 
-    //获取错误信息
-    public function message()
-    {
-        return $this->message;
-    }
+				foreach ( $actions as $action ) {
+					$info   = explode( ':', $action );
+					$method = $info[0];
+					$params = isset( $info[1] ) ? $info[1] : '';
+					if ( method_exists( $this, $method ) ) {
+						//类方法验证
+						if ( $this->$method( $validate[0], $value, $params, [ ] ) !== TRUE ) {
+							$_SESSION['_validate'] = $this->error = $validate[2];
 
+							return $this;
+						}
+					} else if ( isset( $this->validate[ $method ] ) ) {
+						$callback = $this->$validate[ $method ];
+						if ( $callback instanceof Closure ) {
+							//闭包函数
+							if ( $callback( $validate[0], $value, $params, [ ] ) !== TRUE ) {
+								$_SESSION['_validate'] = $this->error = $validate[2];
+
+								return $this;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $this;
+	}
+
+	//添加验证闭包
+	public function extend( $name, $callback ) {
+		if ( $callback instanceof Closure ) {
+			$this->validate[ $name ] = $callback;
+		}
+	}
+
+	//验证失败检测
+	public function fail() {
+		return ! empty( $this->error );
+	}
+
+	//获取错误信息
+	public function getError() {
+		return $this->error;
+	}
 
 }

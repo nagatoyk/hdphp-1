@@ -1,4 +1,13 @@
-<?php namespace Hdphp\Cart;
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
+namespace Hdphp\Cart;
 
 /**
  * 购物车处理类
@@ -7,14 +16,12 @@
  * @package Hdphp\Cart
  * @author  向军 <2300071698@qq.com>
  */
-class Cart
-{
+class Cart {
     private $app;
 
     public $cartName = 'cart';
 
-    public function __construct($app)
-    {
+    public function __construct( $app ) {
         $this->app = $app;
     }
 
@@ -40,49 +47,40 @@ class Cart
      * @return void
      */
 
-    public function add($data)
-    {
-        if ( ! is_array($data) || ! isset($data['id']) || ! isset($data['name']) || ! isset($data['num']) || ! isset($data['price']))
-        {
-            throw_exception('购物车ADD方法参数设置错误');
+    public function add( $data ) {
+        if ( ! is_array( $data ) || ! isset( $data['id'] ) || ! isset( $data['name'] ) || ! isset( $data['num'] ) || ! isset( $data['price'] ) ) {
+            throw_exception( '购物车ADD方法参数设置错误' );
         }
-        $data  = isset($data[0]) ? $data : array($data);
+        $data  = isset( $data[0] ) ? $data : [ $data ];
         $goods = $this->getGoods(); //获得商品数据
         //添加商品增持多商品添加
-        foreach ($data as $v)
-        {
-            $options = isset($v['options']) ? $v['options'] : '';
-            $sid     = substr(md5($v['id'] . serialize($options)), 0, 8); //生成维一ID用于处理相同商品有不同属性时
-            if (isset($goods[$sid]))
-            {
-                if ($v['num'] == 0)
-                { //如果数量为0删除商品
-                    unset($goods[$sid]);
+        foreach ( $data as $v ) {
+            $options = isset( $v['options'] ) ? $v['options'] : '';
+            $sid     = substr( md5( $v['id'] . serialize( $options ) ), 0, 8 ); //生成维一ID用于处理相同商品有不同属性时
+            if ( isset( $goods[ $sid ] ) ) {
+                if ( $v['num'] == 0 ) { //如果数量为0删除商品
+                    unset( $goods[ $sid ] );
                     continue;
                 }
                 //已经存在相同商品时增加商品数量
-                $goods[$sid]['num']   = $goods[$sid]['num'] + $v['num'];
-                $goods[$sid]['total'] = $goods[$sid]['num'] * $goods[$sid]['price'];
-            }
-            else
-            {
-                if ($v['num'] == 0)
-                {
+                $goods[ $sid ]['num']   = $goods[ $sid ]['num'] + $v['num'];
+                $goods[ $sid ]['total'] = $goods[ $sid ]['num'] * $goods[ $sid ]['price'];
+            } else {
+                if ( $v['num'] == 0 ) {
                     continue;
                 }
-                $goods[$sid]          = $v;
-                $goods[$sid]['total'] = $v['num'] * $v['price'];
+                $goods[ $sid ]          = $v;
+                $goods[ $sid ]['total'] = $v['num'] * $v['price'];
             }
         }
 
-        $this->save($goods);
+        $this->save( $goods );
     }
 
-    private function save($goods)
-    {
-        $_SESSION[$this->cartName]['goods']      = $goods;
-        $_SESSION[$this->cartName]['total_rows'] = $this->getTotalNums();
-        $_SESSION[$this->cartName]['total']      = $this->getTotalPrice();
+    private function save( $goods ) {
+        $_SESSION[ $this->cartName ]['goods']      = $goods;
+        $_SESSION[ $this->cartName ]['total_rows'] = $this->getTotalNums();
+        $_SESSION[ $this->cartName ]['total']      = $this->getTotalPrice();
     }
 
     /**
@@ -94,41 +92,33 @@ class Cart
      *  "sid"=>1,                        //商品的唯一SID，不是商品的ID
      *  "num"=>2,                       //商品数量
      */
-    public function update($data)
-    {
+    public function update( $data ) {
         $goods = $this->getGoods(); //获得商品数据
-        if ( ! isset($data['sid']) || ! isset($data['num']))
-        {
-            halt('购物车update方法参数错误，缺少sid或num值');
+        if ( ! isset( $data['sid'] ) || ! isset( $data['num'] ) ) {
+            halt( '购物车update方法参数错误，缺少sid或num值' );
         }
-        $data = isset($data[0]) ? $data : array($data); //允许一次删除多个商品
-        foreach ($data as $dataOne)
-        {
-            foreach ($goods as $k => $v)
-            {
-                if ($k == $dataOne['sid'])
-                {
-                    if ($dataOne['num'] == 0)
-                    {
-                        unset($goods[$k]);
+        $data = isset( $data[0] ) ? $data : [ $data ]; //允许一次删除多个商品
+        foreach ( $data as $dataOne ) {
+            foreach ( $goods as $k => $v ) {
+                if ( $k == $dataOne['sid'] ) {
+                    if ( $dataOne['num'] == 0 ) {
+                        unset( $goods[ $k ] );
                         continue;
                     }
-                    $goods[$k]['num'] = $dataOne['num'];
+                    $goods[ $k ]['num'] = $dataOne['num'];
                 }
             }
         }
-        $this->save($goods);
+        $this->save( $goods );
     }
 
     /**
      * 统计购物车中商品数量
      */
-    public function getTotalNums()
-    {
+    public function getTotalNums() {
         $goods = $this->getGoods(); //获得商品数据
         $rows  = 0;
-        foreach ($goods as $v)
-        {
+        foreach ( $goods as $v ) {
             $rows += $v['num'];
         }
 
@@ -138,12 +128,10 @@ class Cart
     /**
      * 获得商品汇总价格
      */
-    public function getTotalPrice()
-    {
+    public function getTotalPrice() {
         $goods = $this->getGoods(); //获得商品数据
         $total = 0;
-        foreach ($goods as $v)
-        {
+        foreach ( $goods as $v ) {
             $total += $v['price'] * $v['num'];
         }
 
@@ -158,72 +146,61 @@ class Cart
      *
      * @return bool
      */
-    public function del($data)
-    {
+    public function del( $data ) {
         $goods = $this->getGoods(); //获得商品数据
-        if (empty($goods))
-        {
-            return false;
+        if ( empty( $goods ) ) {
+            return FALSE;
         }
-        $sid = array(); //要删除的商品SID集合
-        if (is_string($data))
-        {
+        $sid = [ ]; //要删除的商品SID集合
+        if ( is_string( $data ) ) {
             $sid['sid'] = $data;
         }
-        if (is_array($data) && ! isset($data['sid']))
-        {
-            halt('购物车update方法参数错误，缺少sid值');
+        if ( is_array( $data ) && ! isset( $data['sid'] ) ) {
+            halt( '购物车update方法参数错误，缺少sid值' );
         }
 
-        $sid = isset($sid[0]) ? $sid : array($sid); //可以一次删除多个商品
-        foreach ($sid as $d)
-        {
-            foreach ($goods as $k => $v)
-            {
-                if ($k == $d['sid'])
-                {
-                    unset($goods[$k]);
+        $sid = isset( $sid[0] ) ? $sid : [ $sid ]; //可以一次删除多个商品
+        foreach ( $sid as $d ) {
+            foreach ( $goods as $k => $v ) {
+                if ( $k == $d['sid'] ) {
+                    unset( $goods[ $k ] );
                 }
             }
         }
-        $this->save($goods);
+        $this->save( $goods );
     }
 
     /**
      * 清空购物车中的所有商品
      */
-    public function flush()
-    {
-        $data               = array();
-        $data['goods']      = array();
+    public function flush() {
+        $data               = [ ];
+        $data['goods']      = [ ];
         $data['total_rows'] = 0;
         $data['total']      = 0;
-        Request::session($this->cartName, $data);
+        Request::session( $this->cartName, $data );
     }
 
     /**
      * 获得购物车商品数据
      */
-    public function getGoods()
-    {
-        $data = Request::session($this->cartName);
-        if ($data)
-        {
-            return isset($data['goods']) ? $data['goods'] : null;
+    public function getGoods() {
+        $data = Request::session( $this->cartName );
+        if ( $data ) {
+            return isset( $data['goods'] ) ? $data['goods'] : NULL;
         }
-        $data = array("goods" => array(), "total_rows" => 0, "total" => 0);
-        Request::session($this->cartName, $data);
+        $data = [ "goods" => [ ], "total_rows" => 0, "total" => 0 ];
+        Request::session( $this->cartName, $data );
 
-        return null;
+        return NULL;
     }
 
     /**
      * 获得购物车中的所有数据
      * 包括商品数据、总数量、总价格
      */
-    public function getAllData()
-    {
-        return Request::session($this->cartName);
+    public function getAllData() {
+        return Request::session( $this->cartName );
     }
 
     /**
@@ -231,12 +208,7 @@ class Cart
      *
      * @return string
      */
-    public function getOrderId()
-    {
-        $year_code = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
-        $i         = intval(date('Y')) - 2010 - 1;
-
-        return $year_code[$i] . date('md') .
-        substr(time(), -5) . substr(microtime(), 2, 5) . str_pad(mt_rand(1, 99), 2, '0', STR_PAD_LEFT);
+    public function getOrderId() {
+        return date( 'Ymd' ) . date( 'md' ) . substr( time(), - 5 ) . substr( microtime(), 2, 5 ) . str_pad( mt_rand( 1, 99 ), 2, '0', STR_PAD_LEFT );
     }
 }

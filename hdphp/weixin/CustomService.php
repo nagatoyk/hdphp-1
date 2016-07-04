@@ -1,7 +1,7 @@
 <?php namespace hdphp\weixin;
 
 //客服
-class CustomService extends Weixin
+class customService extends Weixin
 {
     //发送消息
     private function send($toUser, $msgType, $data)
@@ -22,19 +22,19 @@ class CustomService extends Weixin
     //发送文本消息
     public function sendTest($toUser, $content)
     {
-        return $this->send($toUser, 'text', array('content' => $content));
+        return $this->send($toUser, 'text', array( 'content' => $content ));
     }
 
     //发送图片消息
     public function sendImage($toUser, $media_id)
     {
-        return $this->send($toUser, 'image', array('media_id' => $media_id));
+        return $this->send($toUser, 'image', array( 'media_id' => $media_id ));
     }
 
     //发送语音消息
     public function sendVoice($toUser, $media_id)
     {
-        return $this->send($toUser, 'voice', array('media_id' => $media_id));
+        return $this->send($toUser, 'voice', array( 'media_id' => $media_id ));
     }
 
     //发送视频消息

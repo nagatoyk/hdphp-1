@@ -1,25 +1,27 @@
-<?php namespace hdphp\upload;
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
+namespace hdphp\upload;
 
 use hdphp\kernel\ServiceProvider;
 
-class UploadProvider extends ServiceProvider
-{
+class UploadProvider extends ServiceProvider {
 
-    //延迟加载
-    public $defer = true;
+	//延迟加载
+	public $defer = TRUE;
 
-    public function boot ()
-    {
-    }
+	public function boot() {
+	}
 
-    public function register ()
-    {
-        $this->app->single (
-            'Upload',
-            function ($app)
-            {
-                return new Upload($app);
-            }
-        );
-    }
+	public function register() {
+		$this->app->single( 'Upload', function ( $app ) {
+			return new Upload( $app );
+		} );
+	}
 }

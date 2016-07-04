@@ -14,11 +14,10 @@
 * 你可以用在任意网站（包括商业网站）你不需要支付任何费用
 
 ----
-# 交流&帮助
+# 交流
 * 后盾网论坛： [http://bbs.houdunwang.com](http://bbs.houdunwang.com/forum-105-1.html "后盾网论坛")
 
 * HDPHP官网： [http://www.hdphp.com ](http://www.hdphp.com "HDPHP官网")
-* 在线手册： [http://houdunwang.github.io/doc/ ](http://doc.hdphp.com)
 
 ![后盾网  人人做后盾](http://bbs.houdunwang.com/data/attachment/forum/201309/20/231654vljezph2e7lrezf9.jpg)  
 
@@ -27,8 +26,6 @@
 * HDPHP是否完全免费的，你不用担心任何版权问题
 * 提供多项优化策略，速度非常快
 * 采用 MVC 设计模式
-* IOC 支持
-* 支持微信、支付宝等服务
 * URL全站路由控制
 * 支持Memcached、Redis等NoSql
 * 高效的HDView模板引擎
@@ -56,3 +53,5 @@
 ----
 #商业友好的开源协议
 HDPHP遵循Apache2开源协议发布。Apache Licence是著名的非盈利开源组织Apache采用的协议。该协议和BSD类似，鼓励代码共享和尊重原作者的著作权，同样允许代码修改，再作为开源或商业软件发布。
+
+

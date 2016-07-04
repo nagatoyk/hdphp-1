@@ -1,21 +1,27 @@
-<?php namespace hdphp\data;
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
+namespace hdphp\data;
 
 use hdphp\kernel\ServiceProvider;
 
-class DataProvider extends ServiceProvider{
-	
-	//延迟加载
-	public $defer=true;
+class DataProvider extends ServiceProvider {
 
-	public function boot()
-	{
+	//延迟加载
+	public $defer = TRUE;
+
+	public function boot() {
 	}
 
-	public function register()
-	{
-		$this->app->single('Data',function($app)
-		{
-			return new Data($app);
-		});
+	public function register() {
+		$this->app->single( 'Data', function ( $app ) {
+			return new Data( $app );
+		} );
 	}
 }

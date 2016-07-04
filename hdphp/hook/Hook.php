@@ -1,125 +1,98 @@
-<?php namespace hdphp\hook;
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
+namespace hdphp\hook;
 
-class Hook
-{
-    //钓子
-    private static $hook = array();
+class Hook {
+	//钓子
+	private $hook = [ ];
 
-    /**
-     * 添加钓子事件
-     *
-     * @param $hook   钓子名称
-     * @param $action 钓子事件
-     */
-    public static function add($hook, $action)
-    {
-        if (!isset(self::$hook[$hook])) {
-            self::$hook[$hook] = array();
-        }
+	/**
+	 * 添加钓子事件
+	 *
+	 * @param $hook
+	 * @param $action
+	 */
+	public function add( $hook, $action ) {
+		if ( ! isset( $this->hook[ $hook ] ) ) {
+			$this->hook[ $hook ] = [ ];
+		}
 
-        if (is_array($action)) {
-            self::$hook[$hook] = array_merge(self::$hook[$hook], $action);
-        } else {
-            self::$hook[$hook][] = $action;
-        }
-    }
+		if ( is_array( $action ) ) {
+			$this->hook[ $hook ] = array_merge( $this->hook[ $hook ], $action );
+		} else {
+			$this->hook[ $hook ][] = $action;
+		}
+	}
 
-    /**
-     * 获得钓子信息
-     *
-     * @param string $hook 钓子名
-     *
-     * @return array
-     */
-    public static function get($hook = '')
-    {
-        if (empty($hook)) {
-            return self::$hook;
-        } else {
-            return self::$hook[$hook];
-        }
-    }
+	/**
+	 * 获得钓子信息
+	 *
+	 * @param string $hook 钩子名称
+	 *
+	 * @return array
+	 */
+	public function get( $hook = '' ) {
+		if ( empty( $hook ) ) {
+			return $this->hook;
+		} else {
+			return $this->hook[ $hook ];
+		}
+	}
 
-    /**
-     * 批量导入钓子
-     *
-     * @param      $data      钓子数据
-     * @param bool $recursive 是否递归合并
-     */
-    public static function import($data, $recursive = true)
-    {
-        if ($recursive === false) {
-            self::$hook = array_merge(self::$hook, $data);
-        } else {
-            foreach ($data as $hook => $value) {
-                if (!isset(self::$hook[$hook])) {
-                    self::$hook[$hook] = array();
-                }
+	/**
+	 * 批量导入钓子
+	 *
+	 * @param $data
+	 */
+	public function import( $data ) {
+		$this->hook = array_merge( $this->hook, $data );
+	}
 
-                if (isset($value['_overflow'])) {
-                    unset($value['_overflow']);
-                    self::$hook[$hook] = $value;
-                } else {
-                    self::$hook[$hook] = array_merge(self::$hook[$hook], $value);
-                }
-            }
-        }
-    }
+	/**
+	 * 监听钓子
+	 *
+	 * @param $hook 钩子名称
+	 * @param null $param 参数
+	 *
+	 * @return bool
+	 */
+	public function listen( $hook, $param = NULL ) {
+		if ( ! isset( $this->hook[ $hook ] ) ) {
+			return FALSE;
+		}
+		foreach ( $this->hook[ $hook ] as $name ) {
+			if ( FALSE === $this->exe( $name, $hook, $param ) ) {
+				return FALSE;
+			}
+		}
 
-    /**
-     * 监听钓子
-     *
-     * @param      $hook  钓子名
-     * @param null $param 参数
-     *
-     * @return bool
-     */
-    public static function listen($hook, &$param = null)
-    {
-        if (!isset(self::$hook[$hook])) {
-            return false;
-        }
+		return $param ?: TRUE;
+	}
 
-        foreach (self::$hook[$hook] as $name) {
-            if (false === self::exe($name, $hook, $param)) {
-                return false;
-            }
-        }
-        return $param ?: true;
-    }
+	/**
+	 * 执行钓子
+	 *
+	 * @param $name 钓子名
+	 * @param string $action 钓子方法
+	 * @param null $param 参数
+	 *
+	 * @return bool|null
+	 */
+	public function exe( $name, $action, $param = NULL ) {
+		if ( class_exists( $name ) ) {
+			$obj = new $name;
+			if ( method_exists( $obj, $action ) ) {
+				$obj->$action( $param );
+			}
+		}
 
-    /**
-     * 执行钓子
-     * @param $name 钓子名
-     * @param string $action 钓子方法
-     * @param null $param 参数
-     * @return bool|null
-     */
-    public static function exe($name, $action = 'run', &$param = null)
-    {
-        if (substr($name, -4) == 'Hook') {
-            //钓子
-            $action = 'run';
-        } else {
-            //插件
-            $file = 'Addons/' . $name . '/' . $name . 'Addon.php';
-            if (!is_file($file)) {
-                return false;
-            }
-            require_once($file);
-            $name = "\\Addons\\{$name}\\" . $name . 'Addon';
-
-            if (!class_exists($name, false)) {
-                return false;
-            }
-        }
-
-        if (class_exists($name)) {
-            $obj = new $name;
-            if (method_exists($obj, $action)) {
-                $obj->$action($param);
-            }
-        }
-        return $param;
-    }
+		return $param;
+	}
 }

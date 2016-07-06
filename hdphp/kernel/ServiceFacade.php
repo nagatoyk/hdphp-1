@@ -42,7 +42,6 @@ abstract class ServiceFacade {
 
     public static function __callStatic( $method, $args ) {
         $instance = static::getFacadeRoot();
-
         switch ( count( $args ) ) {
             case 0:
                 return $instance->$method();

@@ -25,7 +25,7 @@ class Query {
 
 	public function build() {
 		if ( ! $this->build ) {
-			$driver      = 'hdphp\db\build\\' . strtoupper( Config::get( 'database.driver' ) );
+			$driver      = 'hdphp\db\build\\' . ucfirst( Config::get( 'database.driver' ) );
 			$this->build = new $driver( $this->connection );
 		}
 

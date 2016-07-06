@@ -11,7 +11,7 @@ namespace hdphp\db\build;
 
 use hdphp\db\Build;
 
-class mysql extends Build {
+class Mysql extends Build {
 
 	public function select() {
 		return str_replace( [

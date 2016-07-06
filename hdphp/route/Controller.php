@@ -22,12 +22,12 @@ class Controller {
 				array_unshift( $param, c( 'http.default_module' ) );
 				break;
 			case 1:
-				array_unshift( $param, ucfirst( c( 'http.default_controller' ) ) );
+				array_unshift( $param, c( 'http.default_controller' ) );
 				array_unshift( $param, c( 'http.default_module' ) );
 				break;
 			case 0:
 				array_unshift( $param, c( 'http.default_action' ) );
-				array_unshift( $param, ucfirst( c( 'http.default_controller' ) ) );
+				array_unshift( $param, c( 'http.default_controller' ) );
 				array_unshift( $param, c( 'http.default_module' ) );
 				break;
 		}
@@ -47,7 +47,7 @@ class Controller {
 		if ( in_array( MODULE, C( 'http.deny_module' ) ) ) {
 			throw new Exception( MODULE . '模块禁止使用' );
 		}
-		$class = APP . '\\' . MODULE . '\\controller\\' . CONTROLLER;
+		$class = APP.'\\'.MODULE . '\\controller\\' . CONTROLLER;
 		//控制器不存在
 		if ( ! class_exists( $class ) ) {
 			if ( DEBUG ) {
@@ -57,7 +57,7 @@ class Controller {
 			}
 		}
 		$controller = Route::$app->make( $class, TRUE );
-		$action     = method_exists( $controller, ACTION ) ? ACTION : '__empty';
+		$action = method_exists( $controller, ACTION )?ACTION:'__empty';
 		//执行中间件
 		\Middleware::run();
 		//执行动作

@@ -25,7 +25,7 @@ class Curl {
 		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, FALSE );
 
 		if ( ! curl_exec( $ch ) ) {
-			Log::write( curl_errno( $ch ) );
+			\Log::write( curl_errno( $ch ) );
 			$data = '';
 		} else {
 			$data = curl_multi_getcontent( $ch );
@@ -47,7 +47,7 @@ class Curl {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $postData );
 
 		if ( ! curl_exec( $ch ) ) {
-			Log::write( curl_errno( $ch ) );
+			\Log::write( curl_errno( $ch ) );
 			$data = '';
 		} else {
 			$data = curl_multi_getcontent( $ch );

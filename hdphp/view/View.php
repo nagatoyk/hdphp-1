@@ -43,6 +43,7 @@ class View {
 		if ( ! $this->tpl = $this->getTemplateFile( $tpl ) ) {
 			return FALSE;
 		}
+
 		//编译文件
 		$this->compile = 'storage/view/' . preg_replace( '/[^\w]/', '_', $this->tpl ) . '_' . substr( md5( $this->tpl ), 0, 5 ) . '.php';
 		//编译文件
@@ -93,7 +94,7 @@ class View {
 		} else if ( ! is_file( $file ) ) {
 			if ( defined( 'MODULE' ) ) {
 				//模块视图文件夹
-				$f = MODULE_PATH . '/view/' . CONTROLLER . '/' . ( $file ?: ACTION . C( 'view.prefix' ) );
+				$f = strtolower(MODULE_PATH . '/view/' . CONTROLLER ). '/' . ( $file ?: ACTION . C( 'view.prefix' ) );
 
 				if ( is_file( $f ) ) {
 					return $f;

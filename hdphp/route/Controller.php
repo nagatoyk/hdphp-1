@@ -33,7 +33,7 @@ class Controller {
 		}
 		$_GET[ c( 'http.url_var' ) ] = implode( '/', $param );
 		define( 'MODULE', $param[0] );
-		define( 'CONTROLLER', ucfirst( preg_replace( '/_([a-z])/e', 'strtoupper("\1")', $param[1] ) ) );
+		define( 'CONTROLLER', ucfirst( preg_replace_callback( '/_([a-z])/', function($r) { return strtoupper("\1"); }, $param[1] ) ) );
 		define( 'ACTION', $param[2] );
 		define( 'MODULE_PATH', APP_PATH . '/' . MODULE );
 		define( 'VIEW_PATH', defined( 'MODULE_PATH' ) ? MODULE_PATH . '/' . 'view' : C( 'view.path' ) );

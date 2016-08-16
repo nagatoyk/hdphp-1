@@ -37,7 +37,7 @@ class Package extends Model {
 		if ( isset( $cache[ $siteid ] ) ) {
 			return $cache[ $siteid ];
 		}
-		$ids      = $this->getSiteAllPackageIds( $siteid );
+		$ids = $this->getSiteAllPackageIds( $siteid );
 		$packages = $ids ? $this->whereIn( 'id', $ids )->get() : [ ];
 		foreach ( $packages as $k => $v ) {
 			$packages[ $k ]['modules']  = unserialize( $v['modules'] );
@@ -109,9 +109,12 @@ class Package extends Model {
 		//获取站长拥有的套餐
 		$sql = "SELECT ug.package FROM " . tablename( 'user' ) . " u " . "JOIN " . tablename( 'site_user' ) . " su ON u.uid=su.uid ";
 		$sql .= "JOIN " . tablename( 'user_group' ) . " ug ON u.groupid=ug.id " . "WHERE su.siteid={$siteid} AND su.role='owner'";
-		$res = Db::query( $sql );
-
-		return $cache[ $siteid ] = $res ? ( empty( $res[0]['package'] ) ? [ ] : unserialize( $res[0]['package'] ) ) : [ ];
+		if ( $res = Db::query( $sql ) ) {
+			return $cache[ $siteid ] = $res ? ( empty( $res[0]['package'] ) ? [ ] : unserialize( $res[0]['package'] ) ) : [ ];
+		} else {
+			//没有站长时即为系统管理员添加的站点,默认有所有权限
+			return $cache[ $siteid ] = [ - 1 ];
+		}
 	}
 
 	/**
@@ -125,7 +128,7 @@ class Package extends Model {
 		$group = Db::table( 'user_group' )->where( 'id', $groupId )->first();
 		//用户套餐
 		$packageIds = unserialize( $group['package'] );
-		$packages = $group['package'] ? $this->whereIn( 'id', $packageIds )->get() : [ ];
+		$packages   = $group['package'] ? $this->whereIn( 'id', $packageIds )->get() : [ ];
 		foreach ( $packages as $k => $p ) {
 			$packages[ $k ]['modules']  = $p['modules'] ? Db::table( 'modules' )->whereIn( 'name', unserialize( $p['modules'] ) )->get() : [ ];
 			$packages[ $k ]['template'] = $p['template'] ? Db::table( 'template' )->whereIn( 'name', unserialize( $p['template'] ) )->get() : [ ];

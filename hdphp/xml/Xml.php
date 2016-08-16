@@ -40,26 +40,31 @@ class Xml {
 	}
 
 	/**
-	 * 生成xml字符,不能分析复制的XML数据比如有属性的XML
+	 * 生成xml字符,不能分析复杂的XML数据比如有属性的XML
 	 * @return string
 	 * @throws \Exception
 	 */
-	public function toSimpleXml( $data ) {
+	public function toSimpleXml( $data, $level = 0 ) {
 		if ( ! is_array( $data )
 		     || count( $data ) <= 0
 		) {
 			throw new \Exception( "数组数据异常！" );
 		}
-
-		$xml = "<xml>";
+		if ( $level == 0 ) {
+			$xml = "<xml>";
+		}
 		foreach ( $data as $key => $val ) {
-			if ( is_numeric( $val ) ) {
+			if ( is_array( $val ) ) {
+				$xml .= "<" . $key . ">" . $this->toSimpleXml( $val, 1 ) . "</" . $key . ">";
+			} else if ( is_numeric( $val ) ) {
 				$xml .= "<" . $key . ">" . $val . "</" . $key . ">";
 			} else {
 				$xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
 			}
 		}
-		$xml .= "</xml>";
+		if ( $level == 0 ) {
+			$xml .= "</xml>";
+		}
 
 		return $xml;
 	}

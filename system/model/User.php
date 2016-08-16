@@ -17,7 +17,7 @@ class User extends Model {
 	protected $denyInsertFields = [ 'uid' ];
 	protected $validate
 	                            = [
-			[ 'username', 'required', '用户名不能为空', self::EXIST_VALIDATE, self::MODEL_INSERT ],
+			[ 'username', 'required', '用户名不能为空', self::MUST_VALIDATE, self::MODEL_INSERT ],
 			[ 'username', 'regexp:/^[a-z][\w@]+$/i', '用户名必须是字母,数字,下划线或 @ 符号,并且必须以字母开始', self::EXIST_VALIDATE, self::MODEL_INSERT ],
 			[ 'username', 'unique', '帐号已经存在,请重新注册', self::EXIST_VALIDATE, self::MODEL_INSERT ],
 			[ 'groupid', 'required', '用户组不能为空', self::MUST_VALIDATE, self::MODEL_INSERT ],
@@ -38,6 +38,8 @@ class User extends Model {
 			[ 'password', 'autoPassword', 'method', self::NOT_EMPTY_AUTO, self::MODEL_BOTH ],
 			[ 'status', 1, 'string', self::NOT_EXIST_AUTO, self::MODEL_INSERT ],
 			[ 'regtime', 'time', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
+			[ 'mobile_valid', 0, 'string', self::MUST_AUTO, self::MODEL_INSERT ],
+			[ 'email_valid', 0, 'string', self::MUST_AUTO, self::MODEL_INSERT ],
 			[ 'regip', 'clientIp', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
 			[ 'lasttime', 'time', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
 			[ 'lastip', 'clientIp', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
@@ -98,13 +100,13 @@ class User extends Model {
 		}
 		$user = Db::table( 'user' )->where( 'username', $_POST['username'] )->first();
 		if ( ! $this->checkPassword( $data['password'], $user['username'] ) ) {
-			$this->error = '帐号密码输入错误,不允许登录';
+			$this->error = '密码输入错误';
 
 			return FALSE;
 		}
 
 		if ( ! $user['status'] ) {
-			$this->error = '您的帐号正在审核中,暂时不能登录系统';
+			$this->error = '您的帐号正在审核中';
 
 			return FALSE;
 		}
@@ -113,7 +115,7 @@ class User extends Model {
 		$data['lastip']   = Request::ip();
 		$data['lasttime'] = time();
 		Db::table( 'user' )->where( 'uid', $user['uid'] )->update( $data );
-		Session::set( "user", [ 'uid' => $user['uid'], 'username' => $user['username'] ] );
+		Session::set( "user", $user );
 
 		return TRUE;
 	}

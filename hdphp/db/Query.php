@@ -150,11 +150,11 @@ class Query {
 		$pri = $this->connection->getPrimaryKey();
 		if ( $pri && $id ) {
 			$data = $this->where( $pri, '=', $id )->first();
-			if ( $this->connection->getModel() ) {
-				$this->connection->model->data( $data );
-
-				return $this->connection->getModel();
-			}
+//			if ( $this->connection->getModel() ) {
+//				$this->connection->model->data( $data );
+//
+//				return $this->connection->getModel();
+//			}
 
 			return $data;
 		}

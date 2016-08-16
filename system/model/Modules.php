@@ -37,6 +37,7 @@ class Modules extends Model {
 			[ 'setting', 'intval', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
 			[ 'rule', 'intval', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
 			[ 'permissions', 'serialize', 'function', self::MUST_AUTO, self::MODEL_INSERT ],
+			[ 'locality', 1, 'string', self::EMPTY_AUTO, self::MODEL_INSERT ],
 		];
 	protected $industry
 	                            = [
@@ -91,9 +92,9 @@ class Modules extends Model {
 		//加入系统模块
 		$modules = array_merge( $modules, $this->where( 'is_system', 1 )->get() );
 		foreach ( $modules as $k => $m ) {
-			$m['subscribes']  = unserialize( $m['subscribes'] );
-			$m['processors']  = unserialize( $m['processors'] );
-			$m['permissions'] = unserialize( $m['permissions'] );
+			$m['subscribes']  = unserialize( $m['subscribes'] )?:[];
+			$m['processors']  = unserialize( $m['processors'] )?:[];
+			$m['permissions'] = unserialize( $m['permissions'] )?:[];
 			$binds            = Db::table( 'modules_bindings' )->where( 'module', $m['name'] )->get();
 			foreach ( $binds as $b ) {
 				$m['budings'][ $b['entry'] ][] = $b;
@@ -110,13 +111,33 @@ class Modules extends Model {
 	 * 删除模块
 	 *
 	 * @param string $module 模块名称
-	 * @param int $delRule
+	 * @param int $removeData 删除模块数据
 	 *
 	 * @return bool
 	 */
-	public function remove( $module, $delRule = 0 ) {
+	public function remove( $module, $removeData = 0 ) {
 		//删除封面关键词数据
-		if ( $delRule ) {
+		if ( $removeData ) {
+			//本地安装的模块删除处理
+			$xmlFile = 'addons/' . $module . '/manifest.xml';
+			if ( is_file( $xmlFile ) ) {
+				$manifest = Xml::toArray( file_get_contents( $xmlFile ) );
+				//卸载数据
+				$installSql = trim( $manifest['manifest']['uninstall']['@cdata'] );
+				if ( ! empty( $installSql ) ) {
+					if ( preg_match( '/.php$/', $installSql ) ) {
+						$file = 'addons/' . $module . '/' . $installSql;
+						if ( ! is_file( $file ) ) {
+							$this->error = '卸载文件:' . $file . '不存在';
+
+							return;
+						}
+						require $file;
+					} else {
+						Db::sql( $installSql );
+					}
+				}
+			}
 			//删除模块封面数据
 			if ( $coverRids = Db::table( 'reply_cover' )->where( 'module', $_GET['module'] )->lists( 'rid' ) ) {
 				Db::table( 'rule' )->whereIn( 'rid', $coverRids )->delete();
@@ -126,15 +147,15 @@ class Modules extends Model {
 			//删除模块回复规则列表
 			Db::table( 'rule' )->where( 'module', $module )->delete();
 			Db::table( 'rule_keyword' )->where( 'module', $module )->delete();
+			//删除站点模块
+			Db::table( 'site_modules' )->where( 'module', $module )->delete();
+			//模块设置
+			Db::table( 'module_setting' )->where( 'module', $module )->delete();
+			//代金券使用的模块
+			Db::table( 'ticket_module' )->where( 'module', $module )->delete();
 		}
 		//删除模块数据
 		$this->where( 'name', $module )->delete();
-		//删除站点模块
-		Db::table( 'site_modules' )->where( 'module', $module )->delete();
-		//模块设置
-		Db::table( 'module_setting' )->where( 'module', $module )->delete();
-		//代金券使用的模块
-		Db::table( 'ticket_module' )->where( 'module', $module )->delete();
 		//删除模块动作数据
 		Db::table( 'modules_bindings' )->where( 'module', $module )->delete();
 		//更新套餐数据
@@ -147,12 +168,9 @@ class Modules extends Model {
 			$p['modules'] = serialize( $p['modules'] );
 			Db::table( 'package' )->where( 'id', $p['id'] )->update( $p );
 		}
-		//更新站点缓存
-		$siteids   = Db::table( 'site' )->lists( 'siteid' );
+		//更新所有站点缓存
 		$siteModel = new Site();
-		foreach ( $siteids as $siteid ) {
-			$siteModel->updateSiteCache( $siteid );
-		}
+		$siteModel->updateAllSiteCache();
 
 		return TRUE;
 	}
@@ -166,7 +184,7 @@ class Modules extends Model {
 	 */
 	public function getModulesByIndustry( $modules = [ ] ) {
 		$data = [ ];
-		foreach ( v( 'modules' ) as $m ) {
+		foreach ( (array) v( 'modules' ) as $m ) {
 			if ( ! empty( $modules ) && ! in_array( $m['name'], $modules ) || $m['is_system'] == 1 ) {
 				continue;
 			}
@@ -177,5 +195,20 @@ class Modules extends Model {
 		}
 
 		return $data;
+	}
+
+	/**
+	 * 获取模块标题列表
+	 * @return array
+	 */
+	public function getTitleLists() {
+		return [
+			'business'  => '主要业务',
+			'customer'  => '客户关系',
+			'marketing' => '营销与活动',
+			'tools'     => '常用服务与工具',
+			'industry'  => '行业解决方案',
+			'other'     => '其他'
+		];
 	}
 }

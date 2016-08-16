@@ -32,8 +32,11 @@ class Controller {
 				break;
 		}
 		$_GET[ c( 'http.url_var' ) ] = implode( '/', $param );
+		$param[1]                    = preg_replace_callback( '/_([a-z])/', function ( $matches ) {
+			return ucfirst( $matches[1] );
+		}, $param[1] );
 		define( 'MODULE', $param[0] );
-		define( 'CONTROLLER', ucfirst( preg_replace_callback( '/_([a-z])/', function($r) { return strtoupper("\1"); }, $param[1] ) ) );
+		define( 'CONTROLLER', ucfirst( $param[1] ) );
 		define( 'ACTION', $param[2] );
 		define( 'MODULE_PATH', APP_PATH . '/' . MODULE );
 		define( 'VIEW_PATH', defined( 'MODULE_PATH' ) ? MODULE_PATH . '/' . 'view' : C( 'view.path' ) );
@@ -47,7 +50,7 @@ class Controller {
 		if ( in_array( MODULE, C( 'http.deny_module' ) ) ) {
 			throw new Exception( MODULE . '模块禁止使用' );
 		}
-		$class = APP.'\\'.MODULE . '\\controller\\' . CONTROLLER;
+		$class = APP . '\\' . MODULE . '\\controller\\' . CONTROLLER;
 		//控制器不存在
 		if ( ! class_exists( $class ) ) {
 			if ( DEBUG ) {
@@ -57,7 +60,7 @@ class Controller {
 			}
 		}
 		$controller = Route::$app->make( $class, TRUE );
-		$action = method_exists( $controller, ACTION )?ACTION:'__empty';
+		$action     = method_exists( $controller, ACTION ) ? ACTION : '__empty';
 		//执行中间件
 		\Middleware::run();
 		//执行动作

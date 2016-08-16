@@ -10,7 +10,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                         width: 700,
                         title: '<ul class="nav nav-pills" role="tablist">\
                     <li role="presentation" class="active"><a href="#upload" aria-controls="home" role="tab" data-toggle="tab">上传图片</a></li>\
-                    <li role="presentation"><a href="#imagelists" aria-controls="profile" role="tab" data-toggle="tab">浏览图片</a></li>\
+                    <li role="presentation"><a href="#imagelistsBox" aria-controls="profile" role="tab" data-toggle="tab">浏览图片</a></li>\
                     </ul>',
                         content: ' <div class="tab-content">\
                     <div role="tabpanel" class="tab-pane active" id="upload"><div id="wrapper">\
@@ -31,26 +31,30 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                             <div class="btn btn-default" data-dismiss="modal">取消</div>\
                             <div class="btn btn-primary uploadBtn">确定使用</div>\
                             </div> </div> </div> </div> </div></div>\
-                <div role="tabpanel" class="tab-pane" id="imagelists">\
-                \
-                </div>\
+                    <div role="tabpanel" class="tab-pane" id="imagelistsBox">\
+                        <div id="imagelists"></div>\
+                    </div>\
                 </div>\
                 ',
                         events: {
                             'shown.bs.modal': function () {
+                                if (options.multiple) {
+                                    $("#imagelistsBox").append('<br/><div class="text-right"><div class="btn btn-default" data-dismiss="modal">取消</div> <div class="btn btn-primary uploadSelectFiles">确定使用</div></div>');
+                                }
                                 //加载远程文件
                                 function getImageList(url) {
-                                    $.get(url, function (res) {
-                                        var html = '<ul class="clearfix">';
+                                    $.get(url, {extensions: options.extensions}, function (res) {
+                                        var html = '<ul class="clearfix image-list-box">';
                                         $(res.data).each(function (i) {
-                                            html += '<li><img src="' + res.data[i].path + '"></li>';
-                                        })
+                                            html += '<li style="background-image: url(' + res.data[i].path + ');" path="' + res.data[i].path + '"></li>';
+                                        });
                                         html += "</ul>";
                                         html += res.page;
                                         modalobj.find('#imagelists').html(html);
                                     }, 'json');
                                 }
-                                getImageList('?s=system/component/imageLists&type=image');
+
+                                getImageList('?s=system/component/filesLists');
                                 //分页处理
                                 modalobj.delegate('#imagelists .pagination a', 'click', function () {
                                     var url = $(this).attr('href');
@@ -58,12 +62,21 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                     return false;
                                 });
                                 //选中图片
-                                modalobj.delegate('#imagelists li img', 'click', function () {
-                                    var url = $(this).attr('src');
-                                    images.push(url);
+                                modalobj.delegate('#imagelists li', 'click', function () {
+                                    $(this).toggleClass('selectActive');
+                                    images = [];
+                                    $("#imagelists li.selectActive").each(function () {
+                                        url = $(this).attr('path');
+                                        images.push(url);
+                                    })
+                                    if (!options.multiple) {
+                                        modalobj.modal('hide');
+                                    }
+                                });
+                                //多图上传时选中确定选择的图片
+                                modalobj.delegate('.uploadSelectFiles', 'click', function () {
                                     modalobj.modal('hide');
                                 });
-
                                 //显示上传控件
                                 var uploader = obj.initImageUploader({
                                     accept: {
@@ -76,7 +89,6 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                     fileSizeLimit: 200 * 1024 * 1024,    // 200 M 允许上传文件大小
                                     fileSingleSizeLimit: 2 * 1024 * 1024    // 2 M 单个文件上传大小
                                 });
-
                                 uploader.on('uploadAccept', function (file, response) {
                                     if (response.valid) {
                                         images.push(response.message);
@@ -98,7 +110,96 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                         }
                     });
                     break;
+                case 'mobileImage':
+                    modalobj = util.modal({
+                        width: '96%',
+                        title: '<h4>请上传图片</h4>',
+                        content: ' <div class="tab-content">\
+                    <div role="tabpanel" class="tab-pane active" id="upload"><div id="wrapper">\
+                          <div id="container">\
+                        <div id="uploader">\
+                            <div class="queueList">\
+                                <div id="dndArea" class="placeholder">\
+                                <div id="filePicker"></div>\
+                            </div>\
+                        </div>\
+                        <div class="statusBar">\
+                            <div class="progress">\
+                            <span class="text">0%</span>\
+                            <span class="percentage"></span>\
+                            </div>\
+                            <div class="btns">\
+                            <div class="btn btn-default" data-dismiss="modal">关闭</div>\
+                            </div> </div> </div> </div> </div></div>\
+                </div>\
+                ',
+                        events: {
+                            'shown.bs.modal': function () {
+                                //加载远程文件
+                                function getImageList(url) {
+                                    $.get(url, function (res) {
+                                        var html = '<ul class="clearfix">';
+                                        $(res.data).each(function (i) {
+                                            html += '<li><img src="' + res.data[i].path + '"></li>';
+                                        })
+                                        html += "</ul>";
+                                        html += res.page;
+                                        modalobj.find('#imagelists').html(html);
+                                    }, 'json');
+                                }
 
+                                getImageList('?s=system/component/filesLists');
+                                //分页处理
+                                modalobj.delegate('#imagelists .pagination a', 'click', function () {
+                                    var url = $(this).attr('href');
+                                    getImageList(url);
+                                    return false;
+                                });
+                                //选中图片
+                                modalobj.delegate('#imagelists li img', 'click', function () {
+                                    var url = $(this).attr('src');
+                                    images.push(url);
+                                    modalobj.modal('hide');
+                                });
+
+                                //显示上传控件
+                                var uploader = obj.initImageUploader({
+                                    accept: {
+                                        title: 'Images',
+                                        extensions: options.extensions,//允许上传的文件类型
+                                        mimeTypes: 'image/*'
+                                    },
+                                    compress: {
+                                        width: 1600,
+                                        height: 1600,
+                                    },
+                                    auto: true,
+                                    multiple: false,
+                                    fileNumLimit: 1,//允许上传的文件数量
+                                    fileSizeLimit: 200 * 1024 * 1024,    // 200 M 允许上传文件大小
+                                    fileSingleSizeLimit: 5 * 1024 * 1024    // 2 M 单个文件上传大小
+                                });
+                                uploader.on('uploadAccept', function (file, response) {
+                                    if (response.valid) {
+                                        images.push(response.message);
+                                        return true;
+                                    } else {
+                                        //上传失败
+                                        alert('上传失败, ' + response.message);
+                                        uploader.removeFile(file.file);
+                                        return false;
+                                    }
+                                });
+                            },
+                            'hide.bs.modal': function () {
+                                callback(images);
+                            },
+                            'hidden.bs.modal': function () {
+                                modalobj.remove();
+                            }
+                        }
+                    });
+                    break;
                 case 'file':
                     //上传文件
                     modalobj = util.modal({
@@ -135,11 +236,11 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                             'shown.bs.modal': function () {
                                 //加载远程文件
                                 function getImageList(url) {
-                                    $.get(url, function (res) {
+                                    $.get(url, {extensions: options.extensions}, function (res) {
                                         var html = '<table class="table table-hover">' +
                                             '<tr><th>文件名</th><th>大小</th><th>创建时间</th></tr>';
                                         $(res.data).each(function (i) {
-                                            html += '<tr><td><a href="javascript:;" src="'+res.data[i].path+'">' + res.data[i].name + '</a></td>' +
+                                            html += '<tr><td><a href="javascript:;" src="' + res.data[i].path + '">' + res.data[i].name + '</a></td>' +
                                                 '<td>' + res.data[i].size + '</td>' +
                                                 '<td>' + res.data[i].createtime + '</td></tr>';
                                         })
@@ -148,7 +249,8 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                         modalobj.find('#imagelists').html(html);
                                     }, 'json');
                                 }
-                                getImageList('?s=system/component/fileLists&type=file');
+
+                                getImageList('?s=system/component/filesLists&type=file');
                                 //分页处理
                                 modalobj.delegate('#imagelists .pagination a', 'click', function () {
                                     var url = $(this).attr('href');
@@ -165,16 +267,16 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                 //显示上传控件
                                 var uploader = obj.initImageUploader({
                                     accept: {
-                                        title: 'Images',
+                                        title: 'file',
                                         extensions: options.extensions,//允许上传的文件类型
-                                        mimeTypes: '.' + options.extensions.replace(/,/g, '.,')
+                                        mimeTypes: '.' + options.extensions.replace(/,/g, ',.'),
                                     },
+                                    formData: {data: options.data},
                                     multiple: options.multiple,
                                     fileNumLimit: 100,//允许上传的文件数量
                                     fileSizeLimit: 200 * 1024 * 1024,    // 200 M 允许上传文件大小
-                                    fileSingleSizeLimit: 2 * 1024 * 1024    // 2 M 单个文件上传大小
+                                    fileSingleSizeLimit: options.fileSingleSizeLimit    // 2 M 单个文件上传大小
                                 });
-
                                 uploader.on('uploadAccept', function (file, response) {
                                     if (response.valid) {
                                         images.push(response.message);
@@ -293,9 +395,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
 
             // WebUploader实例
                 uploader;
-
             if (!WebUploader.Uploader.support('flash') && WebUploader.browser.ie) {
-
                 // flash 安装了但是版本过低。
                 if (flashVersion) {
                     (function (container) {
@@ -347,7 +447,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
             }
 
             // 实例化
-            uploader = WebUploader.create({
+            var _options = $.extend({
                 pick: {
                     id: '#filePicker',
                     label: '点击选择文件',
@@ -363,17 +463,14 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                 chunkSize: 512 * 1024,
                 server: '?s=system/component/uploader',
                 // runtimeOrder: 'flash',
-
                 accept: opt.accept,//允许上传的文件类型
-
                 // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
                 disableGlobalDnd: true,
                 fileNumLimit: opt.fileNumLimit,//允许上传的文件数量
                 fileSizeLimit: opt.fileSizeLimit,    // 200 M 允许上传文件大小
                 fileSingleSizeLimit: opt.fileSingleSizeLimit    // 50 M 单个文件上传大小
-
-
-            });
+            }, opt);
+            uploader = WebUploader.create(_options);
 
             // 拖拽时不接受 js, txt 文件。
             uploader.on('dndAccept', function (items) {

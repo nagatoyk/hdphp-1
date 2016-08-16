@@ -93,6 +93,7 @@ class Menu extends Model {
 				break;
 			}
 		}
+
 		if ( $show ) {
 			View::with( '_site_menu_', $menus );
 			View::with( '_site_menu_modules_', $modules );

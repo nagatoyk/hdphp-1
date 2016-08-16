@@ -21,7 +21,7 @@ class Mail {
 	 * 发送邮件
 	 *
 	 * @param string $tomail 收件人邮箱
-	 * @param string $toName 发件人名称
+	 * @param string $toName 收件人名称
 	 * @param string $title 邮件标题
 	 * @param string $body 邮件内容
 	 *
@@ -67,7 +67,7 @@ class Mail {
 		//发送邮件邮箱用户名
 		$this->mail->Password = C( "mail.password" );
 		//发送邮件邮箱密码
-		$this->mail->SetFrom( C( "mail.frommail" ), C( "mail.fromname" ) );
+		$this->mail->SetFrom( C( "mail.username" ), C( "mail.fromname" ) );
 		//发件人
 		$this->mail->AddReplyTo( C( "mail.frommail" ), C( "mail.fromname" ) );
 		//回复时显示的用户名

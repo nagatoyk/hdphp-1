@@ -5,7 +5,7 @@ return [
 	//模板后缀
 	'prefix'    => '.php',
 	//标签
-	'tags'      => [ ],
+	'tags'      => [  ],
 	//消息模板
 	'message'   => ROOT_PATH . '/resource/view/message.php',
 	//有确定提示的模板页面

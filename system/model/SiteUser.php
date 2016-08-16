@@ -84,4 +84,15 @@ class SiteUser extends Model {
 			return Db::table( 'user' )->find( $uid ) ?: [ ];
 		}
 	}
+
+	/**
+	 * 删除站长
+	 *
+	 * @param $siteid
+	 *
+	 * @return bool
+	 */
+	public function delOwner( $siteid ) {
+		return $this->where( 'siteid', $siteid )->where( 'role', 'owner' )->delete();
+	}
 }

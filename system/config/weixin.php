@@ -16,7 +16,7 @@ return array(
     //接收微信支付异步通知回调地址，不能携带参数,需要先声明路由
     "notify_url" => __ROOT__ . '/index.php/wxnotifyurl',
     //支付成功回调地址
-    "back_url"   => '',
+    "back_url"   => 'http://www.houdunwang.com',
     //微信证书,红包等接口使用  https://pay.weixin.qq.com/index.php/core/account/api_cert#
     "apiclient_cert"=>"cert/apiclient_cert.pem",
     "apiclient_key"=>"cert/apiclient_key.pem",

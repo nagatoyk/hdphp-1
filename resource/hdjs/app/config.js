@@ -4,8 +4,9 @@
  */
 
 require.config({
-    baseUrl: '../resource/hdjs/app',
+    baseUrl: 'resource/hdjs/app',
     paths: {
+        //'async': '../js/async',
         'require.css': '../js/require.css.min',
         'swiper': '../js/swiper-3.3.1.min',
         'wapeditor': '../../js/wapeditor',
@@ -61,9 +62,13 @@ require.config({
         //时间选择
         'clockpicker': '../component/clockpicker/bootstrap-clockpicker.min',
         'filestyle': '../js/bootstrap-filestyle.min',
-        'json2': '../js/json2.min'
+        'json2': '../js/json2.min',
+        'map': 'http://api.map.baidu.com/getscript?v=2.0&ak=WcqLYXBH2tHLhYNfPNpZCD4s&services=&t=20160708193109',
     },
     shim: {
+        'map': {
+            exports: 'BMap'
+        },
         'ngSortable': {
             deps: ['Sortable']
         },

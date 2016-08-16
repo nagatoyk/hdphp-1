@@ -10,79 +10,99 @@
 namespace hdphp\dir;
 
 class Dir {
-    //遍历目录
-    public function tree( $dir ) {
-        $list = [ ];
-        if ( empty( $dir ) ) {
-            return $list;
-        }
-        foreach ( glob( $dir . '/*' ) as $id => $v ) {
-            $info                       = pathinfo( $v );
-            $list [ $id ] ['path']      = $v;
-            $list [ $id ] ['type']      = filetype( $v );
-            $list [ $id ] ['dirname']   = $info['dirname'];
-            $list [ $id ] ['basename']  = $info['basename'];
-            $list [ $id ] ['filename']  = $info['filename'];
-            $list [ $id ] ['extension'] = isset( $info['extension'] ) ? $info['extension'] : '';
-            $list [ $id ] ['filemtime'] = filemtime( $v );
-            $list [ $id ] ['fileatime'] = fileatime( $v );
-            $list [ $id ] ['size']      = is_file( $v ) ? filesize( $v ) : $this->size( $v );
-            $list [ $id ] ['iswrite']   = is_writeable( $v );
-            $list [ $id ] ['isread']    = is_readable( $v );
-        }
+	//遍历目录
+	public function tree( $dir ) {
+		$list = [ ];
+		if ( empty( $dir ) ) {
+			return $list;
+		}
+		foreach ( glob( $dir . '/*' ) as $id => $v ) {
+			$info                       = pathinfo( $v );
+			$list [ $id ] ['path']      = $v;
+			$list [ $id ] ['type']      = filetype( $v );
+			$list [ $id ] ['dirname']   = $info['dirname'];
+			$list [ $id ] ['basename']  = $info['basename'];
+			$list [ $id ] ['filename']  = $info['filename'];
+			$list [ $id ] ['extension'] = isset( $info['extension'] ) ? $info['extension'] : '';
+			$list [ $id ] ['filemtime'] = filemtime( $v );
+			$list [ $id ] ['fileatime'] = fileatime( $v );
+			$list [ $id ] ['size']      = is_file( $v ) ? filesize( $v ) : $this->size( $v );
+			$list [ $id ] ['iswrite']   = is_writeable( $v );
+			$list [ $id ] ['isread']    = is_readable( $v );
+		}
 
-        return $list;
-    }
+		return $list;
+	}
 
-    //获取目录在小
-    public function size( $dir ) {
-        $s = 0;
-        foreach ( glob( $dir . '/*' ) as $v ) {
-            $s += is_file( $v ) ? filesize( $v ) : self::size( $v );
-        }
+	//获取目录在小
+	public function size( $dir ) {
+		$s = 0;
+		foreach ( glob( $dir . '/*' ) as $v ) {
+			$s += is_file( $v ) ? filesize( $v ) : self::size( $v );
+		}
 
-        return $s;
-    }
+		return $s;
+	}
 
-    //删除文件
-    public function delFile( $file ) {
-        if ( is_file( $file ) ) {
-            return unlink( $file );
-        }
+	//删除文件
+	public function delFile( $file ) {
+		if ( is_file( $file ) ) {
+			return unlink( $file );
+		}
 
-        return TRUE;
-    }
+		return TRUE;
+	}
 
-    //删除目录
-    public function del( $dir ) {
-        foreach ( glob( $dir . "/*" ) as $v ) {
-            is_dir( $v ) ? $this->del( $v ) : unlink( $v );
-        }
+	//删除目录
+	public function del( $dir ) {
+		if ( ! is_dir( $dir ) ) {
+			return TRUE;
+		}
+		foreach ( glob( $dir . "/*" ) as $v ) {
+			is_dir( $v ) ? $this->del( $v ) : unlink( $v );
+		}
 
-        return rmdir( $dir );
-    }
+		return rmdir( $dir );
+	}
 
-    //创建目录
-    public function create( $dir, $auth = 0755 ) {
-        return mkdir( $dir, $auth, TRUE );
-    }
+	//创建目录
+	public function create( $dir, $auth = 0755 ) {
+		return mkdir( $dir, $auth, TRUE );
+	}
 
-    //复制目录 
-    public function copy( $old, $new ) {
-        is_dir( $new ) or mkdir( $new, 0755, TRUE );
+	//复制目录
+	public function copy( $old, $new ) {
+		is_dir( $new ) or mkdir( $new, 0755, TRUE );
 
-        foreach ( glob( $old . '/*' ) as $v ) {
-            $to = $new . '/' . basename( $v );
-            is_file( $v ) ? copy( $v, $to ) : $this->copy( $v, $to );
-        }
+		foreach ( glob( $old . '/*' ) as $v ) {
+			$to = $new . '/' . basename( $v );
+			is_file( $v ) ? copy( $v, $to ) : $this->copy( $v, $to );
+		}
 
-        return TRUE;
-    }
+		return TRUE;
+	}
 
-    //移动目录
-    public function move( $old, $new ) {
-        if ( $this->copy( $old, $new ) ) {
-            return $this->del( $old );
-        }
-    }
+	//移动目录
+	public function move( $old, $new ) {
+		if ( $this->copy( $old, $new ) ) {
+			return $this->del( $old );
+		}
+	}
+
+	/**
+	 * 移动文件
+	 *
+	 * @param string $file 文件
+	 * @param string $dir 目录
+	 *
+	 * @return bool
+	 */
+	public function moveFile( $file, $dir ) {
+		is_dir( $dir ) or mkdir( $dir, 0755, TRUE );
+		if ( is_file( $file ) && is_dir( $dir ) ) {
+			copy( $file, $dir . '/' . basename( $file ) );
+
+			return unlink( $file );
+		}
+	}
 }

@@ -132,7 +132,7 @@
                             cancelText: "关闭",
                             change: function (color) {
                                 if ($.isFunction(options.callback)) {
-                                    options.callback(color+'');
+                                    options.callback(color + '');
                                 }
                             },
                             palette: [
@@ -353,6 +353,7 @@
                 }
             );
         },
+        //百度编辑器
         ueditor: function (id, opt, callback) {
             require(['ueditor', 'ZeroClipboard'], function (ueditor, ZeroClipboard) {
                 window.ZeroClipboard = ZeroClipboard;
@@ -369,7 +370,7 @@
                         'link', 'removeformat', '|', 'rowspacingtop', 'rowspacingbottom', 'lineheight', 'indent', 'paragraph', 'fontsize', '|',
                         'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol',
                         'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|', 'anchor', 'map', 'print', 'drafts']],
-                    //autoHeightEnabled: true,
+                    autoHeightEnabled: false,//自动增高
                     autoFloatEnabled: false,
                 }, opt);
                 UE.registerUI('button', function (editor, uiName) {
@@ -380,6 +381,7 @@
                                 var opts = {
                                     type: 'image',
                                     multiple: true,
+                                    extensions: 'gif,jpg,jpeg,bmp,png',
                                 };
                                 fileUploader.show(function (imgs) {
                                     if (imgs.length == 0) {
@@ -431,109 +433,6 @@
                     callback(editor);
                 }
             });
-        },
-        //上传图片
-        uploadImage: function (opt) {
-            require(['kindeditor'], function () {
-                    $(opt.input).parent().css({position: 'relative'});
-                    $(opt.input).val(opt.image || '');
-                    $(opt.input).mouseover(
-                        function () {
-                            var url = $(this).val();
-                            if (url)
-                                $(opt.input).after($('<img src="' + url + '" style="left:0px;top:30px;width:150px;z-index:1000;position:absolute;"/>'));
-                        }
-                    );
-                    $(opt.input).mouseout(
-                        function () {
-                            $(opt.input).next('img').remove();
-                        }
-                    )
-                    K = KindEditor;
-                    var editor = K.editor(
-                        {
-                            allowFileManager: true,
-                            uploadJson: opt.uploadJson,
-                            fileManagerJson: opt.fileManagerJson,
-                        }
-                    );
-                    K(opt.btn).click(
-                        function () {
-                            editor.loadPlugin(
-                                'image', function () {
-                                    editor.plugin.imageDialog(
-                                        {
-                                            imageUrl: K('#url1').val(),
-                                            clickFn: function (url, title, width, height, border, align) {
-                                                //url = url.substr(1);
-                                                K(opt.input).val(url);
-                                                editor.hideDialog();
-                                            }
-                                        }
-                                    );
-                                }
-                            );
-                        }
-                    );
-                }
-            );
-        },
-        //多图上传
-        uploadMulImage: function (opt) {
-            options = {
-                btn: '',
-                data: []
-            };
-            options = $.extend(options, opt);
-            //图片组合
-            lis = '';
-            $(options.data).each(
-                function (i) {
-                    lis += '<li style="width: 120px;height: 120px;float: left;margin:3px;position: relative;">' +
-                        '<img src="' + options.data[i].url + '" style="width: 120px;height: 120px;">' +
-                        '<span onclick="$(this).parent().remove()" style="position: absolute;right:5px;top:5px;cursor: pointer;overflow:hidden;text-align:center;width:15px;height:15px;background: #333333;color:#f3f3f3;line-height: 1em;border-radius: 2px;">x</span>' +
-                        '</li>';
-                }
-            );
-            var html = ' <div id="imageList" style="border:solid 1px #f0f0f0;background:#f3f3f3;padding:6px;border-radius: 3px;height: auto;overflow: hidden;">' +
-                '<ul style="list-style: none;padding: 0px;margin: 0px;">' + lis + '</ul></div>';
-            $(options.btn).after(html);
-            require(
-                ['kindeditor'], function () {
-                    K = KindEditor;
-                    var editor = K.editor(
-                        {
-                            allowFileManager: true,
-                            uploadJson: options.uploadJson,
-                            fileManagerJson: options.fileManagerJson,
-                        }
-                    );
-                    K(options.btn).click(
-                        function () {
-                            editor.loadPlugin(
-                                'multiimage', function () {
-                                    editor.plugin.multiImageDialog(
-                                        {
-                                            clickFn: function (urlList) {
-                                                K.each(
-                                                    urlList, function (i, data) {
-                                                        var html = '<li style="width: 120px;height: 120px;float: left;margin:3px;position: relative;">' +
-                                                            '<img src="' + data.url + '" style="width: 120px;height: 120px;">' +
-                                                            '<span onclick="$(this).parent().remove()" style="position: absolute;right:5px;top:5px;cursor: pointer;overflow:hidden;text-align:center;width:15px;height:15px;background: #333333;color:#f3f3f3;line-height: 1em;border-radius: 2px;">x</span>' +
-                                                            '</li>';
-                                                        $("#imageList ul").append(html);
-                                                    }
-                                                );
-                                                editor.hideDialog();
-                                            }
-                                        }
-                                    );
-                                }
-                            );
-                        }
-                    );
-                }
-            );
         },
         //加载动画
         loading: function (opt) {
@@ -874,6 +773,7 @@
                 type: 'image',
                 extensions: 'gif,jpg,jpeg,bmp,png',
                 multiple: false,
+                data: ''
             }, options);
 
             require(['bootstrap', 'fileUploader'], function ($, fileUploader) {
@@ -892,8 +792,10 @@
                 type: 'file',
                 extensions: 'doc,ppt,wps,zip,txt',
                 multiple: false,
+                fileSizeLimit: 200 * 1024 * 1024,
+                fileSingleSizeLimit: 2 * 1024 * 1024,
+                data: ''
             }, options);
-
             require(['bootstrap', 'fileUploader'], function ($, fileUploader) {
                 fileUploader.show(function (files) {
                     if (files) {
@@ -904,6 +806,25 @@
                 }, opts);
             });
         },
+        //上传图片
+        mobileImage: function (callback, options) {
+            var opts = $.extend({
+                type: 'mobileImage',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                multiple: false,
+            }, options);
+
+            require(['bootstrap', 'fileUploader'], function ($, fileUploader) {
+                fileUploader.show(function (images) {
+                    if (images) {
+                        if ($.isFunction(callback)) {
+                            callback(images);
+                        }
+                    }
+                }, opts);
+            });
+        },
+
         //常用正则验证
         reg: function (val, type) {
             switch (type) {
@@ -976,6 +897,7 @@
                 }
             });
         },
+        //修改会员积分/余额
         tradeCredit: function (obj) {
             //会员编号
             var uid = $(obj).data('uid');
@@ -987,7 +909,158 @@
                 width: 800,
                 show: true,//直接显示
             });
+        },
+        //百度地图
+        map: function (val, callback) {
+            require(['map', 'util'], function (BMap, util) {
+                if (!val) {
+                    val = {};
+                }
+                if (!val.lng) {
+                    val.lng = 116.403851;
+                }
+                if (!val.lat) {
+                    val.lat = 39.915177;
+                }
+                var point = new BMap.Point(val.lng, val.lat);
+                var geo = new BMap.Geocoder();
 
+                var modalobj = $('#map-dialog');
+                if (modalobj.length == 0) {
+                    var content =
+                        '<style>.tangram-suggestion-main { z-index : 9999; }/*搜索样式*/</style>' +
+                        '<div class="form-group">' +
+                        '<div class="input-group">' +
+                        '<input type="text" class="form-control" id="suggestId" placeholder="请输入地址来直接查找相关位置">' +
+                        '<input type="text" id="coordinate" class="form-control" style="display: none;">' +
+                        '<div id="searchResultPanel" style="border:1px solid #c0c0c0;width:150px;height:auto; display:none;z-index:2000"></div>' +
+                        '<div class="input-group-btn">' +
+                        '<button class="btn btn-default"><i class="icon-search"></i> 搜索</button>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div id="map-container" style="height:400px;"></div>';
+                    var footer =
+                        '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>' +
+                        '<button type="button" class="btn btn-primary">确认</button>';
+                    modalobj = util.modal({title: '请选择地点', content: content, footer: footer, id: 'map-dialog'});
+                    modalobj.find('.modal-dialog').css('width', '80%');
+                    modalobj.modal({'keyboard': false});
+
+                    map = util.map.instance = new BMap.Map('map-container');
+                    map.centerAndZoom(point, 12);
+                    map.enableScrollWheelZoom();
+                    map.enableDragging();
+                    map.enableContinuousZoom();
+                    map.addControl(new BMap.NavigationControl());
+                    map.addControl(new BMap.OverviewMapControl());
+                    marker = util.map.marker = new BMap.Marker(point);
+                    marker.setLabel(new BMap.Label('可移动标记设置坐标', {'offset': new BMap.Size(10, -20)}));
+                    map.addOverlay(marker);
+                    marker.enableDragging();
+
+                    marker.addEventListener('dragend', function (e) {
+                        var point = marker.getPosition();
+                        geo.getLocation(point, function (address) {
+                            modalobj.find('#suggestId').val(address.address);
+                            modalobj.find('#coordinate').val(e.point.lng + "," + e.point.lat);
+                        });
+                    });
+
+                    function searchAddress(address) {
+                        geo.getPoint(address, function (point) {
+                            map.panTo(point);
+                            marker.setPosition(point);
+                            marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+                            setTimeout(function () {
+                                marker.setAnimation(null)
+                            }, 3600);
+                        });
+                    }
+
+                    modalobj.find('.input-group :text').keydown(function (e) {
+                        if (e.keyCode == 13) {
+                            var kw = $(this).val();
+                            searchAddress(kw);
+                        }
+                    });
+                    modalobj.find('.input-group button').click(function () {
+                        var kw = $(this).parent().prev().prev().prev().val();
+                        searchAddress(kw);
+                    });
+
+                    //百度地图API功能
+                    function G(id) {
+                        return document.getElementById(id);
+                    }
+
+                    var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+                        {
+                            "input": "suggestId"
+                            , "location": map
+                        });
+
+                    ac.addEventListener("onhighlight", function (e) {  //鼠标放在下拉列表上的事件
+                        var str = "";
+                        var _value = e.fromitem.value;
+                        var value = "";
+                        if (e.fromitem.index > -1) {
+                            value = _value.province + _value.city + _value.district + _value.street + _value.business;
+                        }
+                        str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+                        value = "";
+                        if (e.toitem.index > -1) {
+                            _value = e.toitem.value;
+                            value = _value.province + _value.city + _value.district + _value.street + _value.business;
+                        }
+                        str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+                        G("searchResultPanel").innerHTML = str;
+                    });
+
+                    var myValue;
+                    ac.addEventListener("onconfirm", function (e) {
+                        //鼠标点击下拉列表后的事件
+                        var _value = e.item.value;
+                        myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+                        G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+                        setPlace();
+                    });
+
+                    function setPlace() {
+                        //map.clearOverlays();    //清除地图上所有覆盖物a
+                        function myFun() {
+                            var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+                            var coordinate = pp.lng + "," + pp.lat;
+                            modalobj.find('#coordinate').val(coordinate);
+                        }
+
+                        var local = new BMap.LocalSearch(map, { //智能搜索
+                            onSearchComplete: myFun
+                        });
+                        local.search(myValue);
+                    }
+
+                }
+                modalobj.off('shown.bs.modal');
+                modalobj.on('shown.bs.modal', function () {
+                    marker.setPosition(point);
+                    map.panTo(marker.getPosition());
+                });
+
+                modalobj.find('button.btn-primary').off('click');
+                modalobj.find('button.btn-primary').on('click', function () {
+                    if ($.isFunction(callback)) {
+                        var point = util.map.marker.getPosition();
+                        geo.getLocation(point, function (address) {
+                            var val = {lng: point.lng, lat: point.lat, address: address.address};
+                            callback(val);
+                        });
+                    }
+                    modalobj.modal('hide');
+                });
+                modalobj.modal('show');
+            });
         }
     };
     if (typeof define === "function" && define.amd) {

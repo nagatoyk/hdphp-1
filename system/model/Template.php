@@ -21,14 +21,6 @@ class Template extends Model {
 	protected $table = 'template';
 
 	/**
-	 *
-	 *
-	 * @param int $siteid 站点编号
-	 *
-	 * @return array
-	 * @throws \Exception
-	 */
-	/**
 	 * 获取站点所有模板
 	 *
 	 * @param int $siteid 站点编号
@@ -94,6 +86,7 @@ class Template extends Model {
 
 	/**
 	 * 删除模板
+	 *
 	 * @param $name 模板标识
 	 *
 	 * @return bool
@@ -121,4 +114,23 @@ class Template extends Model {
 		return TRUE;
 	}
 
+	/**
+	 * 获取模板类型
+	 * @return array
+	 */
+	public function getTitleLists() {
+		return [
+			'often'       => '常用模板',
+			'rummery'     => '酒店',
+			'car'         => '汽车',
+			'tourism'     => '旅游',
+			'drink'       => '餐饮',
+			'realty'      => '房地产',
+			'medical'     => '医疗保健',
+			'education'   => '教育',
+			'cosmetology' => '健身美容',
+			'shoot'       => '婚纱摄影',
+			'other'       => '其他'
+		];
+	}
 }

@@ -20,7 +20,29 @@ use hdphp\model\Model;
 class TicketRecord extends Model {
 	protected $table = 'ticket_record';
 
-	public function getTicketByType() {
+	/**
+	 * 核销卡券
+	 *
+	 * @param string $id 编号
+	 *
+	 * @return bool
+	 */
+	public function verification( $id ) {
+		$data['id']     = $id;
+		$data['status'] = 2;
 
+		return $this->save( $data );
+	}
+
+	/**
+	 * 获取会员卡券兑换数量
+	 *
+	 * @param int $tid 卡券编号
+	 * @param int $uid 会员编号
+	 *
+	 * @return mixed
+	 */
+	public function getNumByTid( $tid, $uid ) {
+		return $this->where( 'tid', $tid )->where( 'uid', $uid )->count();
 	}
 }

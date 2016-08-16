@@ -83,7 +83,6 @@ class Validate extends VaAction {
 				}
 			} else {
 				$actions = explode( '|', $validate[1] );
-
 				foreach ( $actions as $action ) {
 					$info   = explode( ':', $action );
 					$method = $info[0];

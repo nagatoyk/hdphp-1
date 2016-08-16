@@ -18,7 +18,7 @@ class ZipProvider extends ServiceProvider {
 
 	public function register() {
 		$this->app->single( 'Zip', function () {
-			return new Zip();
+			return new PclZip();
 		} );
 	}
 }

@@ -5,7 +5,7 @@ return [
 	'providers' => [
 		'hdphp\alipay\AlipayProvider',
 		'hdphp\arr\ArrProvider',
-		'hdphp\backup\backupProvider',
+		'hdphp\backup\BackupProvider',
 		'hdphp\cache\CacheProvider',
 		'hdphp\cart\CartProvider',
 		'hdphp\code\CodeProvider',
@@ -41,6 +41,8 @@ return [
 		'hdphp\middleware\MiddlewareProvider',
 		'hdphp\hook\HookProvider',
 		'hdphp\form\FormProvider',
+		'hdphp\tool\ToolProvider',
+		'hdphp\cloud\CloudProvider',
 	],
 
 	//服务外观
@@ -84,5 +86,7 @@ return [
 		'Middleware' => 'hdphp\middleware\MiddlewareFacade',
 		'Hook'       => 'hdphp\hook\HookFacade',
 		'Form'       => 'hdphp\form\FormFacade',
+		'Tool'       => 'hdphp\tool\ToolFacade',
+		'Cloud'      => 'hdphp\cloud\CloudFacade',
 	],
 ];

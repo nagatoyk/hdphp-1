@@ -11,9 +11,9 @@ return [
 	//默认模块
 	'default_module'     => 'home',
 	//默认控制器
-	'default_controller' => 'index',
+	'default_controller' => 'entry',
 	//默认方法
-	'default_action'     => 'show',
+	'default_action'     => 'index',
 	//缓存路由
 	'route_cache'        => FALSE
 ];

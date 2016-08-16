@@ -99,7 +99,7 @@ if ( ! function_exists( '_404' ) ) {
 if ( ! function_exists( 'm' ) ) {
 	function m( $model ) {
 		static $instance = [ ];
-		$class = strpos( $model, '\\' ) === FALSE ? '\system\model\\' . ucfirst($model) : $model;
+		$class = strpos( $model, '\\' ) === FALSE ? '\system\model\\' . ucfirst( $model ) : $model;
 		if ( isset( $instance[ $class ] ) ) {
 			return $instance[ $class ];
 		}
@@ -391,7 +391,6 @@ if ( ! function_exists( 'message' ) ) {
 	 * @param string $type 信息类型  success(成功），error(失败），warning(警告），info(提示）
 	 */
 	function message( $content, $redirect = 'back', $type = 'success', $timeout = 2 ) {
-
 		if ( IS_AJAX ) {
 			Response::ajax( [ 'valid' => $type == 'success' ? 1 : 0, 'message' => $content ] );
 		} else {

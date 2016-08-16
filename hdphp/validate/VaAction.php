@@ -45,6 +45,20 @@ class VaAction {
 		}
 	}
 
+	//验证用户名长度
+	public function user( $field, $value, $params, $data ) {
+		$params = explode( ',', $params );
+		return preg_match('/^[\x{4e00}-\x{9fa5}a-z0-9]{'.($params[0]-1).','.($params[1]-1).'}$/ui',$value) ? true : false;
+	}
+
+	//邮编验证
+	public function zipCode( $name, $value, $params ) {
+		$preg = "/^\d{6}$/i";
+		if ( preg_match( $preg, $value ) ) {
+			return TRUE;
+		}
+	}
+
 	//最大长度验证
 	public function maxlen( $name, $value, $params ) {
 		if ( mb_strlen( $value, 'utf-8' ) <= $params ) {

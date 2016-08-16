@@ -44,10 +44,10 @@ class Ticket extends Model {
 
 	protected $auto
 		= [
-			[ 'siteid', 'autoSiteid', 'method', self::MUST_AUTO, self::MODEL_BOTH ],
+			[ 'siteid', SITEID, 'string', self::MUST_AUTO, self::MODEL_BOTH ],
 			[ 'sn', 'autoSn', 'method', self::MUST_AUTO, self::MODEL_INSERT ],
-			[ 'starttime', 'autoStarttime', 'method', self::EMPTY_AUTO, self::MODEL_INSERT ],
-			[ 'endtime', 'autoEndtime', 'method', self::EMPTY_AUTO, self::MODEL_INSERT ],
+			[ 'starttime', 'autoStarttime', 'method', self::MUST_AUTO, self::MODEL_BOTH ],
+			[ 'endtime', 'autoEndtime', 'method', self::MUST_AUTO, self::MODEL_BOTH ],
 		];
 
 	protected function autoStarttime() {
@@ -60,10 +60,6 @@ class Ticket extends Model {
 		$time = preg_split( '/\s+至\s+/', $_POST['times'] );
 
 		return strtotime( trim( $time[1] ) );
-	}
-
-	protected function autoSiteid() {
-		return v( 'site.siteid' );
 	}
 
 	protected function autoSn() {
@@ -97,8 +93,76 @@ class Ticket extends Model {
 	 * @return array
 	 */
 	public function getTicketListsByType( $type, $siteid = NULL ) {
-		$siteid = $siteid ?: Session::get( 'siteid' );
+		$siteid = $siteid ?: SITEID;
 
 		return $this->where( 'siteid', $siteid )->where( 'type', intval( $type ) )->get();
 	}
+
+	/**
+	 * 卡券兑换
+	 *
+	 * @param int $tid 卡券编号
+	 *
+	 * @return bool
+	 */
+	public function convert( $tid ) {
+		Db::lock( 'ticket,ticket_record,member,credits_record' );
+		//会员已经兑换的数量
+		$TicketRecord = new TicketRecord();
+		$count        = $TicketRecord->getNumByTid( $tid, Session::get( 'member.uid' ) );
+		//卡券信息
+		$ticket      = $this->where( 'tid', $tid )->where( 'siteid', SITEID )->first();
+		$ticketTitle = $this->getTitleByType( $ticket['type'] );
+		if ( $count >= $ticket['limit'] ) {
+			$this->error = '只能兑换' . $ticket['limit'] . '个' . $ticketTitle . ',你已经全部兑换完毕';
+			Db::unlock();
+
+			return FALSE;
+		}
+		//减掉会员积分
+		$Member             = new Member();
+		$data               = [ ];
+		$data['uid']        = Session::get( 'member.uid' );
+		$data['credittype'] = $ticket['credittype'];
+		$data['num']        = - 1 * $ticket['credit'];
+		$data['module']     = v( 'module.name' );
+		$data['remark']     = '兑换' . $ticketTitle . ':' . $ticket['title'] . ',消耗' . $ticket['credit'] . $Member->getCreditTitle( $ticket['credittype'] );
+		if ( ! $Member->changeCredit( $data ) ) {
+			$this->error = $Member->getError();
+			Db::unlock();
+
+			return FALSE;
+		}
+		$this->where( 'tid', $tid )->decrement( 'amount', 1 );
+
+		//记录卡券兑换日志
+		$record             = new TicketRecord();
+		$data               = [ ];
+		$data['uid']        = Session::get( 'member.uid' );
+		$data['createtime'] = time();
+		$data['usetime']    = 0;//使用时间
+		$data['status']     = 1;
+		$data['siteid']     = SITEID;
+		$data['tid']        = $tid;
+		$data['manage']     = 0;//核销员编号
+		$data['module']     = v( 'module.name' );
+		$data['remark']     = '兑换' . $ticketTitle . ':' . $ticket['title'] . ',消耗' . $ticket['credit'] . $Member->getCreditTitle( $ticket['credittype'] );//核销员编号
+		$record->add( $data );
+		Db::unlock();
+
+		return TRUE;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

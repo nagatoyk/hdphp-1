@@ -7,7 +7,7 @@
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
-namespace Hdphp\View;
+namespace hdphp\view;
 
 class HdphpTag extends TagBase {
     //blade模板(父级)

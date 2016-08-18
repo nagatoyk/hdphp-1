@@ -1,7 +1,7 @@
 <?php
 return [
 	//引擎:file,mysql,memcache,redis
-	'driver'   => 'mysql',
+	'driver'   => 'file',
 	//session_name
 	'name'     => 'hdcmsid',
 	//域名

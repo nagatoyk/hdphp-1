@@ -1,11 +1,6 @@
-<?php namespace {{MODULE}}\controller; 
+<?php namespace {{APP}}\{{MODULE}}\controller;
 
-class {{CONTROLLER}} extends \hdphp\controller\Controller{
-    
-    //构造函数
-    public function __init()
-    {
-    }
+class {{CONTROLLER}}{
 
     //GET /photo 索引
     public function index()

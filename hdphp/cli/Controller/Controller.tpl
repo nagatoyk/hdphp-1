@@ -1,14 +1,18 @@
-<?php namespace {{MODULE}}\controller; 
+<?php
+/** .-------------------------------------------------------------------
+ * |  Software: [HDCMS framework]
+ * |      Site: www.hdcms.com
+ * |-------------------------------------------------------------------
+ * |    Author: 向军 <2300071698@qq.com>
+ * |    WeChat: aihoudun
+ * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
+ * '-------------------------------------------------------------------*/
 
-class {{CONTROLLER}} extends \hdphp\controller\Controller{ 
+namespace {{APP}}\{{MODULE}}\controller;
 
-	//构造函数
-	public function __init()
-	{
-	}
-	
-    	//动作
+class {{CONTROLLER}}{
+    //动作
 	public function index(){
-		View::make();
+		//此处书写代码...
 	}
 }

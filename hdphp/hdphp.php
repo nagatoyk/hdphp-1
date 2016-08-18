@@ -20,17 +20,21 @@ defined( "DEBUG" ) or define( "DEBUG", FALSE );
 define( 'IS_CGI', substr( PHP_SAPI, 0, 3 ) == 'cgi' ? TRUE : FALSE );
 define( 'IS_WIN', strstr( PHP_OS, 'WIN' ) ? TRUE : FALSE );
 define( 'IS_CLI', PHP_SAPI == 'cli' ? TRUE : FALSE );
-define( 'IS_GET', $_SERVER['REQUEST_METHOD'] == 'GET' );
-define( 'IS_POST', $_SERVER['REQUEST_METHOD'] == 'POST' );
-define( 'IS_DELETE', $_SERVER['REQUEST_METHOD'] == 'DELETE' ?: ( isset( $_POST['_method'] ) && $_POST['_method'] == 'DELETE' ) );
-define( 'IS_PUT', $_SERVER['REQUEST_METHOD'] == 'PUT' ?: ( isset( $_POST['_method'] ) && $_POST['_method'] == 'PUT' ) );
-define( 'IS_AJAX', isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' );
-define( 'IS_WEIXIN', isset($_SERVER['HTTP_USER_AGENT']) && strpos( $_SERVER['HTTP_USER_AGENT'], 'MicroMessenger' ) !== FALSE );
 define( 'NOW', $_SERVER['REQUEST_TIME'] );
 define( 'NOW_MICROTIME', microtime( TRUE ) );
-define( '__ROOT__', trim( 'http://' . $_SERVER['HTTP_HOST'] . dirname( $_SERVER['SCRIPT_NAME'] ), '/\\' ) );
-define( '__URL__', trim( 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim( $_SERVER['REQUEST_URI'], '/\\' ), '/' ) );
-define( "__HISTORY__", isset( $_SERVER["HTTP_REFERER"] ) ? $_SERVER["HTTP_REFERER"] : '' );
+if ( IS_CLI ) {
+	define( '__ROOT__', '' );
+} else {
+	define( 'IS_GET', $_SERVER['REQUEST_METHOD'] == 'GET' );
+	define( 'IS_POST', $_SERVER['REQUEST_METHOD'] == 'POST' );
+	define( 'IS_DELETE', $_SERVER['REQUEST_METHOD'] == 'DELETE' ?: ( isset( $_POST['_method'] ) && $_POST['_method'] == 'DELETE' ) );
+	define( 'IS_PUT', $_SERVER['REQUEST_METHOD'] == 'PUT' ?: ( isset( $_POST['_method'] ) && $_POST['_method'] == 'PUT' ) );
+	define( 'IS_AJAX', isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' );
+	define( 'IS_WEIXIN', isset( $_SERVER['HTTP_USER_AGENT'] ) && strpos( $_SERVER['HTTP_USER_AGENT'], 'MicroMessenger' ) !== FALSE );
+	define( '__ROOT__', trim( 'http://' . $_SERVER['HTTP_HOST'] . dirname( $_SERVER['SCRIPT_NAME'] ), '/\\' ) );
+	define( '__URL__', trim( 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim( $_SERVER['REQUEST_URI'], '/\\' ), '/' ) );
+	define( "__HISTORY__", isset( $_SERVER["HTTP_REFERER"] ) ? $_SERVER["HTTP_REFERER"] : '' );
+}
 require HDPHP_PATH . '/kernel/Functions.php';
 require HDPHP_PATH . '/kernel/Loader.php';
 \hdphp\kernel\Loader::register();

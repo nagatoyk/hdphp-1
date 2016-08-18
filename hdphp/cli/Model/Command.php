@@ -1,37 +1,22 @@
 <?php namespace Hdphp\Cli\Model;
 
-class Command{
+class Command {
 	/**
 	 * 创建模型或控制器
-	 * @return [type] [description]
+	 * @param $arg [0=>'模型名']
 	 */
-	public function make($arg)
-	{
-		$info = explode('.',$arg);
-		$MODULE = ucfirst($info[0]);
-		$MODEL = ucfirst($info[1]);
-		$TABLE = strtolower($MODEL);
-		$file = APP_PATH.'/'.$MODULE.'/Model/'.ucfirst($MODEL).'.php';
-
-		//判断目录
-		if(!is_dir(APP_PATH.'/'.$MODULE.'/Model')) 
-		{
-			die("Directory does not exist\n");
-		}
-
+	public function make( $arg ) {
+		$info  = explode( '.', $arg );
+		$MODEL = ucfirst( $info[0] );
+		$TABLE = strtolower( $info[0] );
+		$file  = 'system/model/' . ucfirst( $MODEL ) . '.php';
 		//创建模型文件
-		if(is_file($file))
-		{
-			die("Model file already exists\n");
-		}
-		else
-		{
-			$namespace = $MODULE.'\\Model';
-
-			$data = file_get_contents(__DIR__.'/Model.php');
-			$data = str_replace(array('{{MODULE}}','{{MODEL}}','{{TABLE}}'), 
-				array($MODULE,$MODEL,$TABLE), $data);
-			file_put_contents($file, $data);
+		if ( is_file( $file ) ) {
+			\hdphp\cli\Cli::error( "Model file already exists" );
+		} else {
+			$data = file_get_contents( __DIR__ . '/Model.tpl' );
+			$data = str_replace( [ '{{MODEL}}', '{{TABLE}}' ], [ $MODEL, $TABLE ], $data );
+			file_put_contents( $file, $data );
 		}
 	}
 }

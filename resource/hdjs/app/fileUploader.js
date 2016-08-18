@@ -43,7 +43,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                 }
                                 //加载远程文件
                                 function getImageList(url) {
-                                    $.get(url, {extensions: options.extensions}, function (res) {
+                                    $.post(url, {extensions: options.extensions, hash: options.hash, data: options.data}, function (res) {
                                         var html = '<ul class="clearfix image-list-box">';
                                         $(res.data).each(function (i) {
                                             html += '<li style="background-image: url(' + res.data[i].path + ');" path="' + res.data[i].path + '"></li>';
@@ -84,6 +84,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                         extensions: options.extensions,//允许上传的文件类型
                                         mimeTypes: 'image/*'
                                     },
+                                    formData: {hash: options.hash, data: options.data},
                                     multiple: options.multiple,
                                     fileNumLimit: 100,//允许上传的文件数量
                                     fileSizeLimit: 200 * 1024 * 1024,    // 200 M 允许上传文件大小
@@ -173,6 +174,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                         width: 1600,
                                         height: 1600,
                                     },
+                                    formData: {hash: options.hash, data: options.data},
                                     auto: true,
                                     multiple: false,
                                     fileNumLimit: 1,//允许上传的文件数量
@@ -271,7 +273,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                         extensions: options.extensions,//允许上传的文件类型
                                         mimeTypes: '.' + options.extensions.replace(/,/g, ',.'),
                                     },
-                                    formData: {data: options.data},
+                                    formData: {hash: options.hash, data: options.data},
                                     multiple: options.multiple,
                                     fileNumLimit: 100,//允许上传的文件数量
                                     fileSizeLimit: 200 * 1024 * 1024,    // 200 M 允许上传文件大小

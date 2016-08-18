@@ -48,7 +48,7 @@ class Controller {
 	private static function action() {
 		//禁止使用模块检测
 		if ( in_array( MODULE, C( 'http.deny_module' ) ) ) {
-			throw new Exception( MODULE . '模块禁止使用' );
+			_404();
 		}
 		$class = APP . '\\' . MODULE . '\\controller\\' . CONTROLLER;
 		//控制器不存在

@@ -11,8 +11,9 @@ CREATE TABLE `core_attachment` (
 `createtime` int(10) NOT NULL COMMENT '上传时间',
 `size` mediumint(9) NOT NULL COMMENT '文件大小',
 `data` varchar(100) NOT NULL DEFAULT '' COMMENT '辅助信息',
-`hash` char(50) NOT NULL DEFAULT '',
+`hash` char(50) NOT NULL DEFAULT '' COMMENT '标识用于区分资源',
 PRIMARY KEY (`id`),
+KEY `data` (`data`),
 KEY `hash` (`hash`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='附件';
 */

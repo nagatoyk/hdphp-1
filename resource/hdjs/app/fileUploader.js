@@ -70,11 +70,13 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                         images.push(url);
                                     })
                                     if (!options.multiple) {
+                                        callback(images);
                                         modalobj.modal('hide');
                                     }
                                 });
                                 //多图上传时选中确定选择的图片
                                 modalobj.delegate('.uploadSelectFiles', 'click', function () {
+                                    callback(images);
                                     modalobj.modal('hide');
                                 });
                                 //显示上传控件
@@ -103,7 +105,6 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                                 });
                             },
                             'hide.bs.modal': function () {
-                                callback(images);
                             },
                             'hidden.bs.modal': function () {
                                 modalobj.remove();
@@ -456,7 +457,8 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                     multiple: opt.multiple,
                 },
                 formData: {
-                    uid: 123
+                    data: '',
+                    hash: ''
                 },
                 dnd: '#dndArea',
                 paste: '#uploader',

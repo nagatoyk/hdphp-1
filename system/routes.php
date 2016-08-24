@@ -7,3 +7,6 @@
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
+Route::get('/',function(){
+	return '后盾网 欢迎您';
+});

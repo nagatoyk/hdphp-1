@@ -23,8 +23,10 @@ class Config {
 		if ( is_file( '.env' ) ) {
 			$config = [ ];
 			foreach ( file( '.env' ) as $file ) {
-				$data                       = explode( '=', $file );
-				$config[ trim( $data[0] ) ] = trim( $data[1] );
+				$data = explode( '=', $file );
+				if ( count( $data ) == 2 ) {
+					$config[ trim( $data[0] ) ] = trim( $data[1] );
+				}
 			}
 			$this->set( 'database.host', $config['DB_HOST'] );
 			$this->set( 'database.user', $config['DB_USER'] );

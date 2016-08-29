@@ -13,9 +13,9 @@ return [
 	//帐号
 	'user'     => 'root',
 	//密码
-	'password' => '',
+	'password' => 'admin888',
 	//数据库
-	'database' => '',
+	'database' => 'hdphp',
 	//表前缀
 	'prefix'   => ''
 ];

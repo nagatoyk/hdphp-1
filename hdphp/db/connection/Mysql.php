@@ -42,7 +42,7 @@ class Mysql extends Connection {
 				$f ['extra']             = $res ['Extra'];
 				$data [ $res ['Field'] ] = $f;
 			}
-			DEBUG || F( $name, $data, 'storage/cache/field' );
+			F( $name, $data, 'storage/cache/field' );
 		}
 
 		return $this->fields = $data;

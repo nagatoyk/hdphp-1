@@ -108,7 +108,7 @@ class View {
 				}
 			} else {
 				//路由中使用回调函数执行View::make()时，因为没有MODULE
-				$f = C( 'view.path' ) . '/' . $file . C( 'view.prefix' );
+				$f = C( 'view.path' ) . '/' . $file;
 				if ( is_file( $f ) ) {
 					return $f;
 				}

@@ -107,9 +107,7 @@ define(["jquery", "underscore", "webuploader", "util"], function (bootstrap, und
                             'hide.bs.modal': function () {
                             },
                             'hidden.bs.modal': function () {
-                                if (!options.multiple) {
-                                    callback(images);
-                                }
+                                callback(images);
                                 modalobj.remove();
                             }
                         }

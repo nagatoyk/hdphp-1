@@ -376,17 +376,17 @@ class Model implements ArrayAccess, Iterator {
 	 *
 	 * @return bool
 	 */
-	private function checkToken() {
-		if ( C( 'app.token_on' ) ) {
+	final public function checkToken() {
+		if ( c( 'app.token_on' ) ) {
 			$status = FALSE;
 			$name   = C( 'app.token_name' );
 			$token  = Session::get( $name );
-			$post   = q( 'post' . $name );
+			$post   = q( 'post.' . $name );
 			if ( empty( $token ) || empty( $post ) || $post == $token ) {
 				$status = TRUE;
 			}
 			//令牌重置
-			if ( C( 'app.token_reset' ) ) {
+			if ( c( 'app.token_reset' ) ) {
 				unset( $_SESSION[ $name ] );
 			}
 

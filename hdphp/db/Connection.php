@@ -71,9 +71,9 @@ abstract class Connection implements ArrayAccess, Iterator {
 		$this->getLink();
 	}
 
-	public function table( $tableName ) {
+	public function table( $tableName, $full = FALSE ) {
 		//模型实例时不允许改表名
-		$this->table = $this->table ?: $this->config['prefix'] . $tableName;
+		$this->table = $this->table ?: ( $full ? $tableName : $this->config['prefix'] . $tableName );
 		//缓存表字段
 		$this->getTableField();
 		//获取表主键

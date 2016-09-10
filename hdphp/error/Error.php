@@ -37,22 +37,17 @@ class Error {
 
 	//错误处理
 	public function error( $errno, $error, $file, $line ) {
-		$msg = $error . $file . " ($line).";
+		$msg = $error . "($errno)" . $file . " ($line).";
 		switch ( $errno ) {
 			case E_NOTICE:
 			case E_USER_NOTICE:
 			case E_DEPRECATED:
 				break;
-			case E_WARNING:
-				Log::write( $msg, 'Error' );
-				//忽略过期函数错误
-				break;
 			default:
-				Log::write( $msg, 'Error' );
-				class_exists( 'Log', FALSE ) && Log::write( $msg, $this->errorType( $errno ) );
 				if ( DEBUG ) {
 					require HDPHP_PATH . '/error/view/debug.php';
 				} else {
+					class_exists( 'Log', FALSE ) && Log::write( $msg, $this->errorType( $errno ) );
 					require c( "view.bug" );
 				}
 		}

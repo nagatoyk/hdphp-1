@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+storage
+.idea
+.env
+.DS_Store
+attachment
+.htaccess
+/vendor/
+/composer.lock

@@ -21,13 +21,11 @@
   },
   "autoload": {
     "psr-4": {
-      "app\\": "app"
+      "app\\": "app",
+      "houdunwang/framework": "*"
     }
   },
-  "repositories": {
-    "packagist": {
-      "type": "composer",
-      "url": "https://packagist.phpcomposer.com"
-    }
-  }
+  "extra": {
+    "think-path": "thinkphp"
+  },
 }

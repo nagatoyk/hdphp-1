@@ -33,6 +33,10 @@ class App extends Container {
 		$this->servers = require ROOT_PATH . '/system/config/service.php';
 		//自动加载系统服务
 		Loader::register( [ $this, 'autoload' ] );
+		//composer自动加载
+		if ( is_file( __DIR__ . '/../../vendor/autoload.php' ) ) {
+			require __DIR__ . '/../../vendor/autoload.php';
+		}
 		//绑定核心服务提供者
 		$this->bindServiceProvider();
 		//添加初始实例

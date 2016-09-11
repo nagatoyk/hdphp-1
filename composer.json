@@ -20,9 +20,10 @@
     "php": ">=5.4.0",
     "houdunwang/framework": "*"
   },
-  "extra": {
-    "installer-paths": {
-      "hdphp": ["vendor/houdunwang/framework"]
+  "autoload": {
+    "psr-4": {
+      "web\\": "web",
+      "system\\": "system"
     }
   }
 }

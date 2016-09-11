@@ -1,4 +1,6 @@
 <?php namespace web\home\controller;
+use system\model\News;
+
 /** .-------------------------------------------------------------------
  * |  Software: [HDPHP framework]
  * |      Site: www.hdphp.com

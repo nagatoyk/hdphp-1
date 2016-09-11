@@ -8,7 +8,7 @@
 // | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
 // '-------------------------------------------------------------------
 header( "Content-type:text/html;charset=utf-8" );
-if ( version_compare( PHP_VERSION, '5.4.0', '<' ) ) {
+if ( version_compare( phpversion(), '5.4.0', '<' ) ) {
 	die( 'HDPHP 需要PHP版本大于php5.4,当前版本' . PHP_VERSION );
 }
 define( 'HDPHP_VERSION', '2.0.1' );
@@ -27,15 +27,17 @@ if ( IS_CLI ) {
 } else {
 	define( 'IS_GET', $_SERVER['REQUEST_METHOD'] == 'GET' );
 	define( 'IS_POST', $_SERVER['REQUEST_METHOD'] == 'POST' );
-	define( 'IS_DELETE', $_SERVER['REQUEST_METHOD'] == 'DELETE' ?: ( isset( $_POST['_method'] ) && $_POST['_method'] == 'DELETE' ) );
-	define( 'IS_PUT', $_SERVER['REQUEST_METHOD'] == 'PUT' ?: ( isset( $_POST['_method'] ) && $_POST['_method'] == 'PUT' ) );
+	define( 'IS_DELETE', $_SERVER['REQUEST_METHOD'] == 'DELETE' ? TRUE : ( isset( $_POST['_method'] ) && $_POST['_method'] == 'DELETE' ) );
+	define( 'IS_PUT', $_SERVER['REQUEST_METHOD'] == 'PUT' ? TRUE : ( isset( $_POST['_method'] ) && $_POST['_method'] == 'PUT' ) );
 	define( 'IS_AJAX', isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' );
 	define( 'IS_WEIXIN', isset( $_SERVER['HTTP_USER_AGENT'] ) && strpos( $_SERVER['HTTP_USER_AGENT'], 'MicroMessenger' ) !== FALSE );
 	define( '__ROOT__', trim( 'http://' . $_SERVER['HTTP_HOST'] . dirname( $_SERVER['SCRIPT_NAME'] ), '/\\' ) );
 	define( '__URL__', trim( 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim( $_SERVER['REQUEST_URI'], '/\\' ), '/' ) );
 	define( "__HISTORY__", isset( $_SERVER["HTTP_REFERER"] ) ? $_SERVER["HTTP_REFERER"] : '' );
 }
-require HDPHP_PATH . '/kernel/Functions.php';
-require HDPHP_PATH . '/kernel/Loader.php';
-\hdphp\kernel\Loader::register();
-( new \hdphp\kernel\App() )->run();
+/**
+ * composer自动加载
+ */
+require __DIR__ . '/../vendor/autoload.php';
+$app = new \hdphp\kernel\App();
+$app->run();

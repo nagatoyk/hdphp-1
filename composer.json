@@ -17,15 +17,10 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.4.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "app\\": "app",
-      "houdunwang/framework": "*"
-    }
+    "php": ">=5.4.0",
+    "houdunwang/framework": "*"
   },
   "extra": {
-    "think-path": "thinkphp"
-  },
+    "hdphp-path": "hdphp"
+  }
 }

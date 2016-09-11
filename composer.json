@@ -1,0 +1,33 @@
+{
+  "name": "houdunwang/test",
+  "description": "test",
+  "type": "project",
+  "keywords": [
+    "test",
+    "houdunwang",
+    "hdphp"
+  ],
+  "homepage": "http://hdphp.com/",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "向军",
+      "email": "2300071698@qq.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\": "app"
+    }
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
+}

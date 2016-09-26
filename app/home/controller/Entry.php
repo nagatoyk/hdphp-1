@@ -1,5 +1,4 @@
-<?php namespace web\home\controller;
-use system\model\News;
+<?php namespace app\home\controller;
 
 /** .-------------------------------------------------------------------
  * |  Software: [HDPHP framework]
@@ -9,12 +8,10 @@ use system\model\News;
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
-
 class Entry {
+
 	//首页
 	public function index() {
-		$d= News::get();
-		p($d);
-		View::make();
+		return view();
 	}
 }

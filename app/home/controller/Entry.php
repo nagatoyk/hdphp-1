@@ -12,6 +12,9 @@ class Entry {
 
 	//首页
 	public function index() {
+		$d = Image::thumb('4.jpg', '4a.jpg', 50, 300, 5);
+		dd($d);
+
 		return view();
 	}
 }

@@ -7,3 +7,7 @@ attachment
 .htaccess
 /vendor/
 /composer.lock
+/system/database/migrations/*
+!/system/database/migrations/index.html
+/system/database/seeds/*
+!/system/database/seeds/index.html

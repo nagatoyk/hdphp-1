@@ -7,7 +7,5 @@
  * |    WeChat: aihoudun
  * | Copyright (c) 2012-2019, www.houdunwang.com. All Rights Reserved.
  * '-------------------------------------------------------------------*/
-//开启调试模式
-define( 'DEBUG', TRUE );
 //引入框架
-require 'system/hdphp.php';
+require __DIR__ . '/system/hdphp.php';

@@ -1,7 +1,9 @@
 <?php
 return [
+	//调试模式
+	'debug'              => TRUE,
 	//应用目录
-	'path'               => 'web',
+	'path'               => 'app',
 	//加密key
 	'key'                => 'ce9fdeba3a030fbcb0e2ffb2a00a34b7e1008bc55abe0251e5e1d417cd8b5476',
 	//页面编码

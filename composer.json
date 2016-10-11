@@ -22,8 +22,10 @@
   },
   "autoload": {
     "psr-4": {
-      "web\\": "web",
-      "system\\": "system"
+      "app\\": "app",
+      "system\\": "system",
+      "addons\\": "addons",
+      "module\\": "module"
     }
   }
 }

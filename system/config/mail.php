@@ -1,10 +1,10 @@
 <?php
 return array(
     'ssl'      => false,
-    'username' => '',
+    'username' => 'hdcms@houdunwang.com',
     'password' => '',
-    'host'     => 'smtp.126.com',
+    'host'     => 'smtp.exmail.qq.com',
     'port'     => '25',
     'fromname' => '后盾网',
-    'frommail' => '',
+    'frommail' => 'hdcms@houdunwang.com',
 );

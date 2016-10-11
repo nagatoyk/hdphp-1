@@ -18,7 +18,7 @@
 			<h3 class="panel-title">温馨提示</h3>
 	  </div>
 	  <div class="panel-body">
-          {{$close_message}}
+          {{v('config.site.close_message')}}
 	  </div>
 </div>
 

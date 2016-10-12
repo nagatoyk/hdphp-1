@@ -1,11 +1,10 @@
-# Created by .ignore support plugin (hsz.mobi)
 storage
+.gitignore
 .idea
 .env
 .DS_Store
 attachment
 .htaccess
-/vendor/
 /composer.lock
 /system/database/migrations/*
 !/system/database/migrations/index.html
